@@ -1,7 +1,6 @@
 <?php
 
-set_time_limit(300);
-ob_implicit_flush(true);
+set_time_limit(10);
 
 require 'class/slothmusic.class.php';
 
