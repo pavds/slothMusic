@@ -448,7 +448,7 @@
 					var id = $(el).data("id");
 					var item = session.playlist[$(el).data("id")];
 					$.ajax({
-						url: "fileinfo.json",
+						url: "fileinfo",
 						data: {
 							id: id,
 							url: item.url,

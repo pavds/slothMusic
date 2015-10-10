@@ -1,5 +1,6 @@
 RewriteEngine On
 RewriteRule ^download$ download.php [L]
+RewriteRule ^fileinfo$ fileinfo.php [L]
 
 # AddType TYPE/SUBTYPE EXTENSION
 AddType audio/mpeg mp3
