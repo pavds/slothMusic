@@ -5,6 +5,7 @@
 
 ### Возможности
 * Прослушивание аудиозаписей на любом устройстве.
+* Поиск аудиозаписей.
 * Добавление и удаление аудиозаписей.
 * Генерирование M3U (из текущего плейлиста).
 * Загрузка аудиозаписей.
@@ -45,6 +46,7 @@ The music player VK.com.
 
 ### Opportunities
 * Listen to audio on any device.
+* Search audio.
 * Adding and deleting tracks.
 * Generate M3U (playlist).
 * Download audio.
