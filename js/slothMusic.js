@@ -441,6 +441,9 @@
 				alphabetically: function() {
 					$(playlist).alphabetically();
 				},
+				alphabeticallyReverse: function() {
+					$(playlist).alphabeticallyReverse();
+				},
 				empty: function() {
 					$(playlist).empty();
 				},
@@ -684,7 +687,11 @@
 					slothMusic.player.playlist.shuffle();
 				});
 				$(controls.audio.alphabetically).on("click", function() {
-					slothMusic.player.playlist.alphabetically();
+					$(this).clickToggle(function() {
+						slothMusic.player.playlist.alphabetically();
+					}, function() {
+						slothMusic.player.playlist.alphabeticallyReverse();
+					});
 				});
 				$(controls.audio.my).on("click", function() {
 					slothMusic.audio.get(session.uid);
@@ -816,7 +823,7 @@
 })(jQuery);
 
 /*
-//	функция sortList: сортировка по алфавиту
+//	функция alphabetically: сортировка по алфавиту
 */
 $(function() {
 	$.fn.alphabetically = function() {
@@ -830,5 +837,40 @@ $(function() {
 		$.each(listitems, function(i, itm) {
 			mylist.append(itm);
 		});
+	}
+});
+
+/*
+//	функция alphabeticallyReverse: сортировка по алфавиту (в обратном порядке)
+*/
+$(function() {
+	$.fn.alphabeticallyReverse = function() {
+		var mylist = $(this);
+		var listitems = $('a', mylist).get();
+		listitems.sort(function(a, b) {
+			var compA = $(a).text().toUpperCase();
+			var compB = $(b).text().toUpperCase();
+			return (compA > compB) ? -1 : 1;
+		});
+		$.each(listitems, function(i, itm) {
+			mylist.append(itm);
+		});
+	}
+});
+
+/*
+//	функция clickToggle: выполняет функции поочередно
+*/
+$(function() {
+	$.fn.clickToggle = function(func1, func2) {
+		var funcs = [func1, func2];
+		if (this.data('toggleClicked') != 0) {
+			this.data('toggleClicked', 0);
+			$.proxy(funcs[0], this)();
+		} else {
+			this.data('toggleClicked', 1);
+			$.proxy(funcs[1], this)();
+		}
+		return this;
 	}
 });
