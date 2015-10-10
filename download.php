@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The download audio from url.
+ * Download audio from url.
  * @author Dmitry Pavlov <dmitrypavlov.design@gmail.com>
  * @license https://raw.github.com/ifamed/slothMusic/master/LICENSE MIT
  */
