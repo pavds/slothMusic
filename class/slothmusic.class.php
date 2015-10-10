@@ -69,7 +69,7 @@ class slothMusic {
 	 * @param integer $bytes размер в байтах
 	 * @param integer $kbps битрейт
 	 * @param integer $uid id пользователя
-	 * @return boolean получилось ли добавить в БД
+	 * @return bool получилось ли добавить в БД
 	 */
 	public function save($id, $bytes, $kbps, $uid) {
 		$DBH = $this->connect;
@@ -120,7 +120,7 @@ class slothMusic {
 	 *
 	 * @param string $url url аудиозаписи
 	 * @param string $filename название аудиозаписи
-	 * @return mp3
+	 * @return file аудиозапись
 	 */
 	public function download($url, $filename) {
 		header('Content-type: application/x-file-to-save');
