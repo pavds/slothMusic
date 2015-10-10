@@ -3,7 +3,6 @@
 config.codekit
 .codekit-cache
 .sass-cache
-.gitignore
 
 # Logs #
 ######################
