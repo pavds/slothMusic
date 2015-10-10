@@ -1,15 +1,19 @@
 @import
-	/* ================ Vendors */
+	/* ================ Vendors components */
 	"../bower_components/boostrap-sass/assets/stylesheets/bootstrap",
 	"../bower_components/fontawesome/scss/font-awesome",
 
-	/* ================ Layout */
-	"animations",
+	/* ================ Components */
+	"_animations",
+	"_loading",
 
-	"fonts",
+	/* ================ Layout */
+	"layout/fonts",
 	"layout/basic",
+
 	"layout/vk",
 	"layout/player",
 	"layout/playlist",
 	"layout/audio",
+
 	"layout/other";

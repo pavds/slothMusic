@@ -1,0 +1,29 @@
+/*
+Sass::SyntaxError: ".loading .spinner" failed to @extend ".fa".
+The selector ".fa" was not found.
+Use "@extend .fa !optional" if the extend should be able to fail.
+
+
+Backtrace:
+/Users/famed/Documents/MAMP/slothMusic.dev/scss/layout/loading.scss:31
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/tree/visitors/extend.rb:61:in `block in check_extends_fired!'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/util/subset_map.rb:106:in `block in each_value'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/util/subset_map.rb:106:in `each'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/util/subset_map.rb:106:in `each_value'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/tree/visitors/extend.rb:50:in `check_extends_fired!'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/tree/visitors/extend.rb:16:in `visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/tree/root_node.rb:39:in `css_tree'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/tree/root_node.rb:20:in `render'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/engine.rb:278:in `render'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/exec/sass_scss.rb:418:in `run'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/exec/sass_scss.rb:63:in `process_result'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/exec/base.rb:52:in `parse'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/lib/sass/exec/base.rb:19:in `parse!'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.4.18/bin/scss:13:in `<top (required)>'
+/usr/local/bin/scss:23:in `load'
+/usr/local/bin/scss:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Sass::SyntaxError: \".loading .spinner\" failed to @extend \".fa\".\A The selector \".fa\" was not found.\A Use \"@extend .fa !optional\" if the extend should be able to fail.\A "; }

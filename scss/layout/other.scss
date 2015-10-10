@@ -1,38 +1,5 @@
 /* ================================================== Other */
 
-.loading
-{
-	position: fixed;
-	z-index: 9998 !important;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-
-	display: none;
-
-	margin: auto;
-
-	background-color: rgba(0, 0, 0, .7);
-	.spinner
-	{
-		font-size: 25pt !important;
-
-		position: fixed;
-		z-index: 9999 !important;
-		top: 50%;
-		left: 50%;
-
-		transform: translate(-50%, -50%);
-		animation: loading 2s infinite;
-
-		color: #999;
-
-		@extend .fa;
-		@extend .fa-spinner;
-	}
-}
-
 .not_authorized
 {
 	display: none;
