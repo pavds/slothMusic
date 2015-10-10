@@ -3,6 +3,7 @@
 config.codekit
 .codekit-cache
 .sass-cache
+README.html
 
 # Packages #
 ############
