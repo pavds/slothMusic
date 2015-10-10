@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * The download audio from url.
+ * @author Dmitry Pavlov <dmitrypavlov.design@gmail.com>
+ * @license https://raw.github.com/ifamed/slothMusic/master/LICENSE MIT
+ */
+
 set_time_limit(10);
 
 require 'class/slothmusic.class.php';
