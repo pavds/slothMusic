@@ -52,23 +52,31 @@
 		}
 	}
 
+	/*
 	// uid: id пользователя
 	// sid: id сессии
 	// playlist: текущий плейлист
 	// player: плеер
 	// device: устройство
+	// mode: режим работы
+	// downloading: список заугружаемых аудиозаписей
+	*/
 	var session = {
 		uid: null,
 		sid: null,
 		playlist: new Array(),
 		player: {
+			/*
 			// status: состояние плеера
 			// playing: данные текущей аудиозаписи
+			*/
 			status: true,
 			playing: {
+				/*
 				// index: индекс аудиозаписи в плейлисте
 				// title: полное название аудиозаписи
 				// url: адрес к mp3
+				*/
 				index: 0,
 				title: null,
 				url: null
@@ -79,7 +87,9 @@
 		downloading: new Array(),
 	};
 
+	/*
 	// если используют моб. устройства
+	*/
 	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 		session.device = "mobile";
 	} else {
@@ -274,7 +284,7 @@
 				player.load();
 				player.play();
 
-				// slothMusic.audio.setBroadcast(song.owner_id, song.id, session.id);
+				// slothMusic.audio.setBroadcast(song.owner_id, song.id, session.id); // транслировать в статус
 
 				$(controls.player.title).text(session.player.playing.title);
 				$(playlist).children().removeClass("active");
@@ -353,6 +363,8 @@
 				// this.player.playlist.alphabetically(); // сортировка плейлиста по алфавиту
 				// this.player.playlist.empty(); // очистить плейлист
 				// this.player.playlist.bitrate(uid, el); // получить битрейт аудиозаписи
+				// this.player.playlist.download(items); // загрузить аудиозаписи
+				// this.player.playlist.generator; // генератор плейлистов
 				// this.player.playlist.ready(); // действия на странице
 				*/
 				add: function(response) {
@@ -382,8 +394,7 @@
 						}).appendTo(playlist);
 					});
 
-					// воспроизвести первую песню
-					// slothMusic.player.play($(playlist).find("a").eq(0));
+					// slothMusic.player.play($(playlist).find("a").eq(0)); // воспроизводить первую аудиозапись
 
 					// убираем возможность добавления или удаления аудиозаписей, если используют моб. устройства
 					if (session.device == "desktop") {
@@ -433,7 +444,7 @@
 				empty: function() {
 					$(playlist).empty();
 				},
-				bitrate: function(uid, el) { // узнать битрейт аудиозаписи
+				bitrate: function(uid, el) {
 					var id = $(el).data("id");
 					var item = session.playlist[$(el).data("id")];
 					$.ajax({
@@ -462,7 +473,7 @@
 						}
 					});
 				},
-				download: function(items) { // загрузить аудиозаписи
+				download: function(items) {
 					$("<div/>", {
 						"id": "downloading",
 						"class": "hide"
@@ -478,10 +489,15 @@
 
 					if ($("#downloading").find("a").each(function(i, item) {
 							$(item)[0].click();
-						}))
+						})) {
+						session.downloading = [];
 						$("#downloading").remove();
+					}
 				},
 				generator: {
+					/*
+					// this.player.playlist.generator.m3u(); // сгенерировать m3u плейлист
+					 */
 					m3u: function() {
 						var m3u = "#EXTM3U\r\n";
 						$(playlist).find("a").each(function(i, item) {
@@ -509,7 +525,7 @@
 					}
 				},
 				ready: function() {
-					if (session.device == "desktop") { // при наведении на аудиозапись, показать битрейт
+					if (session.device == "desktop") {
 						$(playlist).on({
 							mouseenter: function() {
 								if (!$(this).find("small").hasClass("bitrate"))
@@ -699,6 +715,7 @@
 							slothMusic.player.playlist.download(session.downloading);
 						} else {
 							session.mode = "listening";
+							session.downloading = [];
 							slothMusic.animation.downloadAll.hide();
 							$(this).removeClass("active");
 						}
