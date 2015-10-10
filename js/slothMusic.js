@@ -686,12 +686,10 @@
 				$(controls.audio.shuffle).on("click", function() {
 					slothMusic.player.playlist.shuffle();
 				});
-				$(controls.audio.alphabetically).on("click", function() {
-					$(this).clickToggle(function() {
-						slothMusic.player.playlist.alphabetically();
-					}, function() {
-						slothMusic.player.playlist.alphabeticallyReverse();
-					});
+				$(controls.audio.alphabetically).clickToggle(function() {
+					slothMusic.player.playlist.alphabetically();
+				}, function() {
+					slothMusic.player.playlist.alphabeticallyReverse();
 				});
 				$(controls.audio.my).on("click", function() {
 					slothMusic.audio.get(session.uid);
@@ -859,18 +857,13 @@ $(function() {
 });
 
 /*
-//	функция clickToggle: выполняет функции поочередно
+//	функция clickToggle: выполняет функции по клику (поочередно)
 */
-$(function() {
-	$.fn.clickToggle = function(func1, func2) {
-		var funcs = [func1, func2];
-		if (this.data('toggleClicked') != 0) {
-			this.data('toggleClicked', 0);
-			$.proxy(funcs[0], this)();
-		} else {
-			this.data('toggleClicked', 1);
-			$.proxy(funcs[1], this)();
-		}
-		return this;
+jQuery.fn.clickToggle = function(a, b) {
+	var ab = [b, a];
+
+	function cb() {
+		ab[this._tog ^= 1].call(this);
 	}
-});
+	return this.on("click", cb);
+};
