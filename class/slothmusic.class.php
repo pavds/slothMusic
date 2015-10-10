@@ -1,6 +1,6 @@
 <?php
 
-class FileInfo {
+class slothMusic {
 	// Ссылка на соединение с MySQL
 	protected $connect;
 
@@ -19,7 +19,7 @@ class FileInfo {
 	 *
 	 * @param integer $id id аудиописи
 	 * @param array $data массив данных аудиозаписи (id, url, duration, uid)
-	 * @return intege
+	 * @return integer
 	 */
 	public function execute($data) {
 		if ($this->check($data['id'])) {
@@ -94,9 +94,9 @@ class FileInfo {
 	 */
 	public function filesize($url) {
 		$fp = fopen($url, 'r');
-		$inf = stream_get_meta_data($fp);
+		$meta = stream_get_meta_data($fp);
 		fclose($fp);
-		foreach ($inf['wrapper_data'] as $v) {
+		foreach ($meta['wrapper_data'] as $v) {
 			if (stristr($v, 'content-length')) {
 				$v = explode(':', $v);
 				return (int) trim($v[1]);
@@ -114,6 +114,18 @@ class FileInfo {
 		$bytes = $this->filesize($url);
 		$kbps = ceil((round($bytes / 128) / $duration) / 16) * 16;
 		return (int) $kbps;
+	}
+
+	/**
+	 *
+	 * @param string $url url аудиозаписи
+	 * @param string $filename название аудиозаписи
+	 * @return mp3
+	 */
+	public function download($url, $filename) {
+		header('Content-type: application/x-file-to-save');
+		header('Content-Disposition: attachment; filename="' . $filename . '.mp3"');
+		readfile($url);
 	}
 }
 

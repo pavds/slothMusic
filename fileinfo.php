@@ -4,7 +4,7 @@ set_time_limit(300);
 ob_implicit_flush(true);
 header('Content-Type: application/json');
 
-require 'class/fileinfo.class.php';
+require 'class/slothmusic.class.php';
 
 if (verify($_POST['id']) && verify($_POST['url']) && verify($_POST['duration']) && verify($_POST['uid'])) {
 	$data = array(
@@ -15,12 +15,12 @@ if (verify($_POST['id']) && verify($_POST['url']) && verify($_POST['duration']) 
 	);
 	try {
 		$DBH = new PDO('mysql:host=famed.mysql.ukraine.com.ua;dbname=famed_sloth', 'famed_sloth', '6kgwqg54', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
-		$fileinfo = new FileInfo($DBH);
-		echo $fileinfo->execute($data);
+		$slothMusic = new slothMusic($DBH);
+		echo $slothMusic->execute($data);
 		$DBH = null;
 	} catch (PDOException $e) {
-		$fileinfo = new FileInfo();
-		echo $fileinfo->send($fileinfo->kbps($data['url'], $data['duration']));
+		$slothMusic = new slothMusic();
+		echo $slothMusic->send($slothMusic->kbps($data['url'], $data['duration']));
 	}
 }
 
