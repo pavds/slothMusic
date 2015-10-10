@@ -1,0 +1,147 @@
+.audio
+{
+	margin: 95px 0 10px 0 !important;
+	padding: 0 !important;
+
+	@include make-row();
+	&-categories
+	{
+		padding: 0 !important;
+
+		@include make-xs-column(12);
+		@include make-sm-column(12);
+		@include make-md-column(8);
+		.shuffle,
+		.alphabetically,
+		.my,
+		.popular,
+		.recommendations,
+		.backward,
+		.forward,
+		.download,
+		.download-all,
+		.m3u
+		{
+			font-size: 20pt;
+			line-height: 25pt;
+
+			margin-right: 10px;
+
+			cursor: pointer;
+			&:hover,
+			&:active,
+			&:focus
+			{
+				color: #777;
+			}
+		}
+		.shuffle
+		{
+			@extend .fa;
+			@extend .fa-refresh;
+		}
+		.alphabetically
+		{
+			@extend .fa;
+			@extend .fa-sort-alpha-asc;
+		}
+		.my
+		{
+			@extend .fa;
+			@extend .fa-user;
+		}
+		.popular
+		{
+			@extend .fa;
+			@extend .fa-bar-chart;
+		}
+		.recommendations
+		{
+			@extend .fa;
+			@extend .fa-certificate;
+		}
+		.backward
+		{
+			@extend .fa;
+			@extend .fa-backward;
+			@extend .hidden-sm;
+			@extend .hidden-md;
+			@extend .hidden-lg;
+		}
+		.forward
+		{
+			@extend .fa;
+			@extend .fa-forward;
+			@extend .hidden-sm;
+			@extend .hidden-md;
+			@extend .hidden-lg;
+		}
+		.download
+		{
+			margin-left: 10px;
+
+			@extend .fa;
+			@extend .fa-download;
+			@extend .hidden-xs;
+			@extend .hidden-sm;
+			&.active
+			{
+				color: #16a085;
+			}
+
+			&-all
+			{
+				@extend .fa;
+				@extend .fa-list-ol;
+				@extend .hidden-xs;
+				@extend .hidden-sm;
+			}
+		}
+		.m3u
+		{
+			@extend .fa;
+			@extend .fa-headphones;
+			@extend .hidden-xs;
+			@extend .hidden-sm;
+		}
+	}
+	&-search
+	{
+		padding: 0 !important;
+
+		@include make-xs-column(12);
+		@include make-sm-column(12);
+		@include make-md-column(4);
+		input
+		{
+			@extend .form-control;
+		}
+	}
+}
+
+@media (max-width: $screen-xs-max)
+{
+	.audio
+	{
+		margin: 60px auto 10px auto !important;
+		&-categories
+		{
+			margin-bottom: 10px !important;
+
+			text-align: center;
+		}
+	}
+}
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max)
+{
+	.audio
+	{
+		margin: 100px auto 10px auto !important;
+		&-categories
+		{
+			margin-bottom: 10px !important;
+
+			text-align: center;
+		}
+	}
+}

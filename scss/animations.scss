@@ -1,0 +1,152 @@
+.animation
+{
+	&-player
+	{
+		&-prev
+		{
+			animation: player-prev .25s ease-in-out;
+		}
+		&-next
+		{
+			animation: player-next .25s ease-in-out;
+		}
+	}
+	&-playlist
+	{
+		&-moved
+		{
+			animation: playlist-moved 1s ease-in-out;
+			&-active
+			{
+				animation: playlist-moved-active 1s ease-in-out;
+			}
+		}
+		&-bitrate
+		{
+			animation: playlist-bitrate .25s ease-in-out;
+		}
+	}
+	&-opacity
+	{
+		&-in
+		{
+			animation: opacityIn .25s ease-in-out;
+		}
+		&-out
+		{
+			animation: opacityOut .25s ease-in-out;
+		}
+	}
+}
+
+@keyframes player-prev
+{
+	0%
+	{
+		transform: translateX(20%);
+
+		opacity: 0;
+	}
+	100%
+	{
+		transform: translateX(0);
+
+		opacity: 1;
+	}
+}
+@keyframes player-next
+{
+	0%
+	{
+		transform: translateX(-20%);
+
+		opacity: 0;
+	}
+	100%
+	{
+		transform: translateX(0);
+
+		opacity: 1;
+	}
+}
+
+@keyframes title
+{
+	0%
+	{
+		transform: translateX(-100%);
+	}
+	100%
+	{
+		transform: translateX(100%);
+	}
+}
+
+@keyframes playlist-moved
+{
+	0%
+	{
+		background-color: #fff;
+	}
+	50%
+	{
+		background-color: #f5f5dc;
+	}
+	100%
+	{
+		background-color: #fff;
+	}
+}
+
+@keyframes playlist-moved-active
+{
+	0%
+	{
+		background-color: #337ab7;
+	}
+	50%
+	{
+		border-color: #b3cce0;
+		background-color: #b3cce0;
+	}
+	100%
+	{
+		background-color: #337ab7;
+	}
+}
+
+@keyframes playlist-bitrate
+{
+	0%
+	{
+		opacity: 0;
+	}
+	100%
+	{
+		opacity: 1;
+	}
+}
+
+@keyframes opacityIn
+{
+	0%
+	{
+		opacity: 0;
+	}
+	100%
+	{
+		opacity: 1;
+	}
+}
+
+@keyframes opacityOut
+{
+	0%
+	{
+		opacity: 1;
+	}
+	100%
+	{
+		opacity: 0;
+	}
+}

@@ -1,0 +1,69 @@
+*
+{
+	user-select: none !important;
+	transition: all .25s ease-in-out !important;
+}
+
+html
+{
+	//position: relative;
+	//min-height: 100%;
+}
+body
+{
+	font-family: 'Roboto', sans-serif;
+
+	height: 100%;
+
+	background-color: #ecf0f1;
+}
+
+a
+{
+	cursor: pointer;
+}
+
+.loading
+{
+	position: fixed;
+	z-index: 9998 !important;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	display: none;
+
+	margin: auto;
+
+	background-color: rgba(0, 0, 0, 0.7);
+	.spinner
+	{
+		font-size: 25pt !important;
+
+		position: fixed;
+		z-index: 9999 !important;
+		top: 50%;
+		left: 50%;
+
+		transform: translate(-50%, -50%);
+		animation: loading 2s infinite;
+
+		color: #999;
+
+		@extend .fa;
+		@extend .fa-spinner;
+	}
+}
+
+@keyframes loading
+{
+	0%
+	{
+		transform: rotate(0);
+	}
+	100%
+	{
+		transform: rotate(360deg);
+	}
+}

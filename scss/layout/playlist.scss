@@ -1,0 +1,85 @@
+/* ================================================== Playlist */
+
+.playlist
+{
+	&-container
+	{
+		@include make-row();
+	}
+	&-song
+	{
+		@include make-md-column(12);
+	}
+	&-items
+	{
+		@extend .list-group;
+	}
+	&-item
+	{
+		overflow: hidden;
+
+		padding-right: 75px;
+
+		cursor: pointer;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+
+		-webkit-user-drag: element;
+		-khtml-user-drag: element;
+		@extend .list-group-item;
+		.bitrate
+		{
+			position: absolute;
+			top: 50%;
+			right: 25px;
+
+			transform: translateY(-50%);
+
+			// @extend .animation-playlist-bitrate;
+			@extend .hidden-xs;
+			&-higher
+			{
+				@extend .label;
+				@extend .label-success;
+			}
+			&-high,
+			&-medium
+			{
+				@extend .label;
+				@extend .label-warning;
+			}
+			&-low
+			{
+				@extend .label;
+				@extend .label-danger;
+			}
+		}
+		&.sortable-ghost
+		{
+			cursor: move !important;
+
+			border-color: #f4e2c9 !important;
+			background-color: #f4e2c9 !important;
+		}
+		&.download-active
+		{
+			border-left: 4px #16a085 solid;
+
+			@extend .hidden-xs;
+			@extend .hidden-sm;
+		}
+	}
+}
+
+@media (max-width: $screen-xs-max)
+{
+	.playlist
+	{
+		&-item
+		{
+			padding-right: 0;
+		}
+	}
+}
+
+/* ================================================== Playlist */

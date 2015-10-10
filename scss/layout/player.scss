@@ -1,0 +1,210 @@
+/* ================================================== Player */
+
+.player
+{
+	position: fixed;
+	z-index: 999;
+	top: 0;
+	right: 0;
+	left: 0;
+
+	background-color: rgba(0, 0, 0, .5);
+	&:hover,
+	&:active,
+	&:focus
+	{
+		background-color: rgba(0, 0, 0, .7);
+	}
+	&-controls
+	{
+		margin: 5px auto;
+
+		@include make-row();
+		&-prev,
+		&-next
+		{
+			@extend .hidden-xs;
+			i
+			{
+				font-size: 20pt;
+
+				margin: 5px auto;
+
+				cursor: pointer;
+
+				color: #d3d3d3;
+				text-shadow: 0 1px 3px rgba(0,0,0,.75);
+				&:hover,
+				&:active,
+				&:focus
+				{
+					color: #fff;
+				}
+			}
+		}
+		&-prev
+		{
+			text-align: left;
+
+			@include make-xs-column(2);
+			@include make-sm-column(1);
+			@include make-md-column(1);
+			@extend .pull-left;
+			i
+			{
+				@extend .fa;
+				@extend .fa-chevron-left;
+			}
+		}
+		&-title
+		{
+			text-align: center;
+
+			@include make-xs-column(12);
+			@include make-sm-column(10);
+			@include make-md-column(10);
+			h1
+			{
+				font-size: 14pt;
+
+				overflow: hidden;
+
+				margin: 7px auto;
+
+				text-align: center;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+
+				color: #fff;
+				text-shadow: 0 2px rgba(0,0,0,.75);
+			}
+		}
+		&-next
+		{
+			text-align: right;
+
+			@include make-xs-column(2);
+			@include make-sm-column(1);
+			@include make-md-column(1);
+			@extend .pull-right;
+			i
+			{
+				@extend .fa;
+				@extend .fa-chevron-right;
+			}
+		}
+		&-actions
+		{
+			position: absolute;
+			top: 50%;
+			right: 15px;
+
+			transform: translateY(-50%);
+			.add,
+			.delete,
+			.added,
+			.deleted
+			{
+				font-size: 13pt;
+
+				cursor: pointer;
+			}
+			.add
+			{
+				@extend .fa;
+				@extend .fa-plus;
+				@extend .pull-right;
+				@extend .hidden-xs;
+				&:hover,
+				&:active,
+				&:focus
+				{
+					color: #16a085;
+				}
+			}
+			.delete
+			{
+				@extend .fa;
+				@extend .fa-times;
+				@extend .pull-right;
+				@extend .hidden-xs;
+				&:hover,
+				&:active,
+				&:focus
+				{
+					color: #e74c3c;
+				}
+			}
+			.added
+			{
+				color: #16a085;
+
+				@extend .fa;
+				@extend .fa-check;
+				@extend .pull-right;
+				@extend .hidden-xs;
+			}
+			.deleted
+			{
+				color: #e74c3c;
+
+				@extend .fa;
+				@extend .fa-check;
+				@extend .pull-right;
+				@extend .hidden-xs;
+			}
+		}
+	}
+	&-audio
+	{
+		@include make-row();
+		@extend .hidden-xs;
+		&-container
+		{
+			@include make-md-column(12);
+		}
+		audio
+		{
+			width: 100%;
+			min-width: 100%;
+			margin: 0 auto;
+
+			text-align: center;
+		}
+	}
+}
+
+@media (max-width: $screen-xs-max)
+{
+	.player
+	{
+		.container
+		{
+			width: 100%;
+			margin: 0 !important;
+			padding: 0 !important;
+		}
+		&-controls
+		{
+			&-title
+			{
+				width: 100%;
+				margin: 0 !important;
+				padding: 0 !important;
+
+				text-align: center;
+				h1
+				{
+					display: inline-block !important;
+
+					width: 100%;
+					text-align: center;
+
+					animation: title 15s infinite linear;
+				}
+			}
+		}
+	}
+}
+
+/* ================================================== /Player */
