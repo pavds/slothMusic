@@ -79,9 +79,15 @@
 				<i id="m3u" class="m3u" title="Сгенерировать M3U плейлист"></i>
 			</div>
 			<div class="audio-search">
-				<form id="search">
+				<div class="audio-search-group">
+					<span class="audio-search-group-btn">
+						<button id="genresBtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span id="genresText">Жанр</span> <i class="caret"></i>
+						</button>
+						<ul id="genresList" class="audio-search-genres"></ul>
+					</span>
 					<input id="query" type="text" placeholder="Поиск">
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>

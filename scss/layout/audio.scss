@@ -10,7 +10,7 @@
 
 		@include make-xs-column(12);
 		@include make-sm-column(12);
-		@include make-md-column(8);
+		@include make-md-column(6);
 		.shuffle,
 		.alphabetically,
 		.my,
@@ -75,6 +75,7 @@
 			@extend .hidden-sm;
 			@extend .hidden-md;
 			@extend .hidden-lg;
+			margin-right: 0;
 		}
 		.download
 		{
@@ -88,7 +89,6 @@
 			{
 				color: #16a085;
 			}
-
 			&-all
 			{
 				@extend .fa;
@@ -111,7 +111,25 @@
 
 		@include make-xs-column(12);
 		@include make-sm-column(12);
-		@include make-md-column(4);
+		@include make-md-column(6);
+		&-group
+		{
+			@extend .input-group;
+			&-btn
+			{
+				@extend .input-group-btn;
+			}
+		}
+		&-genres
+		{
+			@extend .dropdown-menu;
+		}
+		button
+		{
+			@extend .btn;
+			@extend .btn-default;
+			@extend .dropdown-toggle;
+		}
 		input
 		{
 			@extend .form-control;

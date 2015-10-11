@@ -1,8 +1,10 @@
 // @codekit-prepend "openapi.js"
 // @codekit-prepend "../bower_components/jquery/dist/jquery.min.js"
+// @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap.min.js"
 // @codekit-prepend "../bower_components/sortable.js/Sortable.min.js"
 
-;(function($) {
+;
+(function($) {
 
 	/*
 	//	id приложения и права
@@ -52,10 +54,19 @@
 			download: document.getElementById("download"),
 			downloadAll: document.getElementById("downloadAll"),
 			m3u: document.getElementById("m3u"),
+			send: {
+				form: document.getElementById("audioSendForm"),
+				file: document.getElementById("audioSendFile"),
+			},
 		},
 		search: {
 			form: document.getElementById("search"),
 			query: document.getElementById("query"),
+		},
+		genres: {
+			btn: document.getElementById("genresBtn"),
+			text: document.getElementById("genresText"),
+			list: document.getElementById("genresList"),
 		}
 	}
 
@@ -420,7 +431,7 @@
 								// если аудозапись есть у пользователя, создается элемент удаления
 								// если нет, тогда добавления
 								$(playlist).find("a").each(function(i, item) {
-									$("<div/>", {
+									var playerControlsActions = $("<div/>", {
 										"class": "player-controls-actions"
 									}).appendTo(this);
 
@@ -592,6 +603,15 @@
 			init: function() {
 				slothMusic.audio.ready();
 			},
+			getUploadServer: function() {
+				VK.Api.call("audio.getUploadServer", {
+					v: 5.37,
+				}, function(r) {
+					if (r.response) {
+						console.log(r.response);
+					}
+				});
+			},
 			reorder: function(audio_id, before, after) {
 				VK.Api.call("audio.reorder", {
 					audio_id: audio_id,
@@ -649,11 +669,11 @@
 					}
 				});
 			},
-			getPopular: function() {
+			getPopular: function(genre_id) {
 				VK.Api.call("audio.getPopular", {
-					only_eng: 1,
-					count: 300,
-					v: 5.37
+					count: 1000,
+					v: 5.37,
+					genre_id: genre_id
 				}, function(r) {
 					if (r.response) {
 						slothMusic.animation.player.next();
@@ -689,7 +709,56 @@
 					}
 				});
 			},
+			genres: {
+				get: function() {
+					var genres = new Array();
+
+					genres[1] = "Rock";
+					genres[2] = "Pop";
+					genres[3] = "Rap & Hip-Hop";
+					genres[4] = "Easy Listening";
+					genres[5] = "Dance & House";
+					genres[6] = "Instrumental";
+					genres[7] = "Metal";
+					genres[8] = "Dubstep";
+					genres[9] = "Jazz & Blues";
+					genres[10] = "Drum & Bass";
+					genres[11] = "Trance";
+					genres[12] = "Chanson";
+					genres[13] = "Ethnic";
+					genres[14] = "Acoustic & Vocal";
+					genres[15] = "Reggae";
+					genres[16] = "Classical";
+					genres[17] = "Indie Pop";
+					genres[18] = "Other";
+					genres[19] = "Speech";
+					genres[21] = "Alternative";
+					genres[22] = "Electropop & Disco";
+
+					return genres;
+				},
+				list: function() {
+					var genres = slothMusic.audio.genres.get();
+
+					$(genres).each(function(i, item) {
+						if (i > 0) {
+							$("<li/>").appendTo(controls.genres.list);
+							$("<a/>", {
+								"text": item,
+								"data-id": i
+							}).appendTo($(controls.genres.list).find("li:last-child"));
+						}
+					});
+				},
+			},
 			ready: function() {
+				slothMusic.audio.genres.list();
+
+				$(controls.genres.list).find("li > a").on("click", function() {
+					$(controls.genres.text).text($(this).text());
+					slothMusic.audio.getPopular($(this).data("id"));
+				});
+
 				$(controls.audio.shuffle).on("click", function() {
 					slothMusic.player.playlist.shuffle();
 				});
@@ -702,7 +771,7 @@
 					slothMusic.audio.get(session.uid);
 				});
 				$(controls.audio.popular).on("click", function() {
-					slothMusic.audio.getPopular();
+					slothMusic.audio.getPopular(0);
 				});
 				$(controls.audio.recommendations).on("click", function() {
 					slothMusic.audio.getRecommendations();
