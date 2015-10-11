@@ -82,6 +82,7 @@
 	var session = {
 		uid: null,
 		sid: null,
+		sortable: true,
 		playlist: new Array(),
 		player: {
 			/*
@@ -121,21 +122,23 @@
 		var sortable = new Sortable(playlist, {
 			animation: 250,
 			onEnd: function(e) { // после перетаскивания
-				var el = e.item;
-				var prev = $(el).prev();
-				var next = $(el).next();
+				if (session.sortable == true) {
+					var el = e.item;
+					var prev = $(el).prev();
+					var next = $(el).next();
 
-				if ($(prev).index() < 0 && $(next).index() >= 0) // начало плейлиста
-					slothMusic.audio.reorder($(el).data("id"), $(next).data("id"), "");
-				else if ($(prev).index() >= 0 && $(next).index() >= 0) // середина плейлиста
-					slothMusic.audio.reorder($(el).data("id"), "", $(prev).data("id"));
-				else if ($(prev).index() > 0 && $(next).index() < 0) // конец плейлиста
-					slothMusic.audio.reorder($(el).data("id"), "", $(prev).data("id"));
+					if ($(prev).index() < 0 && $(next).index() >= 0) // начало плейлиста
+						slothMusic.audio.reorder($(el).data("id"), $(next).data("id"), "");
+					else if ($(prev).index() >= 0 && $(next).index() >= 0) // середина плейлиста
+						slothMusic.audio.reorder($(el).data("id"), "", $(prev).data("id"));
+					else if ($(prev).index() > 0 && $(next).index() < 0) // конец плейлиста
+						slothMusic.audio.reorder($(el).data("id"), "", $(prev).data("id"));
 
-				if ($(el).hasClass("active"))
-					session.player.playing.index = $(el).index();
+					if ($(el).hasClass("active"))
+						session.player.playing.index = $(el).index();
 
-				slothMusic.animation.playlist.moved(el);
+					slothMusic.animation.playlist.moved(el);
+				}
 			},
 		});
 	}
@@ -603,15 +606,6 @@
 			init: function() {
 				slothMusic.audio.ready();
 			},
-			getUploadServer: function() {
-				VK.Api.call("audio.getUploadServer", {
-					v: 5.37,
-				}, function(r) {
-					if (r.response) {
-						console.log(r.response);
-					}
-				});
-			},
 			reorder: function(audio_id, before, after) {
 				VK.Api.call("audio.reorder", {
 					audio_id: audio_id,
@@ -663,6 +657,11 @@
 					v: 5.37
 				}, function(r) {
 					if (r.response) {
+						if (owner_id == session.uid || owner_id == null)
+							session.sortable = true;
+						else
+							session.sortable = false;
+
 						slothMusic.animation.player.next();
 						slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
@@ -676,6 +675,7 @@
 					genre_id: genre_id
 				}, function(r) {
 					if (r.response) {
+						session.sortable = false;
 						slothMusic.animation.player.next();
 						slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
@@ -689,6 +689,7 @@
 					v: 5.37
 				}, function(r) {
 					if (r.response) {
+						session.sortable = false;
 						slothMusic.animation.player.next();
 						slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
@@ -703,6 +704,7 @@
 					v: "5.37"
 				}, function(r) {
 					if (r.response) {
+						session.sortable = false;
 						slothMusic.animation.player.next();
 						slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
