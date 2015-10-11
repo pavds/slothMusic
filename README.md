@@ -9,7 +9,7 @@
 * Добавление и удаление аудиозаписей.
 * Генерирование M3U (из текущего плейлиста).
 * Загрузка аудиозаписей (выборочная).
-* Сортировка плейлиста (по алфавиту, по алфавиту (обратная), рандомная).
+* Сортировка плейлиста (по алфавиту, рандомная).
 * Drag-and-drop для перемещения аудиозаписей (синхронизировано с VK).
 * Битрейт аудиозаписей (при наведении).
 
@@ -50,7 +50,7 @@ The music player VK.com.
 * Adding and deleting tracks.
 * Generate M3U (playlist).
 * Download audio (selective).
-* Playlist sorting (by alphabet, by alphabet (back), random).
+* Playlist sorting (by alphabet, random).
 * Drag-and-drop to move the audio (synchronized with VK).
 * The bitrate of the audio (when you hover).
 
