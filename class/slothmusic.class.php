@@ -96,10 +96,10 @@ class slothMusic {
 		$fp = fopen($url, 'r');
 		$meta = stream_get_meta_data($fp);
 		fclose($fp);
-		foreach ($meta['wrapper_data'] as $v) {
-			if (stristr($v, 'content-length')) {
-				$v = explode(':', $v);
-				return (int) trim($v[1]);
+		foreach ($meta['wrapper_data'] as $contentLength) {
+			if (stristr($contentLength, 'content-length')) {
+				$contentLength = explode(':', $contentLength);
+				return (int) trim($contentLength[1]);
 			}
 		}
 	}
