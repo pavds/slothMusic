@@ -5,7 +5,8 @@
 
 ### Возможности
 * Прослушивание аудиозаписей на любом устройстве.
-* Поиск аудиозаписей.
+* Плейлисты: `Мои аудиозаписи`, `Популярные`, `Рекомендуемые`.
+* Поиск аудиозаписей (по названию, по жанрам).
 * Добавление и удаление аудиозаписей.
 * Генерирование M3U (из текущего плейлиста).
 * Загрузка аудиозаписей (выборочная).
@@ -46,7 +47,8 @@ The music player VK.com.
 
 ### Opportunities
 * Listen to audio on any device.
-* Search audio.
+* Playlists: `My music`, `Popular`, `Recommended`.
+* Search of recordings (by title, by genre).
 * Adding and deleting tracks.
 * Generate M3U (playlist).
 * Download audio (selective).
