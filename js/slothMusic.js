@@ -2,8 +2,15 @@
 // @codekit-prepend "../bower_components/jquery/dist/jquery.min.js"
 // @codekit-prepend "../bower_components/sortable.js/Sortable.min.js"
 
-;
-(function($) {
+;(function($) {
+
+	/*
+	//	id приложения и права
+	*/
+	var app = {
+		id: 5083406,
+		permissions: 8 | 1024,
+	}
 
 	/*
 	//	обьявление глобальных переменных
@@ -141,7 +148,7 @@
 			*/
 			init: function() {
 				VK.init({
-					apiId: 5083406
+					apiId: app.id
 				});
 				VK.Auth.getLoginStatus(slothMusic.vk.auth);
 				VK.UI.button("authButton");
@@ -180,7 +187,7 @@
 				},
 				ready: function() {
 					$(authButton).on("click", function() {
-						VK.Auth.login(slothMusic.vk.auth, 8 | 1024);
+						VK.Auth.login(slothMusic.vk.auth, app.permissions);
 					});
 				}
 			},
