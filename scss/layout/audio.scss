@@ -23,12 +23,13 @@
 		.m3u
 		{
 			font-size: 20pt;
-			color: #444;
 			line-height: 25pt;
 
 			margin-right: 10px;
 
 			cursor: pointer;
+
+			color: #444;
 			&:hover,
 			&:active,
 			&:focus
@@ -114,28 +115,40 @@
 		@include make-xs-column(12);
 		@include make-sm-column(12);
 		@include make-md-column(6);
-		&-group
+		&-container
 		{
-			@extend .input-group;
-			&-btn
-			{
-				@extend .input-group-btn;
-			}
+			@include make-row();
+		}
+		&-query
+		{
+			@include make-md-column(8);
+		}
+		&-btn
+		{
+			@include make-md-column(4);
 		}
 		&-genres
 		{
-			@extend .dropdown-menu;
+			@extend .dropdown;
+			&-list
+			{
+				@extend .dropdown-menu;
+			}
 		}
 		button
 		{
+			width: 100%;
+			min-width: 100%;
+
 			@extend .btn;
 			@extend .btn-default;
 			@extend .dropdown-toggle;
 		}
 		input
 		{
-			@extend .form-control;
 			color: #444;
+
+			@extend .form-control;
 		}
 	}
 }
@@ -151,6 +164,28 @@
 
 			text-align: center;
 		}
+		&-search
+		{
+			input
+			{
+				margin-bottom: 10px;
+			}
+			button
+			{
+				display: block;
+
+				width: 100%;
+				min-width: 100%;
+			}
+			&-genres
+			{
+				&-list
+				{
+					width: 100%;
+					min-width: auto;
+				}
+			}
+		}
 	}
 }
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max)
@@ -163,6 +198,42 @@
 			margin-bottom: 10px !important;
 
 			text-align: center;
+		}
+		&-search
+		{
+			input
+			{
+				margin-bottom: 10px;
+			}
+			button
+			{
+				display: block;
+
+				width: 100%;
+				min-width: 100%;
+			}
+			&-genres
+			{
+				&-list
+				{
+					width: 100%;
+					min-width: auto;
+				}
+			}
+		}
+	}
+}
+
+@media (min-width: $screen-md-min)
+{
+	.audio
+	{
+		&-search
+		{
+			&-query
+			{
+				padding-right: 0;
+			}
 		}
 	}
 }

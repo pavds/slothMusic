@@ -719,9 +719,9 @@
 				*/
 				btn: function(text) {
 					if (text != null)
-						$(controls.genres.btn).text(text);
+						$(controls.genres.text).text(text);
 					else
-						$(controls.genres.btn).text("Жанр");
+						$(controls.genres.text).text("Жанр");
 				},
 				get: function() {
 					var genres = new Array();
@@ -886,27 +886,13 @@
 	*/
 	$(document).ready(function() {
 		slothMusic.init();
-
-		if ($(window).width() <= 920) {
-			$("#search").appendTo($(".audio-search-group"));
-			$("#search").find("#query").addClass("text-right");
-		} else {
-			$("#search").prependTo($(".audio-search-group"));
-			$("#search").find("#query").removeClass("text-right");
-		}
 	});
 
 	/*
 	//	действия при изменении размеров браузера
 	*/
 	$(window).resize(function() {
-		if ($(window).width() <= 920) {
-			$("#search").appendTo($(".audio-search-group"));
-			$("#search").find("#query").addClass("text-right");
-		} else {
-			$("#search").prependTo($(".audio-search-group"));
-			$("#search").find("#query").removeClass("text-right");
-		}
+	   
 	});
 
 })(jQuery);
