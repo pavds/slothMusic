@@ -119,7 +119,7 @@
 				&:active,
 				&:focus
 				{
-					color: #16a085;
+					color: #4caf50;
 				}
 			}
 			.delete
@@ -132,12 +132,12 @@
 				&:active,
 				&:focus
 				{
-					color: #e74c3c;
+					color: #e51c23;
 				}
 			}
 			.added
 			{
-				color: #16a085;
+				color: #4caf50;
 
 				@extend .fa;
 				@extend .fa-check;
@@ -146,7 +146,7 @@
 			}
 			.deleted
 			{
-				color: #e74c3c;
+				color: #e51c23;
 
 				@extend .fa;
 				@extend .fa-check;
@@ -198,9 +198,9 @@
 					display: inline-block !important;
 
 					width: 100%;
-					text-align: center;
 
 					animation: title 15s infinite linear;
+					text-align: center;
 				}
 			}
 		}
