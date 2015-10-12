@@ -124,8 +124,9 @@ class slothMusic {
 	 */
 	public function download($url, $filename) {
 		header('Content-type: application/x-file-to-save');
-		header('Content-Disposition: attachment; filename="' . $filename . '.mp3"');
+		header('Content-Disposition: attachment; filename="' . basename($filename) . '.mp3"');
 		readfile($url);
+		exit;
 	}
 }
 
