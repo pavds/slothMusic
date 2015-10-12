@@ -132,6 +132,9 @@
 			@extend .dropdown;
 			&-list
 			{
+				width: 100%;
+				min-width: auto;
+
 				@extend .dropdown-menu;
 			}
 		}
@@ -177,14 +180,6 @@
 				width: 100%;
 				min-width: 100%;
 			}
-			&-genres
-			{
-				&-list
-				{
-					width: 100%;
-					min-width: auto;
-				}
-			}
 		}
 	}
 }
@@ -211,14 +206,6 @@
 
 				width: 100%;
 				min-width: 100%;
-			}
-			&-genres
-			{
-				&-list
-				{
-					width: 100%;
-					min-width: auto;
-				}
 			}
 		}
 	}
