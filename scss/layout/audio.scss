@@ -23,6 +23,7 @@
 		.m3u
 		{
 			font-size: 20pt;
+			color: #444;
 			line-height: 25pt;
 
 			margin-right: 10px;
@@ -134,6 +135,7 @@
 		input
 		{
 			@extend .form-control;
+			color: #444;
 		}
 	}
 }
