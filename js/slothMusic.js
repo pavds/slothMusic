@@ -748,7 +748,7 @@
 					var genres = slothMusic.audio.genres.get();
 
 					$(genres).each(function(i, item) {
-						if (i > 0) {
+						if (i > 0 && i != 20) {
 							$("<li/>").appendTo(controls.genres.list);
 							$("<a/>", {
 								"text": item,
