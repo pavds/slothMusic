@@ -602,6 +602,7 @@
 			// this.audio.getPopular(); // популярные аудиозаписи
 			// this.audio.getRecommendations(); // рекомендованные аудиозаписи
 			// this.audio.search("поиск"); // поиск аудиозаписей
+			// this.audio.genres; // жанры аудиозаписей
 			*/
 			init: function() {
 				slothMusic.audio.ready();
@@ -712,6 +713,10 @@
 				});
 			},
 			genres: {
+				/*
+				// this.audio.genres.get(); // получить массив жанров
+				// this.audio.genres.list(); // заполнить лист жанрами
+				*/
 				get: function() {
 					var genres = new Array();
 
@@ -872,6 +877,27 @@
 	*/
 	$(document).ready(function() {
 		slothMusic.init();
+
+		if ($(window).width() <= 920) {
+			$("#search").appendTo($(".audio-search-group"));
+			$("#search").find("#query").addClass("text-right");
+		} else {
+			$("#search").prependTo($(".audio-search-group"));
+			$("#search").find("#query").removeClass("text-right");
+		}
+	});
+
+	/*
+	//	действия при изменении размеров браузера
+	*/
+	$(window).resize(function() {
+		if ($(window).width() <= 920) {
+			$("#search").appendTo($(".audio-search-group"));
+			$("#search").find("#query").addClass("text-right");
+		} else {
+			$("#search").prependTo($(".audio-search-group"));
+			$("#search").find("#query").removeClass("text-right");
+		}
 	});
 
 })(jQuery);

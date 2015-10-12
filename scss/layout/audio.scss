@@ -70,12 +70,13 @@
 		}
 		.forward
 		{
+			margin-right: 0;
+
 			@extend .fa;
 			@extend .fa-forward;
 			@extend .hidden-sm;
 			@extend .hidden-md;
 			@extend .hidden-lg;
-			margin-right: 0;
 		}
 		.download
 		{
