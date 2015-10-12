@@ -146,7 +146,7 @@
 	/*
 	//	если возникает проблема с типом
 	*/
-	if (typeof slothMusic === 'undefined') slothMusic = {};
+	if (typeof slothMusic === "undefined") slothMusic = {};
 
 	slothMusic = {
 		init: function() {
@@ -717,6 +717,12 @@
 				// this.audio.genres.get(); // получить массив жанров
 				// this.audio.genres.list(); // заполнить лист жанрами
 				*/
+				btn: function(text) {
+					if (text != null)
+						$(controls.genres.btn).text(text);
+					else
+						$(controls.genres.btn).text("Жанр");
+				},
 				get: function() {
 					var genres = new Array();
 
@@ -759,13 +765,12 @@
 				},
 			},
 			ready: function() {
-				slothMusic.audio.genres.list();
+				slothMusic.audio.genres.list(); // заполнить жанры
 
 				$(controls.genres.list).find("li > a").on("click", function() {
-					$(controls.genres.text).text($(this).text());
+					slothMusic.audio.genres.btn($(this).text());
 					slothMusic.audio.getPopular($(this).data("id"));
 				});
-
 				$(controls.audio.shuffle).on("click", function() {
 					slothMusic.player.playlist.shuffle();
 				});
@@ -775,12 +780,15 @@
 					slothMusic.player.playlist.alphabeticallyReverse();
 				});
 				$(controls.audio.my).on("click", function() {
+					slothMusic.audio.genres.btn();
 					slothMusic.audio.get(session.uid);
 				});
 				$(controls.audio.popular).on("click", function() {
+					slothMusic.audio.genres.btn();
 					slothMusic.audio.getPopular(0);
 				});
 				$(controls.audio.recommendations).on("click", function() {
+					slothMusic.audio.genres.btn();
 					slothMusic.audio.getRecommendations();
 				});
 				$(controls.audio.download).on("click", function() {
@@ -819,6 +827,7 @@
 					slothMusic.player.playlist.generator.m3u();
 				});
 				$(controls.search.form).submit(function(e) {
+					slothMusic.audio.genres.btn();
 					slothMusic.audio.search($.trim($(query).val()));
 					e.preventDefault();
 				});
@@ -930,7 +939,7 @@
 $(function() {
 	$.fn.alphabetically = function() {
 		var mylist = $(this);
-		var listitems = $('a', mylist).get();
+		var listitems = $("a", mylist).get();
 		listitems.sort(function(a, b) {
 			var compA = $(a).text().toUpperCase();
 			var compB = $(b).text().toUpperCase();
@@ -948,7 +957,7 @@ $(function() {
 $(function() {
 	$.fn.alphabeticallyReverse = function() {
 		var mylist = $(this);
-		var listitems = $('a', mylist).get();
+		var listitems = $("a", mylist).get();
 		listitems.sort(function(a, b) {
 			var compA = $(a).text().toUpperCase();
 			var compB = $(b).text().toUpperCase();
