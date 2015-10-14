@@ -20,7 +20,6 @@
 В таблице хранятся такие данные:
 * `id` — id аудиозаписи
 * `uid` — id пользователя
-* `bytes` — размер файла в байтах
 * `kbps` — битрейт аудиозаписи
 
 Записи в таблицу добавляются, если `id` аудиозаписи в БД не найден.
@@ -62,7 +61,6 @@ To expedite the receipt of the bit rate of the audio, create a table `audio`.
 The table stores the following data:
 * `id` — id audio
 * `uid` — user id
-* `bytes` — the size of the file in bytes
 * `kbps` — the bitrate of the audio
 
 The entries in the table are added if `id` recordings in the database was not found.
@@ -72,7 +70,6 @@ The entries in the table are added if `id` recordings in the database was not fo
 	CREATE TABLE IF NOT EXISTS `audio` (
 		`id` int(11) NOT NULL,
 		`uid` int(11) NOT NULL,
-		`bytes` int(11) NOT NULL,
 		`kbps` int(11) NOT NULL,
 		PRIMARY KEY (`id`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8;

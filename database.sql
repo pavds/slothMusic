@@ -12,7 +12,6 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `audio` (
   `id` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
-  `bytes` int(11) NOT NULL,
   `kbps` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
