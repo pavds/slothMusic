@@ -405,7 +405,8 @@
 							duration: item.duration,
 							owner_id: item.owner_id,
 							artist: item.artist,
-							title: item.title
+							title: item.title,
+							id: item.id
 						}
 
 						$("<a/>", {
@@ -475,8 +476,9 @@
 						url: "fileinfo",
 						data: {
 							id: id,
-							url: item.url,
 							duration: item.duration,
+							owner_id: item.owner_id,
+							access_token: access_token,
 							uid: uid
 						},
 						method: "POST",
@@ -505,7 +507,7 @@
 
 					$(items).each(function(i, item) {
 						$("<a/>", {
-							"href": "download?u=" + item.url + "&a=" + item.artist + "&t=" + item.title,
+							"href": "download?o=" + item.owner_id + "&i=" + item.id + "&a=" + item.artist + "&t=" + item.title,
 							"class": "hide",
 							"target": "_blank"
 						}).appendTo("#downloading");
@@ -805,7 +807,8 @@
 								session.downloading[i] = {
 									artist: $.trim(session.playlist[id].artist),
 									title: $.trim(session.playlist[id].title),
-									url: url_trim,
+									owner_id: session.playlist[id].owner_id,
+									id: session.playlist[id].id
 								}
 							});
 							slothMusic.player.playlist.download(session.downloading);
@@ -892,7 +895,7 @@
 	//	действия при изменении размеров браузера
 	*/
 	$(window).resize(function() {
-	   
+
 	});
 
 })(jQuery);

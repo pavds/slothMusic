@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 /**
  * Receive bit rate the audio file via url.
  * @author Dmitry Pavlov <dmitrypavlov.design@gmail.com>
@@ -11,11 +13,12 @@ header('Content-Type: application/json');
 
 require 'class/slothmusic.class.php';
 
-if (verify($_POST['id']) && verify($_POST['url']) && verify($_POST['duration']) && verify($_POST['uid'])) {
+if (verify($_POST['id']) && verify($_POST['duration']) && verify($_POST['owner_id']) && verify($_POST['access_token']) && verify($_POST['uid'])) {
 	$data = array(
 		'id' => (int) $_POST['id'],
-		'url' => (string) $_POST['url'],
 		'duration' => (int) $_POST['duration'],
+		'owner_id' => (int) $_POST['owner_id'],
+		'access_token' => (string) $_POST['access_token'],
 		'uid' => (int) $_POST['uid'],
 	);
 	try {
@@ -25,7 +28,7 @@ if (verify($_POST['id']) && verify($_POST['url']) && verify($_POST['duration']) 
 		$DBH = null;
 	} catch (PDOException $e) {
 		$slothMusic = new slothMusic();
-		echo $slothMusic->send($slothMusic->kbps($data['url'], $data['duration']));
+		echo $slothMusic->send($slothMusic->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']));
 	}
 }
 

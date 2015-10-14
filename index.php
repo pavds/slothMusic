@@ -1,3 +1,21 @@
+<?php
+
+session_start();
+require 'class/slothmusic.class.php';
+
+$slothMusic = new slothMusic();
+
+if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
+	// получение кода
+	$slothMusic->auth_code();
+} else if (verify($_GET['code']) && !verify($_SESSION['access_token'])) {
+	// получение access_token
+	$_SESSION = array(
+		'access_token' => $slothMusic->access_token(),
+	);
+}
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +25,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="description" content="Слушай музыку из VK.com, на любом устройстве.">
-	<meta property="og:title" content="slothMusic" /> 
+	<meta property="og:title" content="slothMusic" />
 	<meta property="og:description" content="Слушай музыку из VK.com, на любом устройстве." />
 	<meta property="og:image" content="favicon/favicon_512.png" />
 
@@ -31,6 +49,10 @@
 	<link rel="apple-touch-icon-precomposed" href="favicon/favicon_128.png">
 
 	<link rel="stylesheet" href="css/combine.min.css">
+
+	<?php if (verify($_SESSION)): ?>
+		<script>var access_token = "<?php echo $_SESSION['access_token'];?>";</script>
+	<?php endif;?>
 </head>
 <body>
 	<div id="loading" class="loading">
