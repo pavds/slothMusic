@@ -50,7 +50,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 
 	<link rel="stylesheet" href="css/combine.min.css">
 
-	<?php if (verify($_SESSION)): ?>
+	<?php if (verify($_SESSION['access_token'])): ?>
 		<script>var access_token = "<?php echo $_SESSION['access_token'];?>";</script>
 	<?php endif;?>
 </head>

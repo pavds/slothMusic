@@ -28,7 +28,7 @@ if (verify($_POST['id']) && verify($_POST['duration']) && verify($_POST['owner_i
 		$DBH = null;
 	} catch (PDOException $e) {
 		$slothMusic = new slothMusic();
-		echo $slothMusic->send($slothMusic->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']));
+		echo $slothMusic->send($slothMusic->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']), 'ex');
 	}
 }
 

@@ -37,16 +37,16 @@ class slothMusic {
 	 */
 	public function execute($data) {
 		if ($this->check($data['id'])) {
-			return $this->send($this->get($data['id']));
+			return $this->send($this->get($data['id']), 'db');
 		} else {
 			$this->client['access_token'] = $data['access_token'];
 			$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
 
-			return $this->send($kbps);
-
 			if ($kbps > 0) {
-				$this->save($data['id'], $data['bytes'], $data['kbps'], $data['uid']);
+				$this->save($data['id'], $kbps, $data['uid']);
 			}
+
+			return $this->send($kbps, 'fs');
 		}
 	}
 
@@ -84,10 +84,10 @@ class slothMusic {
 	 * @param integer $uid id пользователя
 	 * @return bool получилось ли добавить в БД
 	 */
-	public function save($id, $bytes, $kbps, $uid) {
+	public function save($id, $kbps, $uid) {
 		$DBH = $this->connect;
-		$STH = $DBH->prepare('INSERT INTO audio (id, bytes, kbps, uid) value (:id, :bytes, :kbps, :uid)');
-		return (bool) $STH->execute(array('id' => $id, 'bytes' => $bytes, 'kbps' => $kbps, 'uid' => $uid));
+		$STH = $DBH->prepare('INSERT INTO audio (id, kbps, uid) value (:id, :kbps, :uid)');
+		return (bool) $STH->execute(array('id' => $id, 'kbps' => $kbps, 'uid' => $uid));
 	}
 
 	/**
@@ -95,8 +95,8 @@ class slothMusic {
 	 * @param integer $kbps битрейт
 	 * @return object битрейт аудиозаписи
 	 */
-	public function send($kbps) {
-		$data = array('kbps' => $kbps);
+	public function send($kbps, $source) {
+		$data = array('kbps' => $kbps, 'source' => $source);
 		return json_encode($data);
 	}
 

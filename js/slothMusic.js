@@ -472,52 +472,57 @@
 				bitrate: function(uid, el) {
 					var id = $(el).data("id");
 					var item = session.playlist[$(el).data("id")];
-					$.ajax({
-						url: "fileinfo",
-						data: {
-							id: id,
-							duration: item.duration,
-							owner_id: item.owner_id,
-							access_token: access_token,
-							uid: uid
-						},
-						method: "POST",
-						dataType: "json",
-						success: function(data) {
-							if (parseInt(data.kbps) > 0) { // если битрейт известен
-								if (data.kbps >= 320)
-									var kbpsClass = "bitrate-higher";
-								else if (data.kbps >= 256 && data.kbps < 320)
-									var kbpsClass = "bitrate-high";
-								else if (data.kbps >= 192 && data.kbps < 256)
-									var kbpsClass = "bitrate-medium";
-								else if (data.kbps < 192)
-									var kbpsClass = "bitrate-low";
 
-								$(el).find("div > small").addClass("bitrate " + kbpsClass).text(data.kbps);
+					if (access_token !== "undefined") {
+						$.ajax({
+							url: "fileinfo",
+							data: {
+								id: id,
+								duration: item.duration,
+								owner_id: item.owner_id,
+								access_token: access_token,
+								uid: uid
+							},
+							method: "POST",
+							dataType: "json",
+							success: function(data) {
+								if (parseInt(data.kbps) > 0) { // если битрейт известен
+									if (data.kbps >= 320)
+										var kbpsClass = "bitrate-higher";
+									else if (data.kbps >= 256 && data.kbps < 320)
+										var kbpsClass = "bitrate-high";
+									else if (data.kbps >= 192 && data.kbps < 256)
+										var kbpsClass = "bitrate-medium";
+									else if (data.kbps < 192)
+										var kbpsClass = "bitrate-low";
+
+									$(el).find("div > small").addClass("bitrate " + kbpsClass).text(data.kbps);
+								}
 							}
-						}
-					});
+						});
+					}
 				},
 				download: function(items) {
-					$("<div/>", {
-						"id": "downloading",
-						"class": "hide"
-					}).appendTo("body");
+					if (access_token !== "undefined") {
+						$("<div/>", {
+							"id": "downloading",
+							"class": "hide"
+						}).appendTo("body");
 
-					$(items).each(function(i, item) {
-						$("<a/>", {
-							"href": "download?o=" + item.owner_id + "&i=" + item.id + "&a=" + item.artist + "&t=" + item.title,
-							"class": "hide",
-							"target": "_blank"
-						}).appendTo("#downloading");
-					});
+						$(items).each(function(i, item) {
+							$("<a/>", {
+								"href": "download?o=" + item.owner_id + "&i=" + item.id + "&a=" + item.artist + "&t=" + item.title,
+								"class": "hide",
+								"target": "_blank"
+							}).appendTo("#downloading");
+						});
 
-					if ($("#downloading").find("a").each(function(i, item) {
-							$(item)[0].click();
-						})) {
-						session.downloading = [];
-						$("#downloading").remove();
+						if ($("#downloading").find("a").each(function(i, item) {
+								$(item)[0].click();
+							})) {
+							session.downloading = [];
+							$("#downloading").remove();
+						}
 					}
 				},
 				generator: {
