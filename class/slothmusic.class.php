@@ -37,7 +37,7 @@ class slothMusic {
 	 */
 	public function execute($data) {
 		if ($this->check($data['id'])) {
-			return $this->send($this->get($data['id']), 'db');
+			return $this->send($this->get($data['id']));
 		} else {
 			$this->client['access_token'] = $data['access_token'];
 			$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
@@ -50,7 +50,7 @@ class slothMusic {
 				$this->save($data['id'], $kbps, $data['uid']);
 			}
 
-			return $this->send($kbps, 'fs');
+			return $this->send($kbps);
 		}
 	}
 
@@ -99,8 +99,8 @@ class slothMusic {
 	 * @param integer $kbps битрейт
 	 * @return object битрейт аудиозаписи
 	 */
-	public function send($kbps, $source) {
-		$data = array('kbps' => $kbps, 'source' => $source);
+	public function send($kbps) {
+		$data = array('kbps' => $kbps);
 		return json_encode($data);
 	}
 

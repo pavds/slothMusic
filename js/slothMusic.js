@@ -1,9 +1,12 @@
 // @codekit-prepend "openapi.js"
 // @codekit-prepend "../bower_components/jquery/dist/jquery.min.js"
 // @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/dropdown.js"
+// @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/modal.js"
+// @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/transition.js"
 // @codekit-prepend "../bower_components/sortable.js/Sortable.min.js"
 
-;(function($) {
+;
+(function($) {
 
 	/*
 	//	id приложения и права
@@ -58,6 +61,13 @@
 				form: document.getElementById("audioSendForm"),
 				file: document.getElementById("audioSendFile"),
 			},
+		},
+		captcha: {
+			modal: document.getElementById("captchaModal"),
+			form: document.getElementById("captchaForm"),
+			img: document.getElementById("captchaImg"),
+			key: document.getElementById("captchaKey"),
+			sid: document.getElementById("captchaSid"),
 		},
 		search: {
 			form: document.getElementById("search"),
@@ -156,6 +166,7 @@
 			this.vk.init();
 			this.player.init();
 			this.audio.init();
+			this.captcha.init();
 		},
 		vk: {
 			/*
@@ -640,6 +651,7 @@
 			// this.audio.getRecommendations(); // рекомендованные аудиозаписи
 			// this.audio.search("поиск"); // поиск аудиозаписей
 			// this.audio.genres; // жанры аудиозаписей
+			// this.audio.ready(); // действия на странице
 			*/
 			init: function() {
 				slothMusic.audio.ready();
@@ -652,6 +664,7 @@
 					after: after,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					if (r.response) {
 						// console.log(r);
 					}
@@ -668,6 +681,7 @@
 					target_ids: target_ids,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					if (r.response) {
 						// console.log(r.response);
 					}
@@ -679,6 +693,7 @@
 					audio_id: id,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					if (r.response) {
 						// console.log("added");
 					}
@@ -690,6 +705,7 @@
 					audio_id: id,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					if (r.response) {
 						// console.log("deleted");
 					}
@@ -703,8 +719,10 @@
 					offset: offset,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					slothMusic.document.loading.hide();
 					if (r.response) {
+
 						if (owner_id == session.uid || owner_id == null)
 							session.sortable = true;
 						else
@@ -733,6 +751,7 @@
 					offset: offset,
 					v: 5.37,
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					slothMusic.document.loading.hide();
 					if (r.response) {
 						session.sortable = false;
@@ -760,6 +779,7 @@
 					offset: offset,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					slothMusic.document.loading.hide();
 					if (r.response) {
 						session.sortable = false;
@@ -787,6 +807,7 @@
 					offset: offset,
 					v: 5.37
 				}, function(r) {
+					slothMusic.captcha.verify(r);
 					slothMusic.document.loading.hide();
 					if (r.response) {
 						session.sortable = false;
@@ -819,7 +840,6 @@
 				},
 				get: function() {
 					var genres = new Array();
-
 					genres[1] = "Rock";
 					genres[2] = "Pop";
 					genres[3] = "Rap & Hip-Hop";
@@ -841,7 +861,6 @@
 					genres[19] = "Speech";
 					genres[21] = "Alternative";
 					genres[22] = "Electropop & Disco";
-
 					return genres;
 				},
 				list: function() {
@@ -973,6 +992,10 @@
 				},
 			},
 			downloadAll: {
+				/*
+				// this.animation.downloadAll.show(); // анимация появления иконки выбора элементов для загрузки
+				// this.animation.downloadAll.hide(); // анимация исчезания иконки выбора элементов для загрузки
+				*/
 				show: function() {
 					$(controls.audio.downloadAll).removeClass("hide");
 					slothMusic.animation.custom(controls.audio.downloadAll, "animation-opacity-in", 250);
@@ -988,6 +1011,48 @@
 					$(el).removeClass(animation);
 				}, time);
 			},
+		},
+		captcha: {
+			/*
+			// this.captcha.init(); // инициализация формы для ввода капчи
+			// this.captcha.verify(r); // проверка ошибки на запрос капчи
+			// this.captcha.show(captcha); // показать модальное окно с формой для ввода капчи
+			// this.captcha.ready(); // действия на странице
+			*/
+			init: function() {
+				slothMusic.captcha.ready();
+			},
+			verify: function(r) {
+				if (r.error)
+					if (r.error.error_code == 14)
+						slothMusic.captcha.show(r.error);
+			},
+			show: function(captcha) {
+				$(controls.captcha.img).prop("src", captcha.captcha_img);
+				$(controls.captcha.sid).val(captcha.captcha_sid);
+				$(controls.captcha.key).val("");
+				$(controls.captcha.modal).modal("show");
+			},
+			ready: function() {
+				$(controls.captcha.form).submit(function(e) {
+					var captcha_sid = $.trim($(controls.captcha.sid).val());
+					var captcha_key = $.trim($(controls.captcha.key).val());
+
+					if (captcha_sid.length > 0 && captcha_key.length > 0) {
+						VK.Api.call("audio.get", {
+							count: 1,
+							captcha_sid: captcha_sid,
+							captcha_key: captcha_key,
+							v: 5.37
+						}, function(r) {
+							if (r.response)
+								$(controls.captcha.modal).modal("hide");
+						});
+					}
+
+					e.preventDefault();
+				});
+			}
 		},
 	};
 

@@ -55,10 +55,42 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<?php endif;?>
 </head>
 <body>
+	<!-- loading -->
 	<div id="loading" class="loading">
 		<i class="spinner"></i>
 	</div>
+	<!-- /loading -->
 
+	<!-- captcha -->
+	<div class="modal fade captcha" id="captchaModal" tabindex="-1" role="dialog" aria-labelledby="captchaModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form id="captchaForm">
+					<div class="modal-header">
+						<h4 class="modal-title" id="captchaModalLabel">Требуется Captcha</h4>
+					</div>
+					<div class="modal-body">
+						<div class="captcha-img">
+							<img id="captchaImg" src="">
+						</div>
+						<div class="captcha-input">
+							<div class="form-group">
+								<input type="text" class="form-control" id="captchaKey" placeholder="Введите код">
+								<input type="hidden" id="captchaSid">
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+						<button type="submit" class="btn btn-primary">Отправить</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /captcha -->
+
+	<!-- player -->
 	<div class="player not_authorized">
 		<div class="container">
 			<div class="player-controls">
@@ -79,13 +111,17 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 			</div>
 		</div>
 	</div>
+	<!-- /player -->
 
+	<!-- auth_button -->
 	<div class="authButton">
 		<div class="container">
 			<div id="authButton" class="authButton-btn" type="button"></div>
 		</div>
 	</div>
+	<!-- /auth_button -->
 
+	<!-- audio -->
 	<div class="audio not_authorized">
 		<div class="container">
 			<div class="audio-categories">
@@ -120,7 +156,9 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 			</div>
 		</div>
 	</div>
+	<!-- /audio -->
 
+	<!-- playlist -->
 	<div class="playlist not_authorized">
 		<div class="container">
 			<div class="playlist-container">
@@ -130,6 +168,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 			</div>
 		</div>
 	</div>
+	<!-- /playlist -->
 
 	<script src="js/slothMusic.min.js"></script>
 </body>
