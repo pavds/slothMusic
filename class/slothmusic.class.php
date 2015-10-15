@@ -10,7 +10,7 @@ class slothMusic {
 	protected $client = array( // данные приложения и пользователя
 		'id' => '5083406',
 		'secret' => 'ArJmgOsWyGrE5D2F1Lln',
-		'scope' => 'audio',
+		'scope' => 'audio,status',
 		'redirect_uri' => 'http://music.pavlovdmitry.com',
 		'v' => '5.37',
 		'code' => null,

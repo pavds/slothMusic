@@ -20,7 +20,8 @@
 		.forward,
 		.download,
 		.download-all,
-		.m3u
+		.m3u,
+		.broadcast
 		{
 			font-size: 20pt;
 			line-height: 25pt;
@@ -106,6 +107,18 @@
 			@extend .fa-headphones;
 			@extend .hidden-xs;
 			@extend .hidden-sm;
+		}
+		.broadcast
+		{
+			@extend .fa;
+			@extend .fa-bullhorn;
+			@extend .hidden-xs;
+			@extend .hidden-sm;
+
+			&.active
+			{
+				color: #16a085;
+			}
 		}
 	}
 	&-search

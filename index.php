@@ -99,6 +99,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 				<i id="download" class="download" title="Режим загрузки"></i>
 				<i id="downloadAll" class="download-all hide" title="Выделить все аудиозаписи"></i>
 				<i id="m3u" class="m3u" title="Сгенерировать M3U плейлист"></i>
+				<i id="broadcast" class="broadcast" title="Транслировать в статус"></i>
 			</div>
 			<div class="audio-search">
 				<div class="audio-search-container">

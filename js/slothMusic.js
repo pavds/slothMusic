@@ -53,6 +53,7 @@
 			download: document.getElementById("download"),
 			downloadAll: document.getElementById("downloadAll"),
 			m3u: document.getElementById("m3u"),
+			broadcast: document.getElementById("broadcast"),
 			send: {
 				form: document.getElementById("audioSendForm"),
 				file: document.getElementById("audioSendFile"),
@@ -105,6 +106,7 @@
 		downloading: new Array(),
 		request: new Object(),
 		requesting: false,
+		broadcast: false,
 	};
 
 	/*
@@ -180,6 +182,7 @@
 
 						slothMusic.vk.button.hide();
 						slothMusic.content.show();
+						slothMusic.audio.setBroadcast(0, session.uid);
 						slothMusic.audio.get(session.uid, 0);
 					}
 				} else {
@@ -306,7 +309,10 @@
 				player.load();
 				player.play();
 
-				// slothMusic.audio.setBroadcast(song.owner_id, song.id, session.id); // транслировать в статус
+				if (session.broadcast)
+					slothMusic.audio.setBroadcast(song.owner_id + "_" + song.id, session.uid);
+				else
+					slothMusic.audio.setBroadcast(0, session.uid);
 
 				$(controls.player.title).text(session.player.playing.title);
 				$(playlist).children().removeClass("active");
@@ -643,20 +649,27 @@
 					audio_id: audio_id,
 					owner_id: session.uid,
 					before: before,
-					after: after
+					after: after,
+					v: 5.37
 				}, function(r) {
 					if (r.response) {
 						// console.log(r);
 					}
 				});
 			},
-			setBroadcast: function(owner_id, id, target_ids) {
+			setBroadcast: function(audio, target_ids) {
+				if (audio == 0)
+					session.broadcast = false;
+				else
+					session.broadcast = true;
+
 				VK.Api.call("audio.setBroadcast", {
-					audio: owner_id + "_" + id,
-					target_ids: target_ids
+					audio: audio,
+					target_ids: target_ids,
+					v: 5.37
 				}, function(r) {
 					if (r.response) {
-						// console.log("ok");
+						// console.log(r.response);
 					}
 				});
 			},
@@ -908,6 +921,21 @@
 				$(controls.audio.m3u).on("click", function() {
 					slothMusic.player.playlist.generator.m3u();
 				});
+
+				$(controls.audio.broadcast).clickToggle(function() {
+					if ($(playlist).find("a").hasClass("active")) {
+						id = $(playlist).find("a.active").data("id");
+						song = session.playlist[id];
+						slothMusic.audio.setBroadcast(song.owner_id + "_" + song.id, session.uid);
+						$(this).addClass("active");
+					}
+				}, function() {
+					if ($(playlist).find("a").hasClass("active")) {
+						slothMusic.audio.setBroadcast(0, session.uid);
+						$(this).removeClass("active");
+					}
+				});
+
 				$(controls.search.form).submit(function(e) {
 					slothMusic.audio.genres.btn();
 					slothMusic.audio.search($.trim($(query).val()), 0);
