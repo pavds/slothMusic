@@ -1,10 +1,9 @@
 // @codekit-prepend "openapi.js"
 // @codekit-prepend "../bower_components/jquery/dist/jquery.min.js"
-// @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap.min.js"
+// @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/dropdown.js"
 // @codekit-prepend "../bower_components/sortable.js/Sortable.min.js"
 
-;
-(function($) {
+;(function($) {
 
 	/*
 	//	id приложения и права
