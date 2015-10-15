@@ -84,6 +84,26 @@
 	}
 }
 
+@keyframes player-cover
+{
+	0%
+	{
+		transform: scale(1, 1) rotate(0deg);
+	}
+	25%
+	{
+		transform: scale(1.1, 1.1) rotate(20deg);
+	}
+	50%
+	{
+		transform: scale(1.1, 1.1) rotate(-20deg);
+	}
+	100%
+	{
+		transform: scale(1, 1) rotate(0deg);
+	}
+}
+
 @keyframes title
 {
 	0%

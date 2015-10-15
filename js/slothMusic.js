@@ -42,6 +42,7 @@
 			title: document.getElementById("title"),
 			prev: document.getElementById("prev"),
 			next: document.getElementById("next"),
+			cover: document.getElementById("cover"),
 		},
 		audio: {
 			add: document.getElementsByClassName("add"),
@@ -324,6 +325,8 @@
 					slothMusic.audio.setBroadcast(song.owner_id + "_" + song.id, session.uid);
 				else
 					slothMusic.audio.setBroadcast(0, session.uid);
+
+				slothMusic.images.search($.trim(song.artist) + " " + $.trim(song.title));
 
 				$(controls.player.title).text(session.player.playing.title);
 				$(playlist).children().removeClass("active");
@@ -1054,6 +1057,33 @@
 				});
 			}
 		},
+		images: {
+			/*
+			// this.images.search(query); // поиск изображения по запросу
+			// this.images.show(url); // показать изображение в плеере
+			*/
+			search: function(query) {
+				$.ajax({
+					url: "https://ajax.googleapis.com/ajax/services/search/images",
+					method: "GET",
+					dataType: "jsonp",
+					data: {
+						v: "1.0",
+						q: query,
+						imgsz: "large",
+					},
+					success: function(r) {
+						if (r.responseStatus == 200) {
+							slothMusic.images.show(r.responseData.results[0].unescapedUrl);
+						}
+					}
+				});
+			},
+			show: function(url) {
+				$(controls.player.cover).prop("src", url);
+				$(controls.player.cover).removeClass("hide").show(250);
+			}
+		}
 	};
 
 	/*

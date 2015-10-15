@@ -110,6 +110,9 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 				</div>
 			</div>
 		</div>
+		<div class="player-cover">
+			<img id="cover" src="" alt="cover" class="hide">
+		</div>
 	</div>
 	<!-- /player -->
 

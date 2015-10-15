@@ -8,6 +8,8 @@
 	right: 0;
 	left: 0;
 
+	overflow: hidden;
+
 	background-color: rgba(0, 0, 0, .5);
 	&:hover,
 	&:active,
@@ -202,6 +204,60 @@
 					animation: title 15s infinite linear;
 					text-align: center;
 				}
+			}
+		}
+	}
+}
+
+@media (max-width: $screen-sm-max)
+{
+	.player
+	{
+		&-cover
+		{
+			display: none;
+			img
+			{
+				display: none;
+			}
+		}
+	}
+}
+
+@media (min-width: $screen-md-min)
+{
+	.player
+	{
+		&-cover
+		{
+			position: absolute;
+			z-index: -1;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+
+			margin: auto;
+
+			transition: all 1s ease-in-out;
+			pointer-events: none !important;
+			img
+			{
+				position: absolute;
+				z-index: -1;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+
+				min-width: 100%;
+				margin: auto;
+
+				transition: all 1s ease-in-out;
+				animation: player-cover 30s infinite ease-in-out;
+				pointer-events: none !important;
+
+				opacity: .1;
 			}
 		}
 	}
