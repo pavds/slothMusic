@@ -15,6 +15,7 @@
 * Битрейт аудиозаписей (при наведении).
 * Транслирование аудиозаписи в статус.
 * AJAX подгрузка аудиозаписей.
+* Поддержка капчи.
 
 ### БД
 Для ускорения получения битрейта аудиозаписей, была создана таблица `audio`.
@@ -57,6 +58,7 @@ The music player VK.com.
 * The bitrate of the audio (when you hover).
 * Broadcasting audio in status.
 * AJAX loading of audio.
+* Support captcha.
 
 ### DB
 To expedite the receipt of the bit rate of the audio, create a table `audio`.
