@@ -104,6 +104,8 @@
 		device: null,
 		mode: "listening",
 		downloading: new Array(),
+		request: new Object(),
+		requesting: false,
 	};
 
 	/*
@@ -179,7 +181,7 @@
 
 						slothMusic.vk.button.hide();
 						slothMusic.content.show();
-						slothMusic.audio.get(session.uid);
+						slothMusic.audio.get(session.uid, 0);
 					}
 				} else {
 					// console.log("VK Auth: fail");
@@ -425,32 +427,35 @@
 							v: 5.37
 						}, function(r) {
 							if (r.response) {
-								var my = r.response.items; // массив аудиозаписей пользователя
-								var my_ids = []; // id-шники аудиозаписей пользователя
-								$(my).each(function(i, item) {
-									my_ids[i] = item.id;
+								var users_audio = r.response.items; // массив аудиозаписей пользователя
+								var users_audio_ids = []; // id-шники аудиозаписей пользователя
+
+								$(users_audio).each(function(i, item) {
+									users_audio_ids[i] = item.id;
 								});
 
 								// создание элементов добавления или удаления аудизаписи
 								// если аудозапись есть у пользователя, создается элемент удаления
 								// если нет, тогда добавления
 								$(playlist).find("a").each(function(i, item) {
-									var playerControlsActions = $("<div/>", {
-										"class": "player-controls-actions"
-									}).appendTo(this);
+									if (!$(this).find("div").hasClass("player-controls-actions")) {
+										$("<div/>", {
+											"class": "player-controls-actions"
+										}).appendTo(this);
 
-									$("<small/>", {
-										"class": ""
-									}).appendTo($(this).find("div"));
+										$("<small/>", {
+											"class": ""
+										}).appendTo($(this).find("div"));
 
-									if ($.inArray($(item).data("id"), my_ids) >= 0) {
-										$("<span/>", {
-											"class": "delete"
-										}).appendTo($(this).find("div"));
-									} else {
-										$("<span/>", {
-											"class": "add"
-										}).appendTo($(this).find("div"));
+										if ($.inArray($(item).data("id"), users_audio_ids) >= 0) {
+											$("<span/>", {
+												"class": "delete"
+											}).appendTo($(this).find("div"));
+										} else {
+											$("<span/>", {
+												"class": "add"
+											}).appendTo($(this).find("div"));
+										}
 									}
 								});
 							}
@@ -553,6 +558,26 @@
 						$("#m3uPlaylist").remove();
 
 						window.URL.revokeObjectURL(url);
+					}
+				},
+				load: function() {
+					switch (session.request.call) {
+						case "audio.get":
+							session.requesting = true;
+							slothMusic.audio.get(session.request.owner_id, (session.request.offset + 50));
+							break;
+						case "audio.getPopular":
+							session.requesting = true;
+							slothMusic.audio.getPopular(session.request.genre_id, (session.request.offset + 50));
+							break;
+						case "audio.getRecommendations":
+							session.requesting = true;
+							slothMusic.audio.getRecommendations(session.request.offset + 50);
+							break;
+						case "audio.search":
+							session.requesting = true;
+							slothMusic.audio.search(session.request.q, (session.request.offset + 50));
+							break;
 					}
 				},
 				ready: function() {
@@ -658,63 +683,113 @@
 					}
 				});
 			},
-			get: function(owner_id) {
+			get: function(owner_id, offset) {
+				slothMusic.document.loading.show();
 				VK.Api.call("audio.get", {
 					owner_id: owner_id,
-					count: 6000,
+					count: 50,
+					offset: offset,
 					v: 5.37
 				}, function(r) {
+					slothMusic.document.loading.hide();
 					if (r.response) {
 						if (owner_id == session.uid || owner_id == null)
 							session.sortable = true;
 						else
 							session.sortable = false;
 
+						session.request = null;
+						session.request = {
+							call: "audio.get",
+							owner_id: owner_id,
+							offset: offset,
+						}
+						session.requesting = false;
+
 						slothMusic.animation.player.next();
-						slothMusic.player.playlist.empty();
+						if (offset <= 0)
+							slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
 					}
 				});
 			},
-			getPopular: function(genre_id) {
+			getPopular: function(genre_id, offset) {
+				slothMusic.document.loading.show();
 				VK.Api.call("audio.getPopular", {
-					count: 1000,
+					count: 50,
+					genre_id: genre_id,
+					offset: offset,
 					v: 5.37,
-					genre_id: genre_id
 				}, function(r) {
+					slothMusic.document.loading.hide();
 					if (r.response) {
 						session.sortable = false;
+
+						session.request = null;
+						session.request = {
+							call: "audio.getPopular",
+							genre_id: genre_id,
+							offset: offset,
+						}
+						session.requesting = false;
+
 						slothMusic.animation.player.next();
-						slothMusic.player.playlist.empty();
+						if (offset <= 0)
+							slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
 					}
 				});
 			},
-			getRecommendations: function() {
+			getRecommendations: function(offset) {
+				slothMusic.document.loading.show();
 				VK.Api.call("audio.getRecommendations", {
 					shuffle: 0,
-					count: 1000,
+					count: 50,
+					offset: offset,
 					v: 5.37
 				}, function(r) {
+					slothMusic.document.loading.hide();
 					if (r.response) {
 						session.sortable = false;
+
+						session.request = null;
+						session.request = {
+							call: "audio.getRecommendations",
+							offset: offset,
+						}
+						session.requesting = false;
+
 						slothMusic.animation.player.next();
-						slothMusic.player.playlist.empty();
+						if (offset <= 0)
+							slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
 					}
 				});
 			},
-			search: function(query) {
+			search: function(query, offset) {
+				slothMusic.document.loading.show();
 				VK.Api.call("audio.search", {
 					q: query,
 					auto_complete: 1,
-					count: 300,
-					v: "5.37"
+					count: 50,
+					offset: offset,
+					v: 5.37
 				}, function(r) {
+					slothMusic.document.loading.hide();
 					if (r.response) {
 						session.sortable = false;
+
+						session.request = null;
+						session.request = {
+							call: "audio.search",
+							q: query,
+							offset: offset
+						}
+						session.requesting = false;
+
 						slothMusic.animation.player.next();
-						slothMusic.player.playlist.empty();
+						if (offset <= 0)
+							slothMusic.player.playlist.empty();
 						slothMusic.player.playlist.add(r.response);
 					}
 				});
@@ -776,7 +851,7 @@
 
 				$(controls.genres.list).find("li > a").on("click", function() {
 					slothMusic.audio.genres.btn($(this).text());
-					slothMusic.audio.getPopular($(this).data("id"));
+					slothMusic.audio.getPopular($(this).data("id"), 0);
 				});
 				$(controls.audio.shuffle).on("click", function() {
 					slothMusic.player.playlist.shuffle();
@@ -788,15 +863,15 @@
 				});
 				$(controls.audio.my).on("click", function() {
 					slothMusic.audio.genres.btn();
-					slothMusic.audio.get(session.uid);
+					slothMusic.audio.get(session.uid, 0);
 				});
 				$(controls.audio.popular).on("click", function() {
 					slothMusic.audio.genres.btn();
-					slothMusic.audio.getPopular(0);
+					slothMusic.audio.getPopular(0, 0);
 				});
 				$(controls.audio.recommendations).on("click", function() {
 					slothMusic.audio.genres.btn();
-					slothMusic.audio.getRecommendations();
+					slothMusic.audio.getRecommendations(0);
 				});
 				$(controls.audio.download).on("click", function() {
 					if (session.mode == "listening") {
@@ -836,7 +911,7 @@
 				});
 				$(controls.search.form).submit(function(e) {
 					slothMusic.audio.genres.btn();
-					slothMusic.audio.search($.trim($(query).val()));
+					slothMusic.audio.search($.trim($(query).val()), 0);
 					e.preventDefault();
 				});
 			}
@@ -902,6 +977,16 @@
 	$(window).resize(function() {
 
 	});
+
+	/*
+	//	действия при скролле
+	*/
+	$(window).scroll(function() {
+		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200 && !session.requesting) {
+			slothMusic.player.playlist.load();
+		}
+	});
+
 
 })(jQuery);
 

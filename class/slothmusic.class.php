@@ -42,6 +42,10 @@ class slothMusic {
 			$this->client['access_token'] = $data['access_token'];
 			$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
 
+			if ($kbps == 0) {
+				$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
+			}
+
 			if ($kbps > 0) {
 				$this->save($data['id'], $kbps, $data['uid']);
 			}
