@@ -16,7 +16,7 @@
 * AJAX подгрузка аудиозаписей.
 * Поддержка капчи.
 * Поиск и показ cover-a текущей аудиозаписи.
-* ~~Drag-and-drop для перемещения аудиозаписей (синхронизировано с VK).~~
+* Drag-and-drop для перемещения аудиозаписей (синхронизировано с VK).
 
 ### БД
 Для ускорения получения битрейта аудиозаписей, была создана таблица `audio`.
@@ -60,7 +60,7 @@ The music player VK.com.
 * AJAX loading of audio.
 * Support captcha.
 * Show cover-a current audio.
-* ~~Drag-and-drop to move the audio (synchronized with VK).~~
+* Drag-and-drop to move the audio (synchronized with VK).
 
 ### DB
 To expedite the receipt of the bit rate of the audio, create a table `audio`.
