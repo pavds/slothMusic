@@ -1,21 +1,51 @@
 /* ================================================== Captcha */
 
-.captcha
+.ml
 {
-	.modal-dialog
+	@extend .modal;
+	@extend .fade;
+	&-dialog
+	{
+		@extend .modal-dialog;
+	}
+	&-header
+	{
+		@extend .modal-header;
+	}
+	&-title
+	{
+		@extend .modal-title;
+	}
+	&-content
+	{
+		@extend .modal-content;
+	}
+	&-body
+	{
+		@extend .modal-body;
+	}
+	&-footer
+	{
+		@extend .modal-footer;
+	}
+}
+
+.ca
+{
+	.ml-dialog
 	{
 		width: 300px;
 	}
-
 	&-img
 	{
-		text-align: center;
 		margin: 0 auto;
 		padding: 0 0 20px 0;
 
+		text-align: center;
 		img
 		{
 			display: block;
+
 			margin: 0 auto;
 		}
 	}

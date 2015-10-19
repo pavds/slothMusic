@@ -1,17 +1,16 @@
-/* ================================================== VK Auth button */
+/* ================================================== VK */
 
-.authButton
+.vk
 {
-	@include make-row();
-	padding: 0 !important;
 	margin: 0 !important;
+	padding: 0 !important;
 
+	@include make-row();
 	.container
 	{
 		text-align: center;
 	}
-
-	&-btn
+	&-auth
 	{
 		margin: 50px auto;
 
@@ -19,4 +18,5 @@
 	}
 }
 
-/* ================================================== /VK Auth button */
+
+/* ================================================== /VK */

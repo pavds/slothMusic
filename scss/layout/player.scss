@@ -1,13 +1,14 @@
 /* ================================================== Player */
 
-.player
+.plr
 {
 	position: fixed;
-	z-index: 999;
+	z-index: 9999;
 	top: 0;
 	right: 0;
 	left: 0;
 
+	display: none;
 	overflow: hidden;
 
 	background-color: rgba(0, 0, 0, .5);
@@ -17,7 +18,7 @@
 	{
 		background-color: rgba(0, 0, 0, .7);
 	}
-	&-controls
+	&-cls
 	{
 		margin: 5px auto;
 
@@ -95,67 +96,6 @@
 				@extend .fa-chevron-right;
 			}
 		}
-		&-actions
-		{
-			position: absolute;
-			top: 50%;
-			right: 15px;
-
-			transform: translateY(-50%);
-			.add,
-			.delete,
-			.added,
-			.deleted
-			{
-				font-size: 13pt;
-
-				cursor: pointer;
-			}
-			.add
-			{
-				@extend .fa;
-				@extend .fa-plus;
-				@extend .pull-right;
-				@extend .hidden-xs;
-				&:hover,
-				&:active,
-				&:focus
-				{
-					color: #4caf50;
-				}
-			}
-			.delete
-			{
-				@extend .fa;
-				@extend .fa-times;
-				@extend .pull-right;
-				@extend .hidden-xs;
-				&:hover,
-				&:active,
-				&:focus
-				{
-					color: #e51c23;
-				}
-			}
-			.added
-			{
-				color: #4caf50;
-
-				@extend .fa;
-				@extend .fa-check;
-				@extend .pull-right;
-				@extend .hidden-xs;
-			}
-			.deleted
-			{
-				color: #e51c23;
-
-				@extend .fa;
-				@extend .fa-check;
-				@extend .pull-right;
-				@extend .hidden-xs;
-			}
-		}
 	}
 	&-audio
 	{
@@ -178,7 +118,7 @@
 
 @media (max-width: $screen-xs-max)
 {
-	.player
+	.plr
 	{
 		.container
 		{
@@ -186,22 +126,12 @@
 			margin: 0 !important;
 			padding: 0 !important;
 		}
-		&-controls
+		&-cls
 		{
 			&-title
 			{
-				width: 100%;
-				margin: 0 !important;
-				padding: 0 !important;
-
-				text-align: center;
 				h1
 				{
-					display: inline-block !important;
-
-					width: 100%;
-
-					animation: title 15s infinite linear;
 					text-align: center;
 				}
 			}
@@ -211,7 +141,7 @@
 
 @media (max-width: $screen-sm-max)
 {
-	.player
+	.plr
 	{
 		&-cover
 		{
@@ -226,7 +156,7 @@
 
 @media (min-width: $screen-md-min)
 {
-	.player
+	.plr
 	{
 		&-cover
 		{
@@ -254,10 +184,10 @@
 				margin: auto;
 
 				transition: all 1s ease-in-out;
-				animation: player-cover 30s infinite ease-in-out;
+				animation: plr-cover 30s infinite ease-in-out;
 				pointer-events: none !important;
 
-				opacity: .1;
+				opacity: .2;
 			}
 		}
 	}

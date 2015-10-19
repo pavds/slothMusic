@@ -12,7 +12,7 @@ Demo: http://rubaxa.github.io/Sortable/
  * Supports drag handles *and selectable text* (better than voidberg's html5sortable)
  * Smart auto-scrolling
  * Built using native HTML5 drag and drop API
- * Supports [Meteor](meteor/README.md), [AngularJS](#ng) and [React](#react)
+ * Supports [Meteor](meteor/README.md), [AngularJS](#ng), [React](#react) and [Polymer](#polymer)
  * Supports any CSS library, e.g. [Bootstrap](#bs)
  * Simple API
  * [CDN](#cdn)
@@ -287,7 +287,7 @@ This gives us the possiblity to test the behaviour for older Browsers even in ne
 
 On top of that, the Fallback always generates a copy of that DOM Element and appends the class `fallbackClass` definied in the options. This behaviour controls the look of this 'dragged' Element.
 
-Demo: http://jsbin.com/xinuyenabi/edit?html,css,js,output
+Demo: http://jsbin.com/pucurizace/edit?html,css,js,output
 
 
 ---
@@ -410,7 +410,7 @@ var AllUsers = React.createClass({
 	render: function() {
 		return (
 			<h1>Users</h1>
-			<ul ref="users">{
+			<ul ref="user">{
 				this.state.users.map(function (text) {
 					return <li>{text}</li>
 				})
@@ -472,6 +472,18 @@ Other attributes are:
 
 ---
 
+<a name="polymer"></a>
+### Support Polymer
+```html
+
+<link rel="import" href="bower_components/Sortable/Sortable-js.html">
+
+<sortable-js handle=".handle">
+  <template is="dom-repeat" items={{names}}>
+    <div>{{item}}</div>
+  </template>
+<sortable-js>
+```
 
 ### Method
 
@@ -623,11 +635,11 @@ Link to the active instance.
 
 ```html
 <!-- CDNJS :: Sortable (https://cdnjs.com/) -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.3.0-rc1/Sortable.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.1-rc1/Sortable.min.js"></script>
 
 
 <!-- jsDelivr :: Sortable (http://www.jsdelivr.com/) -->
-<script src="//cdn.jsdelivr.net/sortable/1.3.0-rc1/Sortable.min.js"></script>
+<script src="//cdn.jsdelivr.net/sortable/1.4.1-rc1/Sortable.min.js"></script>
 
 
 <!-- jsDelivr :: Sortable :: Latest (http://www.jsdelivr.com/) -->

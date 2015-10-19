@@ -1,0 +1,18 @@
+@import
+	/* ================ Vendors components */
+	"../bower_components/boostrap-sass/assets/stylesheets/bootstrap",
+	"../bower_components/fontawesome/scss/font-awesome",
+
+	/* ================ Components */
+	"components/load",
+	"components/animations",
+
+	/* ================ Layout */
+	"layout/fonts",
+	"layout/basic",
+
+	"layout/captcha",
+	"layout/vk",
+	"layout/player",
+	"layout/controls",
+	"layout/playlist";

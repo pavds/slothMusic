@@ -1,4 +1,4 @@
-/*
+/*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -47,10 +47,13 @@
 
 // Components w/ JavaScript
 @import "bootstrap/modals";
-// @import "bootstrap/tooltip";
-// @import "bootstrap/popovers";
+@import "bootstrap/tooltip";
+@import "bootstrap/popovers";
 // @import "bootstrap/carousel";
 
 // Utility classes
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
+
+// Theme
+@import "bootstrap/theme";

@@ -6,10 +6,10 @@ require 'class/slothmusic.class.php';
 $slothMusic = new slothMusic();
 
 if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
-	// получение кода
+	// Получение временного кода
 	$slothMusic->auth_code();
 } else if (verify($_GET['code']) && !verify($_SESSION['access_token'])) {
-	// получение access_token
+	// Получение access_token для авторизации
 	$_SESSION = array(
 		'access_token' => $slothMusic->access_token(),
 	);
@@ -21,14 +21,12 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 <head>
 	<meta charset="utf-8">
 	<title>slothMusic</title>
-
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="description" content="Слушай музыку из VK.com, на любом устройстве.">
 	<meta property="og:title" content="slothMusic" />
 	<meta property="og:description" content="Слушай музыку из VK.com, на любом устройстве." />
 	<meta property="og:image" content="favicon/favicon_512.png" />
-
 	<meta name="msapplication-TileColor" content="#ECF0F1">
 	<meta name="msapplication-TileImage" content="/favicon/favicon_128.png">
 	<link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
@@ -48,39 +46,45 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<link rel="apple-touch-icon" href="favicon/favicon_512.png" sizes="512x512" type="image/png">
 	<link rel="apple-touch-icon-precomposed" href="favicon/favicon_128.png">
 
-	<link rel="stylesheet" href="css/combine.min.css">
+	<link rel="stylesheet" href="css/slothMusic.css">
 
 	<?php if (verify($_SESSION['access_token'])): ?>
 		<script>var access_token = "<?php echo $_SESSION['access_token'];?>";</script>
 	<?php endif;?>
 </head>
 <body>
-	<!-- loading -->
-	<div id="loading" class="loading">
-		<i class="spinner"></i>
+	<!-- load -->
+	<div id="load" class="load">
+		<i class="load-spinner"></i>
 	</div>
-	<!-- /loading -->
+	<!-- /load -->
+
+	<!-- vk auth -->
+	<div class="vk">
+		<div class="container">
+			<div id="vk-auth" class="vk-auth" type="button"></div>
+		</div>
+	</div>
+	<!-- /vk auth -->
 
 	<!-- captcha -->
-	<div class="modal fade captcha" id="captchaModal" tabindex="-1" role="dialog" aria-labelledby="captchaModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<form id="captchaForm">
-					<div class="modal-header">
-						<h4 class="modal-title" id="captchaModalLabel">Требуется Captcha</h4>
+	<div class="ml ca" id="ml-ca-container" tabindex="-1" role="dialog" aria-labelledby="ml-ca-title">
+		<div class="ml-dialog" role="document">
+			<div class="ml-content">
+				<form id="ml-ca-form">
+					<div class="ml-header">
+						<h4 class="ml-title" id="ml-ca-title">Требуется Captcha</h4>
 					</div>
-					<div class="modal-body">
-						<div class="captcha-img">
-							<img id="captchaImg" src="">
+					<div class="ml-body">
+						<div class="ca-img">
+							<img id="ml-ca-img">
 						</div>
-						<div class="captcha-input">
-							<div class="form-group">
-								<input type="text" class="form-control" id="captchaKey" placeholder="Введите код">
-								<input type="hidden" id="captchaSid">
-							</div>
+						<div class="form-group">
+							<input type="text" class="form-control" id="ml-ca-key" placeholder="Введите код" required>
+							<input type="hidden" id="ml-ca-sid" required>
 						</div>
 					</div>
-					<div class="modal-footer">
+					<div class="ml-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
 						<button type="submit" class="btn btn-primary">Отправить</button>
 					</div>
@@ -91,88 +95,80 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<!-- /captcha -->
 
 	<!-- player -->
-	<div class="player not_authorized">
+	<div class="plr" data-authorized="false">
 		<div class="container">
-			<div class="player-controls">
-				<div class="player-controls-prev">
-					<i id="prev"></i>
+			<div class="plr-cls">
+				<div class="plr-cls-prev">
+					<i id="plr-cls-prev"></i>
 				</div>
-				<div class="player-controls-title">
-					<h1 id="title"></h1>
+				<div class="plr-cls-title">
+					<h1 id="plr-cls-title"></h1>
 				</div>
-				<div class="player-controls-next">
-					<i id="next"></i>
+				<div class="plr-cls-next">
+					<i id="plr-cls-next"></i>
 				</div>
 			</div>
-			<div class="player-audio">
-				<div class="player-audio-container">
-					<audio id="player" autobuffer="auto" controls autoplay></audio>
+			<div class="plr-audio">
+				<div class="plr-audio-container">
+					<audio id="plr-audio" autobuffer="auto" controls autoplay></audio>
 				</div>
 			</div>
 		</div>
-		<div class="player-cover">
-			<img id="cover" src="" alt="cover" class="hide">
+		<div class="plr-cover">
+			<img id="plr-cover">
 		</div>
 	</div>
 	<!-- /player -->
 
-	<!-- auth_button -->
-	<div class="authButton">
+	<!--controls -->
+	<div class="cls" data-authorized="false">
 		<div class="container">
-			<div id="authButton" class="authButton-btn" type="button"></div>
-		</div>
-	</div>
-	<!-- /auth_button -->
-
-	<!-- audio -->
-	<div class="audio not_authorized">
-		<div class="container">
-			<div class="audio-categories">
-				<i id="my" class="my" title="Мои"></i>
-				<i id="popular" class="popular" title="Популярные"></i>
-				<i id="recommendations" class="recommendations" title="Рекомендации"></i>
-				<i id="shuffle" class="shuffle" title="Перемешать"></i>
-				<i id="alphabetically" class="alphabetically" title="По алфавиту"></i>
-				<i id="backward" class="backward" title="Перемотать назад"></i>
-				<i id="forward" class="forward" title="Перемотать вперед"></i>
-				<i id="download" class="download" title="Режим загрузки"></i>
-				<i id="downloadAll" class="download-all hide" title="Выделить все аудиозаписи"></i>
-				<i id="m3u" class="m3u" title="Сгенерировать M3U плейлист"></i>
-				<i id="broadcast" class="broadcast" title="Транслировать в статус"></i>
+			<div class="cls-container">
+				<i id="cls-ld-user" class="cls-user" data-placement="bottom" data-toggle="popover" title="Плейлист пользователя" data-content="Аудиозаписи авторизированного пользователя."></i>
+				<i id="cls-ld-popular" class="cls-popular" data-placement="bottom" data-toggle="popover" title="Популярные аудиозаписи" data-content="Популярные аудиозаписи Вконтакте."></i>
+				<i id="cls-ld-recommendations" class="cls-recommendations" data-placement="bottom" data-toggle="popover" title="Рекомендуемые аудиозаписи" data-content="Рекомендуемые аудиозаписи пользователя. Исходя из его аудиозаписей."></i>
+				<i id="cls-pl-st-shuffle" class="cls-shuffle" data-placement="bottom" data-toggle="popover" title="Перемешать плейлист" data-content="Перемешать аудиозаписи в плейлисте (рандомно)."></i>
+				<i id="cls-pl-st-alphabetically" class="cls-alphabetically" data-placement="bottom" data-toggle="popover" title="Сортировка по алфавиту" data-content="Сортировка аудиозаписей в плейлисте по алфавиту и наоборот."></i>
+				<i id="cls-plr-rw-backward" class="cls-backward" data-placement="bottom" data-toggle="popover" title="Перемотать назад" data-content="Перемотать на 10 секунд назад."></i>
+				<i id="cls-plr-rw-forward" class="cls-forward" data-placement="bottom" data-toggle="popover" title="Перемотать вперед" data-content="Перемотать на 10 секунд вперед."></i>
+				<i id="cls-pl-dl-mode" class="cls-download" data-placement="bottom" data-toggle="popover" title="Режим загрузки" data-content="При нажатии на активный режим загрузки (при учете выделенных аудиозаписей), они будут загружены."></i>
+				<i id="cls-pl-dl-all" class="cls-download-all" data-placement="bottom" data-toggle="popover" title="Выделить все аудиозаписи" data-content="Выделить все аудиозаписи в плейлисте для загрузки."></i>
+				<i id="cls-pl-gr-m3u" class="cls-m3u" data-placement="bottom" data-toggle="popover" title="Сгенерировать M3U" data-content="Сгенерировать .m3u файл, из текущего плейлиста."></i>
+				<i id="cls-plr-bc" class="cls-broadcast" data-placement="bottom" data-toggle="popover" title="Трансляция" data-content="Включением или отключение трансляции в статус."></i>
 			</div>
-			<div class="audio-search">
-				<div class="audio-search-container">
-					<div class="audio-search-query">
-						<form id="search">
-							<input id="query" type="text" placeholder="Поиск" class="text-left">
+			<div class="cls-sh">
+				<div class="cls-sh-container">
+					<div class="cls-sh-query" data-toggle="popover" title="Поиск" data-content="Поиск аудиозаписей по запросу." data-placement="bottom">
+						<form id="cls-sh-form">
+							<input id="cls-sh-query" type="text" placeholder="Поиск">
 						</form>
 					</div>
-					<div class="audio-search-btn">
-						<div class="audio-search-genres">
-							<button id="genresBtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span id="genresText">Жанр</span> <i class="caret"></i>
+					<div class="cls-sh-btn" data-toggle="popover" title="Жанр" data-content="Поиск аудиозаписей по жанру." data-placement="left">
+						<div class="cls-sh-gr">
+							<button id="cls-sh-gr-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span id="cls-sh-gr-text">Жанр</span> <i class="caret"></i>
 							</button>
-							<ul id="genresList" class="audio-search-genres-list"></ul>
+							<ul id="cls-sh-gr-items" class="cls-sh-gr-list"></ul>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- /audio -->
+	<!-- /controls -->
 
 	<!-- playlist -->
-	<div class="playlist not_authorized">
+	<div class="pl" data-authorized="false">
 		<div class="container">
-			<div class="playlist-container">
-				<div class="playlist-song">
-					<div id="playlist" class="playlist-items"></div>
+			<div class="pl-container">
+				<div class="pl-items-container">
+					<div id="pl-items" class="pl-items"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- /playlist -->
 
-	<script src="js/slothMusic.min.js"></script>
+	<script src="js/combined.min.js"></script>
 </body>
 </html>

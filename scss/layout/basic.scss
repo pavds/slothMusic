@@ -4,17 +4,13 @@
 {
 	user-select: none !important;
 	transition: all .25s ease-in-out !important;
+
 	outline: none !important;
 }
 
-html
-{
-	// position: relative;
-	// min-height: 100%;
-}
 body
 {
-	font-family: 'Roboto', sans-serif;
+	font-family: "Roboto", sans-serif;
 
 	height: 100%;
 
@@ -24,6 +20,15 @@ body
 a
 {
 	cursor: pointer;
+}
+
+.popover
+{
+	transition-property: opacity !important;
+	*
+	{
+		transition-property: opacity !important;
+	}
 }
 
 /* ================================================== /Basic */
