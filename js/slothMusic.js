@@ -235,7 +235,6 @@ $(function () {
 					player.title = title;
 					player.item = itemPl;
 
-					els.player.audio.volume = 0;
 					els.player.audio.src = item.url;
 					els.player.audio.load();
 					els.player.audio.play();

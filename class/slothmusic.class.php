@@ -11,7 +11,7 @@ class slothMusic {
 		'id' => '5083406',
 		'secret' => 'ArJmgOsWyGrE5D2F1Lln',
 		'scope' => 'audio,status',
-		'redirect_uri' => 'http://slothmusic-alpha.dev',
+		'redirect_uri' => 'http://music.pavlovdmitry.com',
 		'v' => '5.37',
 		'code' => null,
 		'access_token' => null,
