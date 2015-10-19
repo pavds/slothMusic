@@ -11,12 +11,12 @@
 * Генерирование M3U (из текущего плейлиста).
 * Загрузка аудиозаписей (выборочная).
 * Сортировка плейлиста (по алфавиту, рандомная).
-* Drag-and-drop для перемещения аудиозаписей (синхронизировано с VK).
 * Битрейт аудиозаписей (при наведении).
 * Транслирование аудиозаписи в статус.
 * AJAX подгрузка аудиозаписей.
 * Поддержка капчи.
 * Поиск и показ cover-a текущей аудиозаписи.
+* ~~Drag-and-drop для перемещения аудиозаписей (синхронизировано с VK).~~
 
 ### БД
 Для ускорения получения битрейта аудиозаписей, была создана таблица `audio`.
@@ -55,12 +55,12 @@ The music player VK.com.
 * Generate M3U (playlist).
 * Download audio (selective).
 * Playlist sorting (by alphabet, random).
-* Drag-and-drop to move the audio (synchronized with VK).
 * The bitrate of the audio (when you hover).
 * Broadcasting audio in status.
 * AJAX loading of audio.
 * Support captcha.
 * Show cover-a current audio.
+* ~~Drag-and-drop to move the audio (synchronized with VK).~~
 
 ### DB
 To expedite the receipt of the bit rate of the audio, create a table `audio`.
