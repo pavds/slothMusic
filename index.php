@@ -53,6 +53,12 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<?php endif;?>
 </head>
 <body>
+	<!-- fork me -->
+	<div class="fork-me">
+		<a href="https://github.com/ifamed/slothMusic" title="Fork Me"></a>
+	</div>
+	<!-- /fork me -->
+
 	<!-- load -->
 	<div id="load" class="load">
 		<i class="load-spinner"></i>
