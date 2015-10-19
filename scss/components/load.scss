@@ -1,6 +1,6 @@
-/* ================================================== Loading */
+/* ================================================== Load */
 
-.loading
+.load
 {
 	position: fixed;
 	z-index: 9998 !important;
@@ -14,7 +14,7 @@
 	margin: auto;
 
 	background-color: rgba(0, 0, 0, .7);
-	.spinner
+	&-spinner
 	{
 		font-size: 25pt !important;
 
@@ -24,7 +24,7 @@
 		left: 50%;
 
 		transform: translate(-50%, -50%);
-		animation: loading 2s infinite;
+		animation: load 2s infinite;
 
 		color: #999;
 
@@ -33,4 +33,4 @@
 	}
 }
 
-/* ================================================== /Loading */
+/* ================================================== /Load */

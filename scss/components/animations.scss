@@ -1,34 +1,34 @@
 /* ================================================== Animations */
 
-.animation
+.an
 {
-	&-player
+	&-plr
 	{
 		&-prev
 		{
-			animation: player-prev .25s ease-in-out;
+			animation: plr-prev .25s ease-in-out;
 		}
 		&-next
 		{
-			animation: player-next .25s ease-in-out;
+			animation: plr-next .25s ease-in-out;
 		}
 	}
-	&-playlist
+	&-pl
 	{
 		&-moved
 		{
-			animation: playlist-moved 1s ease-in-out;
-			&-active
+			animation: pl-moved 1s ease-in-out;
+			&--active
 			{
-				animation: playlist-moved-active 1s ease-in-out;
+				animation: pl-moved-active 1s ease-in-out;
 			}
 		}
 		&-bitrate
 		{
-			animation: playlist-bitrate .25s ease-in-out;
+			animation: pl-bitrate .25s ease-in-out;
 		}
 	}
-	&-opacity
+	&-o
 	{
 		&-in
 		{
@@ -41,7 +41,9 @@
 	}
 }
 
-@keyframes loading
+/* ================================================== Keyframes */
+
+@keyframes load
 {
 	0%
 	{
@@ -52,8 +54,7 @@
 		transform: rotate(360deg);
 	}
 }
-
-@keyframes player-prev
+@keyframes plr-prev
 {
 	0%
 	{
@@ -68,7 +69,7 @@
 		opacity: 1;
 	}
 }
-@keyframes player-next
+@keyframes plr-next
 {
 	0%
 	{
@@ -83,8 +84,7 @@
 		opacity: 1;
 	}
 }
-
-@keyframes player-cover
+@keyframes plr-cover
 {
 	0%
 	{
@@ -103,8 +103,7 @@
 		transform: scale(1, 1) rotate(0deg);
 	}
 }
-
-@keyframes title
+@keyframes plr-title
 {
 	0%
 	{
@@ -115,8 +114,7 @@
 		transform: translateX(100%);
 	}
 }
-
-@keyframes playlist-moved
+@keyframes pl-moved
 {
 	0%
 	{
@@ -131,12 +129,11 @@
 		background-color: #fff;
 	}
 }
-
-@keyframes playlist-moved-active
+@keyframes pl-moved--active
 {
 	0%
 	{
-		background-color: #2196F3;
+		background-color: #2196f3;
 	}
 	50%
 	{
@@ -145,11 +142,10 @@
 	}
 	100%
 	{
-		background-color: #2196F3;
+		background-color: #2196f3;
 	}
 }
-
-@keyframes playlist-bitrate
+@keyframes pl-bitrate
 {
 	0%
 	{
@@ -160,7 +156,6 @@
 		opacity: 1;
 	}
 }
-
 @keyframes opacityIn
 {
 	0%
@@ -172,7 +167,6 @@
 		opacity: 1;
 	}
 }
-
 @keyframes opacityOut
 {
 	0%

@@ -5,7 +5,7 @@ session_start();
 /**
  * Download audio from url.
  * @author Dmitry Pavlov <dmitrypavlov.design@gmail.com>
- * @license https://raw.github.com/ifamed/slothMusic/master/LICENSE MIT
+ * @license https://raw.github.com/ifamed/slothMusic/master/LICENSE
  */
 
 set_time_limit(10);

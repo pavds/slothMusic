@@ -1,18 +1,19 @@
 /* ================================================== Playlist */
 
-.playlist
+.pl
 {
+	display: none;
 	&-container
 	{
 		@include make-row();
 	}
-	&-song
-	{
-		@include make-md-column(12);
-	}
 	&-items
 	{
 		@extend .list-group;
+		&-container
+		{
+			@include make-md-column(12);
+		}
 	}
 	&-item
 	{
@@ -27,15 +28,66 @@
 		-webkit-user-drag: element;
 		-khtml-user-drag: element;
 		@extend .list-group-item;
+		.actions
+		{
+			position: absolute;
+			top: 50%;
+			right: 15px;
+
+			transform: translateY(-50%);
+			.add,
+			.delete,
+			.added,
+			.deleted
+			{
+				font-size: 13pt;
+
+				cursor: pointer;
+			}
+			.add
+			{
+				@extend .fa;
+				@extend .fa-plus;
+				@extend .pull-right;
+				@extend .hidden-xs;
+				&:hover,
+				&:active,
+				&:focus
+				{
+					color: #4caf50;
+				}
+				&.done
+				{
+					@extend .fa-check;
+				}
+			}
+			.delete
+			{
+				@extend .fa;
+				@extend .fa-times;
+				@extend .pull-right;
+				@extend .hidden-xs;
+				&:hover,
+				&:active,
+				&:focus
+				{
+					color: #e51c23;
+				}
+				&.done
+				{
+					@extend .fa-check;
+				}
+			}
+		}
 		.bitrate
 		{
 			position: absolute;
 			top: 50%;
 			right: 25px;
+			animation: opacityIn .25s ease-in-out;
 
 			transform: translateY(-50%);
 
-			// @extend .animation-playlist-bitrate;
 			@extend .hidden-xs;
 			&-higher
 			{
@@ -61,7 +113,7 @@
 			border-color: #f4e2c9 !important;
 			background-color: #f4e2c9 !important;
 		}
-		&.download-active
+		&.dl-active
 		{
 			border-left: 4px #16a085 solid;
 
@@ -73,13 +125,14 @@
 
 @media (max-width: $screen-xs-max)
 {
-	.playlist
+	.pl
 	{
 		&-item
 		{
-			padding-right: 0;
+			padding-right: 15px;
 		}
 	}
 }
+
 
 /* ================================================== Playlist */
