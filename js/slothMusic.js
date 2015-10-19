@@ -12,7 +12,8 @@ $(function () {
 		mode: {
 			listen: true,
 			download: false
-		}
+		},
+		reorder: true
 	};
 	var session = {};
 	var player = {};
@@ -472,99 +473,152 @@ $(function () {
 			generate: {
 				// Генерирование .m3u из текущего плейлиста
 				m3u: function () {
-					var m3u = '#EXTM3U\r\n';
+					try {
+						var m3u = '#EXTM3U\r\n';
 
-					$.each(session.playlist, function (i, item) {
-						m3u += '#EXTINF:' + item.duration + ',' + (item.artist).replace(/\r\n|\r|\n/g, ' ') + ' - ' + (item.title).replace(/\r\n|\r|\n/g, ' ') + '\r\n';
-						m3u += (item.url.replace('https', 'http')).replace(/\?extra=(.*)/, '') + '\r\n';
-					});
+						$.each(session.playlist, function (i, item) {
+							m3u += '#EXTINF:' + item.duration + ',' + (item.artist).replace(/\r\n|\r|\n/g, ' ') + ' - ' + (item.title).replace(/\r\n|\r|\n/g, ' ') + '\r\n';
+							m3u += (item.url.replace('https', 'http')).replace(/\?extra=(.*)/, '') + '\r\n';
+						});
 
-					var file = new Blob([m3u], {
-						type: 'audio/x-mpegurl'
-					});
+						var file = new Blob([m3u], {
+							type: 'audio/x-mpegurl'
+						});
 
-					var url = window.URL.createObjectURL(file);
+						var url = window.URL.createObjectURL(file);
 
-					$('<a/>', {
-						'id': 'm3u-playlist',
-						'class': 'hide',
-						'href': url,
-						'download': 'playlist.m3u'
-					}).appendTo('body').promise().done(function () {
-						$(this)[0].click();
-						$(this).remove();
-					});
+						$('<a/>', {
+							'id': 'm3u-playlist',
+							'class': 'hide',
+							'href': url,
+							'download': 'playlist.m3u'
+						}).appendTo('body').promise().done(function () {
+							$(this)[0].click();
+							$(this).remove();
+						});
 
-					window.URL.revokeObjectURL(url);
+						window.URL.revokeObjectURL(url);
+					} catch (e) {
+						console.log('playlist.generate.m3u: ошибка генерирования m3u плейлиста');
+					}
 				}
 			},
 			// Загрузка переданных аудиозаписей
 			download: function (items) {
-				// Создание списка ссылок для загрузки аудиозаписей
-				var dList = '<div id="download" class="hide">';
-				$.each(items, function (i, item) {
-					dList += '<a target="_blank" href="download?o=' + item.owner_id + '&i=' + item.id + '&a=' + item.artist + '&t=' + item.title + '">';
-				});
-				dList += '</div>';
-
-				// Встраивание списка в DOM
-				$(dList).appendTo('body').promise().done(function () {
-					var links = $('#download');
-					var linksItems = $('#download').find('a');
-
-					$.each(linksItems, function (i, item) {
-						// Нажатие ссылки и загрузка
-						$(item)[0].click();
-					}).promise().done(function () {
-						// Удаление контейнера
-						$(links).remove();
-						// Выключение режима загрузки
-						els.playlist.items.find('a.dl-active').removeClass('dl-active');
-						els.controls.playlist.download.mode.removeClass('active');
-						// Включение режима прослушивания
-						that.mode('listen');
+				try {
+					// Создание списка ссылок для загрузки аудиозаписей
+					var dList = '<div id="download" class="hide">';
+					$.each(items, function (i, item) {
+						dList += '<a target="_blank" href="download?o=' + item.owner_id + '&i=' + item.id + '&a=' + item.artist + '&t=' + item.title + '">';
 					});
-				});
+					dList += '</div>';
+
+					// Встраивание списка в DOM
+					$(dList).appendTo('body').promise().done(function () {
+						var links = $('#download');
+						var linksItems = $('#download').find('a');
+
+						$.each(linksItems, function (i, item) {
+							// Нажатие ссылки и загрузка
+							$(item)[0].click();
+						}).promise().done(function () {
+							// Удаление контейнера
+							$(links).remove();
+							// Выключение режима загрузки
+							els.playlist.items.find('a.dl-active').removeClass('dl-active');
+							els.controls.playlist.download.mode.removeClass('active');
+							// Включение режима прослушивания
+							that.mode('listen');
+						});
+					});
+				} catch (e) {
+					console.log('playlist.download: ошибка загрузки аудиозаписей');
+				}
 			},
 			// Получение битрейта аудиозаписи
 			bitrate: function (item) {
-				var id = $(item).data('id');
-				var itemPl = session.playlist[id];
+				try {
+					var id = $(item).data('id');
+					var itemPl = session.playlist[id];
 
-				if (access_token !== 'undefined') {
-					$.ajax({
-						url: 'fileinfo',
-						data: {
-							id: id,
-							duration: itemPl.duration,
-							owner_id: itemPl.owner_id,
-							access_token: access_token,
-							uid: session.mid
-						},
-						method: 'POST',
-						dataType: 'json',
-						success: function (data) {
-							var kbpsClass = '';
+					if (access_token !== 'undefined') {
+						$.ajax({
+							url: 'fileinfo',
+							data: {
+								id: id,
+								duration: itemPl.duration,
+								owner_id: itemPl.owner_id,
+								access_token: access_token,
+								uid: session.mid
+							},
+							method: 'POST',
+							dataType: 'json',
+							success: function (data) {
+								var kbpsClass = '';
 
-							if (parseInt(data.kbps) > 0) { // если битрейт известен
-								if (data.kbps >= 320) {
-									kbpsClass = 'bitrate-higher';
-								} else if (data.kbps >= 256 && data.kbps < 320) {
-									kbpsClass = 'bitrate-high';
-								} else if (data.kbps >= 192 && data.kbps < 256) {
-									kbpsClass = 'bitrate-medium';
-								} else if (data.kbps < 192) {
-									kbpsClass = 'bitrate-low';
+								if (parseInt(data.kbps) > 0) { // если битрейт известен
+									if (data.kbps >= 320) {
+										kbpsClass = 'bitrate-higher';
+									} else if (data.kbps >= 256 && data.kbps < 320) {
+										kbpsClass = 'bitrate-high';
+									} else if (data.kbps >= 192 && data.kbps < 256) {
+										kbpsClass = 'bitrate-medium';
+									} else if (data.kbps < 192) {
+										kbpsClass = 'bitrate-low';
+									}
+
+									$(item).find('div > small').addClass('bitrate ' + kbpsClass).text(data.kbps);
 								}
-
-								$(item).find('div > small').addClass('bitrate ' + kbpsClass).text(data.kbps);
 							}
-						}
-					});
+						});
+					}
+				} catch (e) {
+					console.log('playlist.bitrate: ошибка получения битрейта');
 				}
 			},
 			// События при document.ready
 			ready: function () {
+				// Инициализация Drag-n-drop-a в плейлисте
+				if (device.desktop) {
+					try {
+						$(function () {
+							var plItems = document.getElementById('pl-items');
+							var sortable = new Sortable(plItems, {
+								animation: 250,
+								// После перетаскивания аудиозаписи
+								onEnd: function (e) {
+									if (app.reorder) {
+										var item = e.item;
+										var prev = $(item).prev();
+										var next = $(item).next();
+										var prevIndex = $(prev).index();
+										var nextIndex = $(next).index();
+										var itemId = $(item).data('id');
+										var prevId = $(prev).data('id');
+										var nextId = $(next).data('id');
+
+										// Начало плейлиста
+										if (prevIndex < 0 && nextIndex >= 0) {
+											that.audio.reorder(session.mid, itemId, nextId, '');
+										}
+										// Середина плейлиста
+										else if (prevIndex >= 0 && nextIndex >= 0) {
+											that.audio.reorder(session.mid, itemId, '', prevId);
+										}
+										// Конец плейлиста
+										else if (prevIndex > 0 && nextIndex < 0) {
+											that.audio.reorder(session.mid, itemId, '', prevId);
+										}
+
+										that.animation.playlist.moved(item);
+									}
+								},
+							});
+						});
+					} catch (e) {
+						console.log('sortable: ошибка при drag-n-drop-е аудиозаписи');
+					}
+				}
 				// Получение аудиозаписей пользователя
 				$(els.controls.load.user).on('click', function () {
 					that.audio.get(session.mid, 0);
@@ -828,6 +882,13 @@ $(function () {
 								offset: offset
 							};
 
+							// Включение запроса 'reorder' при drag-n-drop
+							if (owner_id == session.mid) {
+								that.reorder(true);
+							} else {
+								that.reorder(false);
+							}
+
 							if (offset > 0) {
 								r.response.offset = offset;
 							}
@@ -866,6 +927,9 @@ $(function () {
 								offset: offset
 							};
 
+							// Отключение запроса 'reorder' при drag-n-drop
+							that.reorder(false);
+
 							if (offset > 0) {
 								r.response.offset = offset;
 							}
@@ -900,6 +964,9 @@ $(function () {
 								name: request,
 								offset: offset
 							};
+
+							// Отключение запроса 'reorder' при drag-n-drop
+							that.reorder(false);
 
 							if (offset > 0) {
 								r.response.offset = offset;
@@ -940,6 +1007,9 @@ $(function () {
 								q: q,
 								offset: offset
 							};
+
+							// Отключение запроса 'reorder' при drag-n-drop
+							that.reorder(false);
 
 							if (offset > 0) {
 								r.response.offset = offset;
@@ -1085,6 +1155,14 @@ $(function () {
 				break;
 			}
 		},
+		// Drag-n-drop
+		reorder: function (status) {
+			if (status) {
+				app.reorder = true;
+			} else {
+				app.reorder = false;
+			}
+		},
 		// Проверка ответа от сервера на ошибки
 		verify: function (request, r) {
 			if (r.error) {
@@ -1141,6 +1219,15 @@ $(function () {
 						that.animation.custom($(els.player.controls.title), 'an-plr-prev', 250);
 					},
 				}
+			},
+			playlist: {
+				moved: function (item) {
+					if ($(item).hasClass('active')) {
+						that.animation.custom($(item), 'an-pl-moved--active', 1000);
+					} else {
+						that.animation.custom($(item), 'an-pl-moved', 1000);
+					}
+				},
 			},
 			custom: function (el, animation, time) {
 				$(el).addClass(animation).promise().done(function () {
