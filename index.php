@@ -55,7 +55,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 <body>
 	<!-- fork me -->
 	<div class="fork-me">
-		<a href="https://github.com/ifamed/slothMusic" title="Fork Me"></a>
+		<a target="_blank" href="https://github.com/ifamed/slothMusic" title="Fork Me"></a>
 	</div>
 	<!-- /fork me -->
 
