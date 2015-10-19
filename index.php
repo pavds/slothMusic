@@ -137,7 +137,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 				<i id="cls-pl-st-alphabetically" class="cls-alphabetically" data-placement="bottom" data-toggle="popover" title="Сортировка по алфавиту" data-content="Сортировка аудиозаписей в плейлисте по алфавиту и наоборот."></i>
 				<i id="cls-plr-rw-backward" class="cls-backward" data-placement="bottom" data-toggle="popover" title="Перемотать назад" data-content="Перемотать на 10 секунд назад."></i>
 				<i id="cls-plr-rw-forward" class="cls-forward" data-placement="bottom" data-toggle="popover" title="Перемотать вперед" data-content="Перемотать на 10 секунд вперед."></i>
-				<i id="cls-pl-dl-mode" class="cls-download" data-placement="bottom" data-toggle="popover" title="Режим загрузки" data-content="При нажатии на активный режим загрузки (при учете выделенных аудиозаписей), они будут загружены."></i>
+				<i id="cls-pl-dl-mode" class="cls-download" data-placement="bottom" data-toggle="popover" title="Режим загрузки" data-content="При нажатии на активный режим загрузки (при учете выделенных аудиозаписей), они будут загружены. Возможно, потребуется разрешить открытие всплывающих окон (возле адресной строки)."></i>
 				<i id="cls-pl-dl-all" class="cls-download-all" data-placement="bottom" data-toggle="popover" title="Выделить все аудиозаписи" data-content="Выделить все аудиозаписи в плейлисте для загрузки."></i>
 				<i id="cls-pl-gr-m3u" class="cls-m3u" data-placement="bottom" data-toggle="popover" title="Сгенерировать M3U" data-content="Сгенерировать .m3u файл, из текущего плейлиста."></i>
 				<i id="cls-plr-bc" class="cls-broadcast" data-placement="bottom" data-toggle="popover" title="Трансляция" data-content="Включением или отключение трансляции в статус."></i>
