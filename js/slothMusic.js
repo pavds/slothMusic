@@ -228,7 +228,9 @@ $(function () {
 					var title = $.trim(item.artist) + ' — ' + $.trim(item.title);
 
 					// Поиск cover-a
-					that.player.cover.search($.trim(item.artist) + ' ' + $.trim(item.title));
+					if (device.desktop) {
+						that.player.cover.search($.trim(item.artist) + ' ' + $.trim(item.title));
+					}
 
 					// Воспроизводимая аудиозапись
 					player.id = item.id;
@@ -254,24 +256,28 @@ $(function () {
 			// Получение cover-a к аудиозаписи
 			cover: {
 				search: function (query) {
-					$.ajax({
-						url: 'http://ajax.googleapis.com/ajax/services/search/images',
-						method: 'GET',
-						dataType: 'jsonp',
-						data: {
-							v: '1.0',
-							q: query,
-							imgsz: 'large',
-						},
-						success: function (r) {
-							if (r.responseStatus === 200) {
-								var url = r.responseData.results[0].unescapedUrl;
+					try {
+						$.ajax({
+							url: 'http://ajax.googleapis.com/ajax/services/search/images',
+							method: 'GET',
+							dataType: 'jsonp',
+							data: {
+								v: '1.0',
+								q: query,
+								imgsz: 'large',
+							},
+							success: function (r) {
+								if (r.responseStatus === 200) {
+									var url = r.responseData.results[0].unescapedUrl;
 
-								$(els.player.cover).prop('src', url);
-								$(els.player.cover).show(250);
+									$(els.player.cover).prop('src', url);
+									$(els.player.cover).show(250);
+								}
 							}
-						}
-					});
+						});
+					} catch (e) {
+						console.log('player.cover.search: ошибка получения cover-a');
+					}
 				}
 			},
 			// События при document.ready
