@@ -139,6 +139,7 @@
 
 				color: #bbb;
 
+				@extend .hidden-xs;
 				@extend .fa;
 				@extend .fa-spinner;
 			}
@@ -157,19 +158,6 @@
 			@extend .hidden-xs;
 			@extend .hidden-sm;
 		}
-		&:hover,
-		&:active,
-		&:focus
-		{
-			.duration
-			{
-				display: none;
-			}
-			.bitrate
-			{
-				display: block !important;
-			}
-		}
 	}
 }
 
@@ -180,6 +168,29 @@
 		&-item
 		{
 			padding-right: 15px;
+		}
+	}
+}
+
+@media (min-width: $screen-sm-min)
+{
+	.pl
+	{
+		&-item
+		{
+			&:hover,
+			&:active,
+			&:focus
+			{
+				.duration
+				{
+					display: none;
+				}
+				.bitrate
+				{
+					display: block;
+				}
+			}
 		}
 	}
 }
