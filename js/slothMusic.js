@@ -9,6 +9,7 @@ $(function () {
 			offset: 50
 		},
 		load: false,
+		offset: true,
 		mode: {
 			listen: true,
 			download: false
@@ -869,42 +870,56 @@ $(function () {
 			// v: версия api
 			get: function (owner_id, offset) {
 				var request = 'audio.get';
-				that.load(true);
-				try {
-					VK.Api.call(request, {
-						owner_id: owner_id,
-						count: app.audio.count,
-						offset: offset,
-						v: app.api
-					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+				
+				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
+				// поэтому запрос блокируется с помощью app.offset
+				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
+				if (offset === 0 || offset > 0 && app.offset) {
+					that.load(true);
+					try {
+						VK.Api.call(request, {
+							owner_id: owner_id,
+							count: app.audio.count,
+							offset: offset,
+							v: app.api
+						}, function (r) {
+							that.load(false);
+							that.verify(request, r);
 
-						if (r.response) {
-							// Запись запроса, для возможности увелечения offset-a
-							req = {
-								name: request,
-								owner_id: owner_id,
-								offset: offset
-							};
+							if (r.response) {
+								// Запись запроса, для возможности увелечения offset-a
+								req = {
+									name: request,
+									owner_id: owner_id,
+									offset: offset
+								};
 
-							// Включение запроса 'reorder' при drag-n-drop
-							if (owner_id == session.mid) {
-								that.reorder(true);
-							} else {
-								that.reorder(false);
+								// Включение запроса 'reorder' при drag-n-drop
+								if (owner_id == session.mid) {
+									that.reorder(true);
+								} else {
+									that.reorder(false);
+								}
+
+								// Если нужна подгрузка аудиозаписей
+								if (offset > 0) {
+									r.response.offset = offset;
+								}
+
+								// Если в ответе присутствуют аудиозаписи
+								if (r.response.items.length > 0) {
+									app.offset = true;
+									that.playlist.add(r.response);
+								} else {
+									app.offset = false;
+								}
+
+								console.log(request + '(' + owner_id + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
 							}
-
-							if (offset > 0) {
-								r.response.offset = offset;
-							}
-
-							that.playlist.add(r.response);
-							console.log(request + '(' + owner_id + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
-						}
-					});
-				} catch (e) {
-					console.log('Ошибка запроса: ' + request);
+						});
+					} catch (e) {
+						console.log('Ошибка запроса: ' + request);
+					}
 				}
 			},
 			// Возвращает список аудиозаписей из раздела 'Популярное'
@@ -914,38 +929,52 @@ $(function () {
 			// v: версия api
 			getPopular: function (genre_id, offset) {
 				var request = 'audio.getPopular';
-				that.load(true);
-				try {
-					VK.Api.call(request, {
-						genre_id: genre_id,
-						count: app.audio.count,
-						offset: offset,
-						v: app.api
-					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
 
-						if (r.response) {
-							// Запись запроса, для возможности увелечения offset-a
-							req = {
-								name: request,
-								genre_id: genre_id,
-								offset: offset
-							};
+				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
+				// поэтому запрос блокируется с помощью app.offset
+				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
+				if (offset === 0 || offset > 0 && app.offset) {
+					that.load(true);
+					try {
+						VK.Api.call(request, {
+							genre_id: genre_id,
+							count: app.audio.count,
+							offset: offset,
+							v: app.api
+						}, function (r) {
+							that.load(false);
+							that.verify(request, r);
 
-							// Отключение запроса 'reorder' при drag-n-drop
-							that.reorder(false);
+							if (r.response) {
+								// Запись запроса, для возможности увелечения offset-a
+								req = {
+									name: request,
+									genre_id: genre_id,
+									offset: offset
+								};
 
-							if (offset > 0) {
-								r.response.offset = offset;
+								// Отключение запроса 'reorder' при drag-n-drop
+								that.reorder(false);
+
+								// Если нужна подгрузка аудиозаписей
+								if (offset > 0) {
+									r.response.offset = offset;
+								}
+
+								// Если в ответе присутствуют аудиозаписи
+								if (r.response.length > 0) {
+									app.offset = true;
+									that.playlist.add(r.response);
+								} else {
+									app.offset = false;
+								}
+
+								console.log(request + '(' + genre_id + ',' + offset + ')' + ': получено аудиозаписей = ' + r.response.length);
 							}
-
-							that.playlist.add(r.response);
-							console.log(request + '(' + genre_id + ',' + offset + ')' + ': получено аудиозаписей = ' + r.response.length);
-						}
-					});
-				} catch (e) {
-					console.log('Ошибка запроса: ' + request);
+						});
+					} catch (e) {
+						console.log('Ошибка запроса: ' + request);
+					}
 				}
 			},
 			// Возвращает список рекомендуемых аудиозаписей на основе списка воспроизведения заданного пользователя
@@ -954,36 +983,50 @@ $(function () {
 			// v: версия api
 			getRecommendations: function (offset) {
 				var request = 'audio.getRecommendations';
-				that.load(true);
-				try {
-					VK.Api.call(request, {
-						count: app.audio.count,
-						offset: offset,
-						v: app.api
-					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
 
-						if (r.response) {
-							// Запись запроса, для возможности увелечения offset-a
-							req = {
-								name: request,
-								offset: offset
-							};
+				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
+				// поэтому запрос блокируется с помощью app.offset
+				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
+				if (offset === 0 || offset > 0 && app.offset) {
+					that.load(true);
+					try {
+						VK.Api.call(request, {
+							count: app.audio.count,
+							offset: offset,
+							v: app.api
+						}, function (r) {
+							that.load(false);
+							that.verify(request, r);
 
-							// Отключение запроса 'reorder' при drag-n-drop
-							that.reorder(false);
+							if (r.response) {
+								// Запись запроса, для возможности увелечения offset-a
+								req = {
+									name: request,
+									offset: offset
+								};
 
-							if (offset > 0) {
-								r.response.offset = offset;
+								// Отключение запроса 'reorder' при drag-n-drop
+								that.reorder(false);
+
+								// Если нужна подгрузка аудиозаписей
+								if (offset > 0) {
+									r.response.offset = offset;
+								}
+
+								// Если в ответе присутствуют аудиозаписи
+								if (r.response.items.length > 0) {
+									app.offset = true;
+									that.playlist.add(r.response);
+								} else {
+									app.offset = false;
+								}
+
+								console.log(request + '(' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
 							}
-
-							that.playlist.add(r.response);
-							console.log(request + '(' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
-						}
-					});
-				} catch (e) {
-					console.log('Ошибка запроса: ' + request);
+						});
+					} catch (e) {
+						console.log('Ошибка запроса: ' + request);
+					}
 				}
 			},
 			// Возвращает список аудиозаписей в соответствии с заданным критерием поиска
@@ -994,39 +1037,53 @@ $(function () {
 			// v: версия api
 			search: function (q, offset) {
 				var request = 'audio.search';
-				that.load(true);
-				try {
-					VK.Api.call(request, {
-						q: q,
-						auto_complete: 1,
-						count: app.audio.count,
-						offset: offset,
-						v: app.api
-					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
 
-						if (r.response) {
-							// Запись запроса, для возможности увелечения offset-a
-							req = {
-								name: request,
-								q: q,
-								offset: offset
-							};
+				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
+				// поэтому запрос блокируется с помощью app.offset
+				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
+				if (offset === 0 || offset > 0 && app.offset) {
+					that.load(true);
+					try {
+						VK.Api.call(request, {
+							q: q,
+							auto_complete: 1,
+							count: app.audio.count,
+							offset: offset,
+							v: app.api
+						}, function (r) {
+							that.load(false);
+							that.verify(request, r);
 
-							// Отключение запроса 'reorder' при drag-n-drop
-							that.reorder(false);
+							if (r.response) {
+								// Запись запроса, для возможности увелечения offset-a
+								req = {
+									name: request,
+									q: q,
+									offset: offset
+								};
 
-							if (offset > 0) {
-								r.response.offset = offset;
+								// Отключение запроса 'reorder' при drag-n-drop
+								that.reorder(false);
+
+								// Если нужна подгрузка аудиозаписей
+								if (offset > 0) {
+									r.response.offset = offset;
+								}
+
+								// Если в ответе присутствуют аудиозаписи
+								if (r.response.items.length > 0) {
+									app.offset = true;
+									that.playlist.add(r.response);
+								} else {
+									app.offset = false;
+								}
+
+								console.log(request + '(' + q + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
 							}
-
-							that.playlist.add(r.response);
-							console.log(request + '(' + q + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
-						}
-					});
-				} catch (e) {
-					console.log('Ошибка запроса: ' + request);
+						});
+					} catch (e) {
+						console.log('Ошибка запроса: ' + request);
+					}
 				}
 			},
 			// Изменяет порядок аудиозаписи, перенося ее между аудиозаписями

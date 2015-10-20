@@ -49,7 +49,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<link rel="stylesheet" href="css/slothMusic.css">
 
 	<?php if (verify($_SESSION['access_token'])): ?>
-		<script>var access_token = "<?php echo $_SESSION['access_token'];?>";</script>
+		<script>var access_token = '<?php echo $_SESSION['access_token'];?>';</script>
 	<?php endif;?>
 </head>
 <body>
