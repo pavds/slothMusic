@@ -377,7 +377,7 @@ $(function () {
 							title: item.title,
 							id: item.id
 						};
-						pl += '<a data-id="' + item.id + '" class="pl-item">' + $.trim(item.artist) + ' — ' + $.trim(item.title) + '</a>';
+						pl += '<a data-id="' + item.id + '" data-duration="' + item.duration + '" class="pl-item">' + $.trim(item.artist) + ' — ' + $.trim(item.title) + '</a>';
 					}).promise().done(function () {
 						// Если передан offset, для добавления в плейлист
 						if (r.offset > 0) {
@@ -408,14 +408,34 @@ $(function () {
 
 								// Если при добавлении аудиозаписей не найдены actions
 								if (!$(item).find('div').hasClass('actions')) {
+									var data = $(item).data();
+									var duration = secondsToTime(data.duration);
+									var durationText = (((duration.h > 0) ? duration.h + ':' : '') + '' + duration.m + ':' + '' + duration.s);
+
 									$('<div/>', {
 										'class': 'actions'
 									}).appendTo(item).promise().done(function () {
 										actions = $(item).find('div', '.actions');
 
-										$('<small/>').appendTo(actions);
+										$('<small/>', {
+											'class': 'bitrate',
+											'data-container': 'body',
+											'data-toggle': 'popover',
+											'data-placement': 'top',
+											'data-content': 'Битрейт'
+										}).appendTo(actions);
+
+										$('<small/>', {
+											'class': 'duration',
+											'text': durationText,
+											'data-container': 'body',
+											'data-toggle': 'popover',
+											'data-placement': 'top',
+											'data-content': 'Длительность'
+										}).appendTo(actions);
+
 									}).promise().done(function () {
-										if ($.inArray($(item).data('id'), ids) >= 0) {
+										if ($.inArray(data.id, ids) >= 0) {
 											//  Возможность удаления аудиозаписи
 											$('<span/>', {
 												'class': 'delete',
@@ -574,7 +594,7 @@ $(function () {
 										kbpsClass = 'bitrate-low';
 									}
 
-									$(item).find('div > small').addClass('bitrate ' + kbpsClass).text(data.kbps);
+									$(item).find('div.actions > small.bitrate').data('bitrate', 'checked').addClass(kbpsClass).text(data.kbps);
 								}
 							}
 						});
@@ -733,12 +753,16 @@ $(function () {
 					// Показать битрейт аудиозаписи
 					$(els.playlist.items).on({
 						mouseenter: function () {
-							if (!$(this).find('small').hasClass('bitrate')) {
+							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+
+							if (bitrate !== 'checked') {
 								that.playlist.bitrate(this);
 							}
 						},
 						click: function () {
-							if (!$(this).find('small').hasClass('bitrate')) {
+							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+
+							if (bitrate !== 'checked') {
 								that.playlist.bitrate(this);
 							}
 						}
@@ -870,7 +894,7 @@ $(function () {
 			// v: версия api
 			get: function (owner_id, offset) {
 				var request = 'audio.get';
-				
+
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
 				// поэтому запрос блокируется с помощью app.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
@@ -1386,3 +1410,22 @@ $(function () {
 		return this.on('click', cb);
 	};
 });
+
+
+// secondsToTime: конвертирует секунды в формат времени
+function secondsToTime(secs) {
+	var hours = Math.floor(secs / (60 * 60));
+
+	var divisor_for_minutes = secs % (60 * 60);
+	var minutes = Math.floor(divisor_for_minutes / 60);
+
+	var divisor_for_seconds = divisor_for_minutes % 60;
+	var seconds = Math.ceil(divisor_for_seconds);
+
+	var obj = {
+		"h": hours,
+		"m": (hours > 0 && minutes <= 9) ? '0' + minutes : minutes,
+		"s": (seconds <= 9) ? '0' + seconds : seconds
+	};
+	return obj;
+}
