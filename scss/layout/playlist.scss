@@ -19,7 +19,7 @@
 	{
 		overflow: hidden;
 
-		padding-right: 140px;
+		padding-right: 80px;
 
 		cursor: pointer;
 		white-space: nowrap;
@@ -31,7 +31,7 @@
 		.actions
 		{
 			position: absolute;
-			top: 45%;
+			top: 50%;
 			right: 15px;
 
 			transform: translateY(-50%);
@@ -40,10 +40,12 @@
 			{
 				font-size: 13pt;
 
-				margin-top: 3px;
-				margin-left: 0 !important;
+				position: absolute;
+				top: 50%;
+				right: 0;
 
 				cursor: pointer;
+				transform: translateY(-50%);
 				animation: opacityIn .25s ease-in-out;
 			}
 			.add
@@ -83,8 +85,11 @@
 		}
 		.duration
 		{
-			margin-right: 8px;
+			position: absolute;
+			top: 50%;
+			right: 25px;
 
+			transform: translateY(-50%);
 			animation: opacityIn .25s ease-in-out;
 
 			@extend .hidden-xs;
@@ -93,7 +98,12 @@
 		}
 		.bitrate
 		{
-			margin-right: 8px;
+			position: absolute;
+			top: 50%;
+			right: 25px;
+
+			transform: translateY(-50%);
+			animation: opacityIn .25s ease-in-out;
 
 			@extend .label;
 			@extend .hidden-xs;
@@ -130,6 +140,19 @@
 
 			@extend .hidden-xs;
 			@extend .hidden-sm;
+		}
+		&:hover,
+		&:active,
+		&:focus
+		{
+			.duration
+			{
+				display: none;
+			}
+			.bitrate
+			{
+				display: block !important;
+			}
 		}
 	}
 }
