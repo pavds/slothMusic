@@ -60,6 +60,8 @@
 	}
 	&-shuffle
 	{
+		margin-left: 10px;
+
 		@extend .fa;
 		@extend .fa-refresh;
 	}
@@ -70,6 +72,8 @@
 	}
 	&-backward
 	{
+		margin-left: 10px;
+
 		@extend .fa;
 		@extend .fa-backward;
 		@extend .hidden-sm;
