@@ -32,9 +32,13 @@
 
 .ca
 {
+	z-index: 999999 !important;
 	.ml-dialog
 	{
+		z-index: 999999 !important;
+
 		width: 300px;
+		margin: 60px auto;
 	}
 	&-img
 	{

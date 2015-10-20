@@ -418,7 +418,7 @@ $(function () {
 										actions = $(item).find('div', '.actions');
 
 										$('<small/>', {
-											'class': 'bitrate',
+											'class': 'bitrate bitrate-load',
 											'data-container': 'body',
 											'data-toggle': 'popover',
 											'data-placement': 'top',
@@ -594,7 +594,7 @@ $(function () {
 										kbpsClass = 'bitrate-low';
 									}
 
-									$(item).find('div.actions > small.bitrate').data('bitrate', 'checked').addClass(kbpsClass).text(data.kbps);
+									$(item).find('div.actions > small.bitrate').data('bitrate', 'checked').removeClass('bitrate-load').addClass(kbpsClass).text(data.kbps);
 								}
 							}
 						});
@@ -1266,7 +1266,7 @@ $(function () {
 				$(els.captcha.img).prop('src', captcha.captcha_img);
 				$(els.captcha.sid).val(captcha.captcha_sid);
 				$(els.captcha.key).val('');
-				$(els.captcha.modal).modal('show');
+				$(els.captcha.container).modal('show');
 			},
 			ready: function () {
 				$(els.captcha.form).submit(function (e) {
@@ -1281,7 +1281,7 @@ $(function () {
 							v: app.api
 						}, function (r) {
 							if (r.response) {
-								$(controls.captcha.modal).modal('hide');
+								$(els.captcha.container).modal('hide');
 							}
 						});
 					}
@@ -1334,6 +1334,7 @@ $(function () {
 			that.player.ready();
 			that.genres.ready();
 			that.playlist.ready();
+			that.captcha.ready();
 
 			// Для всех popover
 			if (device.desktop) {

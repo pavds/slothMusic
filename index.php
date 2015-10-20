@@ -87,7 +87,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 						</div>
 						<div class="form-group">
 							<input type="text" class="form-control" id="ml-ca-key" placeholder="Введите код" required>
-							<input type="hidden" id="ml-ca-sid" required>
+							<input type="hidden" id="ml-ca-sid">
 						</div>
 					</div>
 					<div class="ml-footer">

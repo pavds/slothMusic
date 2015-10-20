@@ -105,12 +105,12 @@
 			transform: translateY(-50%);
 			animation: opacityIn .25s ease-in-out;
 
-			@extend .label;
 			@extend .hidden-xs;
 			&-higher
 			{
 				animation: opacityIn .25s ease-in-out;
 
+				@extend .label;
 				@extend .label-success;
 			}
 			&-high,
@@ -118,13 +118,28 @@
 			{
 				animation: opacityIn .25s ease-in-out;
 
+				@extend .label;
 				@extend .label-warning;
 			}
 			&-low
 			{
 				animation: opacityIn .25s ease-in-out;
 
+				@extend .label;
 				@extend .label-danger;
+			}
+			&-load
+			{
+				line-height: 0;
+
+				right: 35px;
+
+				animation: load 2s infinite;
+
+				color: #bbb;
+
+				@extend .fa;
+				@extend .fa-spinner;
 			}
 		}
 		&.sortable-ghost

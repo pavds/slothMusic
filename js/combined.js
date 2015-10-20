@@ -6,5 +6,4 @@
 // @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/tooltip.js"
 // @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/popover.js"
 // @codekit-prepend "../bower_components/sortable.js/Sortable.min.js"
-// @codekit-prepend "../bower_components/momentjs/min/moment.min.js"
 // @codekit-prepend "slothMusic.js"
