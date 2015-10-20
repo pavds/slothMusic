@@ -95,23 +95,25 @@
 		{
 			margin-right: 8px;
 
-			animation: opacityIn .25s ease-in-out;
-
+			@extend .label;
 			@extend .hidden-xs;
 			&-higher
 			{
-				@extend .label;
+				animation: opacityIn .25s ease-in-out;
+
 				@extend .label-success;
 			}
 			&-high,
 			&-medium
 			{
-				@extend .label;
+				animation: opacityIn .25s ease-in-out;
+
 				@extend .label-warning;
 			}
 			&-low
 			{
-				@extend .label;
+				animation: opacityIn .25s ease-in-out;
+
 				@extend .label-danger;
 			}
 		}
