@@ -226,11 +226,11 @@ $(function () {
 				try {
 					var item = session.playlist[id];
 					var itemPl = els.playlist.items.find('a[data-id="' + id + '"]');
-					var title = $.trim(item.artist) + ' — ' + $.trim(item.title);
+					var title = item.artist + ' — ' + item.title;
 
 					// Поиск cover-a
 					if (device.desktop) {
-						that.player.cover.search($.trim(item.artist) + ' ' + $.trim(item.title));
+						that.player.cover.search(item.artist + ' ' + item.title);
 					}
 
 					// Воспроизводимая аудиозапись
@@ -377,7 +377,7 @@ $(function () {
 							title: item.title,
 							id: item.id
 						};
-						pl += '<a data-id="' + item.id + '" data-duration="' + item.duration + '" class="pl-item">' + $.trim(item.artist) + ' — ' + $.trim(item.title) + '</a>';
+						pl += '<a data-id="' + item.id + '" data-duration="' + item.duration + '" class="pl-item">' + item.artist + ' — ' + item.title + '</a>';
 					}).promise().done(function () {
 						// Если передан offset, для добавления в плейлист
 						if (r.offset > 0) {
@@ -729,8 +729,8 @@ $(function () {
 									itemPl = session.playlist[id];
 
 									download[i] = {
-										artist: $.trim(itemPl.artist),
-										title: $.trim(itemPl.title),
+										artist: itemPl.artist,
+										title: itemPl.title,
 										owner_id: itemPl.owner_id,
 										id: itemPl.id
 									};
