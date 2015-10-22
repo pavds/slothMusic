@@ -183,6 +183,14 @@
 			color: #444;
 
 			@extend .form-control;
+			&:-webkit-autofill,
+			&:-webkit-autofill:hover,
+			&:-webkit-autofill:focus,
+			&:-webkit-autofill:active
+			{
+				-webkit-transition: background-color 5000s ease-in-out 0s !important;
+				        transition: background-color 5000s ease-in-out 0s !important;
+			}
 		}
 	}
 }
@@ -210,6 +218,17 @@
 
 				width: 100%;
 				min-width: 100%;
+				padding: 10px;
+			}
+			&-gr
+			{
+				&-list
+				{
+					a
+					{
+						padding: 5px 20px !important;
+					}
+				}
 			}
 		}
 	}
