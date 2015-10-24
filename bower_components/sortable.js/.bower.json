@@ -29,18 +29,15 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "polymer": "Polymer/polymer#~1.1.4"
-  },
-  "version": "1.4.1",
-  "_release": "1.4.1",
+  "version": "1.4.2",
+  "_release": "1.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "1.4.1",
-    "commit": "f79cdf65cf16ff1d66925b10bdda6c1f627f6d9f"
+    "tag": "1.4.2",
+    "commit": "d86937c8bca017f948aad04eb02dcaddfbb60ffa"
   },
   "_source": "git://github.com/RubaXa/Sortable.git",
-  "_target": "~1.4.1",
+  "_target": "~1.4.2",
   "_originalSource": "sortable.js",
   "_direct": true
 }
