@@ -520,8 +520,10 @@ $(function () {
 							'href': url,
 							'download': 'playlist.m3u'
 						}).appendTo('body').promise().done(function () {
-							$(this)[0].click();
-							$(this).remove();
+							item = this;
+
+							$(item)[0].click();
+							$(item).remove();
 						});
 
 						window.URL.revokeObjectURL(url);
@@ -677,8 +679,9 @@ $(function () {
 				});
 				// Аудиозаписи в плейлисте (воспроизведение, пауза)
 				$(els.playlist.items).on('click', 'a', function (e) {
+					var item = this;
+
 					if (app.mode.listen) {
-						var item = this;
 						var id = $(item).data('id');
 
 						if (e.target === item) {
@@ -693,10 +696,10 @@ $(function () {
 							}
 						}
 					} else if (app.mode.download) {
-						if (!$(this).hasClass('dl-active')) {
-							$(this).addClass('dl-active');
+						if (!$(item).hasClass('dl-active')) {
+							$(item).addClass('dl-active');
 						} else {
-							$(this).removeClass('dl-active');
+							$(item).removeClass('dl-active');
 						}
 					}
 				});
@@ -708,12 +711,13 @@ $(function () {
 					});
 					// Включение или отключения режима загрузки
 					$(els.controls.playlist.download.mode).on('click', function () {
+						var item = this;
 						var items = els.playlist.items.find('a');
 
 						// Если включен режим прослушивания
 						if (app.mode.listen) {
 							that.mode('download');
-							$(this).addClass('active');
+							$(item).addClass('active');
 							els.controls.playlist.download.all.addClass('active');
 						}
 						// Если включен режим загрузки
@@ -739,7 +743,7 @@ $(function () {
 								});
 							} else {
 								that.mode('listen');
-								$(this).removeClass('active');
+								$(item).removeClass('active');
 								els.controls.playlist.download.all.removeClass('active');
 							}
 						}
@@ -753,24 +757,27 @@ $(function () {
 					// Показать битрейт аудиозаписи
 					$(els.playlist.items).on({
 						mouseenter: function () {
-							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+							var item = this;
+							var bitrate = $(item).find('div.actions > small.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
-								that.playlist.bitrate(this);
+								that.playlist.bitrate(item);
 							}
 						},
 						click: function () {
-							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+							var item = this;
+							var bitrate = $(item).find('div.actions > small.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
-								that.playlist.bitrate(this);
+								that.playlist.bitrate(item);
 							}
 						}
 					}, 'a');
 					// Добавить аудиозапись
 					$(els.playlist.items).on('click', 'a > div.actions > span.add', function () {
-						if (!$(this).hasClass('done')) {
-							var item = this;
+						var item = this;
+
+						if (!$(item).hasClass('done')) {
 							var id = $(item).parent().parent().data('id');
 
 							that.audio.add(session.playlist[id].owner_id, id);
@@ -779,8 +786,9 @@ $(function () {
 					});
 					// Удалить аудиозапись
 					$(els.playlist.items).on('click', 'a > div.actions > span.delete', function () {
-						if (!$(this).hasClass('done')) {
-							var item = this;
+						var item = this;
+
+						if (!$(item).hasClass('done')) {
 							var id = $(item).parent().parent().data('id');
 
 							that.audio.delete(session.mid, id);
@@ -879,7 +887,8 @@ $(function () {
 				});
 				// Получить аудиозаписи выбранного жанра
 				$(els.controls.search.genres.items).on('click', 'a', function () {
-					var id = $(this).data('id');
+					var item = this;
+					var id = $(item).data('id');
 
 					that.audio.getPopular(id, 0);
 				});
