@@ -1,5 +1,6 @@
 /* ================================================== Animations */
 
+// Анимация в классах, для программного добавления или удаления
 .an
 {
 	&-plr
@@ -17,10 +18,10 @@
 	{
 		&-moved
 		{
-			animation: pl-moved 1s ease-in-out;
+			animation: pl-moved 1s ease-in-out !important;
 			&--active
 			{
-				animation: pl-moved--active 1s ease-in-out;
+				animation: pl-moved--active 1s ease-in-out !important;
 			}
 		}
 		&-bitrate
@@ -43,6 +44,7 @@
 
 /* ================================================== Keyframes */
 
+// Анимация вращения spinner-a (загрузка)
 @keyframes load
 {
 	0%
@@ -54,6 +56,8 @@
 		transform: rotate(360deg);
 	}
 }
+
+// Анимация появления предыдущего названия аудиозаписи
 @keyframes plr-prev
 {
 	0%
@@ -69,6 +73,8 @@
 		opacity: 1;
 	}
 }
+
+// Анимация появления следующего названия аудиозаписи
 @keyframes plr-next
 {
 	0%
@@ -84,6 +90,8 @@
 		opacity: 1;
 	}
 }
+
+// Анимация изображения (cover-a) аудиозаписи
 @keyframes plr-cover
 {
 	0%
@@ -103,17 +111,8 @@
 		transform: scale(1, 1) rotate(0deg);
 	}
 }
-@keyframes plr-title
-{
-	0%
-	{
-		transform: translateX(-100%);
-	}
-	100%
-	{
-		transform: translateX(100%);
-	}
-}
+
+// Анимация после перемещения аудиозаписи в плейлисте
 @keyframes pl-moved
 {
 	0%
@@ -129,6 +128,8 @@
 		background-color: #fff;
 	}
 }
+
+// Анимация после перемещения активной аудиозаписи в плейлисте
 @keyframes pl-moved--active
 {
 	0%
@@ -145,17 +146,8 @@
 		background-color: #2196f3;
 	}
 }
-@keyframes pl-bitrate
-{
-	0%
-	{
-		opacity: 0;
-	}
-	100%
-	{
-		opacity: 1;
-	}
-}
+
+// Анимация появления с прозрачностью
 @keyframes opacityIn
 {
 	0%
@@ -167,6 +159,8 @@
 		opacity: 1;
 	}
 }
+
+// Анимация исчезания с прозрачностью
 @keyframes opacityOut
 {
 	0%
