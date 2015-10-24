@@ -103,7 +103,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<!-- player -->
 	<div class="plr" data-authorized="false">
 		<div class="container">
-			<div class="plr-cls">
+			<div id="plr-cls-container" class="plr-cls">
 				<div class="plr-cls-prev">
 					<i id="plr-cls-prev"></i>
 				</div>
