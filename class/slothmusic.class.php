@@ -140,9 +140,10 @@ class slothMusic {
 	 * @return file аудиозапись
 	 */
 	public function download($url, $filename) {
-		header('Content-type: application/force-download');
-		header('Content-Disposition: attachment; filename="' . basename($filename) . '.mp3"');
-		readfile($url);
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="' . basename($filename) . '.mp3";');
+		ob_end_flush();
+		@readfile($url);
 		exit;
 	}
 

@@ -1,3 +1,5 @@
+SetEnvIfNoCase Request_URI ^/download\.php no-gzip dont-vary
+
 DirectoryIndex index.html index.htm index.php
 
 RewriteEngine On
