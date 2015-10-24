@@ -1,6 +1,5 @@
 $(function () {
 	/* ================================================== SlothMusic */
-	var that = {};
 	var slothMusic = {
 		/* ================================================== App */
 		app: {
@@ -97,52 +96,50 @@ $(function () {
 
 		// Инициализация
 		init: function () {
-			that = this;
-
 			if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-				that.app.device.desktop = false;
-				that.app.device.portable = true;
+				slothMusic.app.device.desktop = false;
+				slothMusic.app.device.portable = true;
 			} else {
-				that.app.device.desktop = true;
-				that.app.device.portable = false;
+				slothMusic.app.device.desktop = true;
+				slothMusic.app.device.portable = false;
 			}
 
-			that.vk.init();
+			slothMusic.vk.init();
 		},
 		vk: {
 			// Инициализация Open API
 			init: function () {
 				VK.init({
-					apiId: that.app.id
+					apiId: slothMusic.app.id
 				});
-				VK.Auth.getLoginStatus(that.vk.auth);
-				VK.UI.button(that.els.vk.auth.get(0).id);
+				VK.Auth.getLoginStatus(slothMusic.vk.auth);
+				VK.UI.button(slothMusic.els.vk.auth.get(0).id);
 			},
 			// Авторизация
 			auth: function (r) {
 				if (r.status === 'connected') {
-					that.session = r.session;
-					that.els.vk.auth.hide();
-					that.els.authorized.attr('data-authorized', 'true').fadeIn(250);
+					slothMusic.session = r.session;
+					slothMusic.els.vk.auth.hide();
+					slothMusic.els.authorized.attr('data-authorized', 'true').fadeIn(250);
 
-					console.log('auth: авторизация прошла успешно (id = ' + that.session.mid + ')');
+					console.log('auth: авторизация прошла успешно (id = ' + slothMusic.session.mid + ')');
 
-					that.player.controls.broadcast(false);
-					that.audio.get(that.session.mid, 0);
+					slothMusic.player.controls.broadcast(false);
+					slothMusic.audio.get(slothMusic.session.mid, 0);
 				} else {
-					that.session = {};
-					that.plr = {};
+					slothMusic.session = {};
+					slothMusic.plr = {};
 
-					that.els.authorized.attr('data-authorized', 'false').hide();
-					that.els.vk.auth.show();
+					slothMusic.els.authorized.attr('data-authorized', 'false').hide();
+					slothMusic.els.vk.auth.show();
 					console.log('auth: авторизация не удалась');
 				}
 			},
 			// События при document.ready
 			ready: function () {
 				// Авторизация приложения
-				that.els.vk.auth.on('click', function () {
-					VK.Auth.login(that.vk.auth, that.app.permissions);
+				slothMusic.els.vk.auth.on('click', function () {
+					VK.Auth.login(slothMusic.vk.auth, slothMusic.app.permissions);
 				});
 			}
 		},
@@ -151,17 +148,17 @@ $(function () {
 			controls: {
 				// Воспроизвести
 				play: function () {
-					that.els.player.audio.play();
+					slothMusic.els.player.audio.play();
 				},
 				// Пауза
 				pause: function () {
-					that.els.player.audio.pause();
+					slothMusic.els.player.audio.pause();
 				},
 				// Предыдущая аудиозапись в плейлисте
 				prev: function () {
 					try {
-						var items = that.els.playlist.items.find('a');
-						var item = that.els.playlist.items.find('a.active');
+						var items = slothMusic.els.playlist.items.find('a');
+						var item = slothMusic.els.playlist.items.find('a.active');
 						var id;
 
 						if (item.is(':first-child')) {
@@ -170,8 +167,8 @@ $(function () {
 							id = items.eq(item.index() - 1).data('id');
 						}
 
-						that.animation.player.controls.prev();
-						that.player.play(id);
+						slothMusic.animation.player.controls.prev();
+						slothMusic.player.play(id);
 					} catch (e) {
 						console.log('player.controls.prev: ошибка при воспроизведении предыдущей аудиозаписи');
 					}
@@ -179,8 +176,8 @@ $(function () {
 				// Следующая аудиозапись в плейлисте
 				next: function () {
 					try {
-						var items = that.els.playlist.items.find('a');
-						var item = that.els.playlist.items.find('a.active');
+						var items = slothMusic.els.playlist.items.find('a');
+						var item = slothMusic.els.playlist.items.find('a.active');
 						var id;
 
 						if (item.is(':last-child')) {
@@ -189,8 +186,8 @@ $(function () {
 							id = items.eq(item.index() + 1).data('id');
 						}
 
-						that.animation.player.controls.next();
-						that.player.play(id);
+						slothMusic.animation.player.controls.next();
+						slothMusic.player.play(id);
 					} catch (e) {
 						console.log('player.controls.next: ошибка при воспроизведении следующей аудиозаписи');
 					}
@@ -199,22 +196,22 @@ $(function () {
 				rewind: {
 					// Перемотка назад
 					backward: function () {
-						that.els.player.audio.currentTime -= 10;
+						slothMusic.els.player.audio.currentTime -= 10;
 					},
 					// Перемотка вперед
 					forward: function () {
-						that.els.player.audio.currentTime += 10;
+						slothMusic.els.player.audio.currentTime += 10;
 					}
 				},
 				// Включение или отлючение трансляции в статус
 				broadcast: function (status) {
 					try {
 						if (status) {
-							that.plr.broadcast = true;
-							that.audio.setBroadcast(that.plr.owner_id + '_' + that.plr.id, that.session.mid);
+							slothMusic.plr.broadcast = true;
+							slothMusic.audio.setBroadcast(slothMusic.plr.owner_id + '_' + slothMusic.plr.id, slothMusic.session.mid);
 						} else {
-							that.plr.broadcast = false;
-							that.audio.setBroadcast(0, that.session.mid);
+							slothMusic.plr.broadcast = false;
+							slothMusic.audio.setBroadcast(0, slothMusic.session.mid);
 						}
 					} catch (e) {
 						if (status) {
@@ -228,31 +225,31 @@ $(function () {
 			// Воспроизвести аудиозапись по id, из текущего плейлиста
 			play: function (id) {
 				try {
-					var item = that.session.playlist[id];
-					var itemPl = that.els.playlist.items.find('a[data-id="' + id + '"]');
+					var item = slothMusic.session.playlist[id];
+					var itemPl = slothMusic.els.playlist.items.find('a[data-id="' + id + '"]');
 					var title = item.artist + ' — ' + item.title;
 
 					// Поиск cover-a
-					if (that.app.device.desktop) {
-						that.player.cover.search(item.artist + ' ' + item.title);
+					if (slothMusic.app.device.desktop) {
+						slothMusic.player.cover.search(item.artist + ' ' + item.title);
 					}
 
 					// Воспроизводимая аудиозапись
-					that.plr.id = item.id;
-					that.plr.owner_id = item.owner_id;
-					that.plr.title = title;
-					that.plr.item = itemPl;
+					slothMusic.plr.id = item.id;
+					slothMusic.plr.owner_id = item.owner_id;
+					slothMusic.plr.title = title;
+					slothMusic.plr.item = itemPl;
 
-					that.els.player.audio.src = item.url;
-					that.els.player.audio.load();
-					that.els.player.audio.play();
-					that.els.player.controls.title.text(title);
+					slothMusic.els.player.audio.src = item.url;
+					slothMusic.els.player.audio.load();
+					slothMusic.els.player.audio.play();
+					slothMusic.els.player.controls.title.text(title);
 
-					if (that.plr.broadcast === true) {
-						that.player.controls.broadcast(true);
+					if (slothMusic.plr.broadcast === true) {
+						slothMusic.player.controls.broadcast(true);
 					}
 
-					that.els.playlist.items.find('a').removeClass('active');
+					slothMusic.els.playlist.items.find('a').removeClass('active');
 					itemPl.addClass('active');
 				} catch (e) {
 					console.log('player.play: ошибка воспроизведения');
@@ -273,7 +270,7 @@ $(function () {
 							},
 							success: function (r) {
 								if (r.responseStatus === 200) {
-									var item = that.els.player.cover;
+									var item = slothMusic.els.player.cover;
 									var url = r.responseData.results[0].unescapedUrl;
 
 									if (url !== '' && !$(item).hasClass('an-plr-cover')) {
@@ -294,66 +291,66 @@ $(function () {
 			// События при document.ready
 			ready: function () {
 				// Окончание проигрывания
-				$(that.els.player.audio).on('ended', function () {
+				$(slothMusic.els.player.audio).on('ended', function () {
 					if (this.src !== '') {
-						that.player.controls.next();
+						slothMusic.player.controls.next();
 					}
 				});
 				// Пауза
-				$(that.els.player.audio).on('pause', function () {
+				$(slothMusic.els.player.audio).on('pause', function () {
 					if (this.src !== '') {
-						that.plr.status = 'pause';
-						that.animation.player.controls.pause();
-						that.title('Пауза: ' + that.plr.title);
+						slothMusic.plr.status = 'pause';
+						slothMusic.animation.player.controls.pause();
+						slothMusic.title('Пауза: ' + slothMusic.plr.title);
 					}
 				});
 				// Воспроизведение
-				$(that.els.player.audio).on('play', function () {
+				$(slothMusic.els.player.audio).on('play', function () {
 					if (this.src !== '') {
-						that.plr.status = 'play';
-						that.animation.player.controls.play();
-						that.title(that.plr.title);
+						slothMusic.plr.status = 'play';
+						slothMusic.animation.player.controls.play();
+						slothMusic.title(slothMusic.plr.title);
 					}
 				});
 				// Буферизация
-				$(that.els.player.audio).on('waiting', function () {
+				$(slothMusic.els.player.audio).on('waiting', function () {
 					if (this.src !== '') {
-						that.load(true);
-						that.plr.status = 'waiting';
-						that.title('Загрузка: ' + that.plr.title);
+						slothMusic.load(true);
+						slothMusic.plr.status = 'waiting';
+						slothMusic.title('Загрузка: ' + slothMusic.plr.title);
 					}
 				});
 				// Проигрывание
-				$(that.els.player.audio).on('playing', function () {
+				$(slothMusic.els.player.audio).on('playing', function () {
 					if (this.src !== '') {
-						that.load(false);
-						that.plr.status = 'playing';
-						that.title(that.plr.title);
+						slothMusic.load(false);
+						slothMusic.plr.status = 'playing';
+						slothMusic.title(slothMusic.plr.title);
 					}
 				});
 				// Предыдущая аудиозапись
-				$(that.els.player.controls.prev).on('click', function () {
-					that.player.controls.prev();
+				$(slothMusic.els.player.controls.prev).on('click', function () {
+					slothMusic.player.controls.prev();
 				});
 				// Следующая аудиозапись
-				$(that.els.player.controls.next).on('click', function () {
-					that.player.controls.next();
+				$(slothMusic.els.player.controls.next).on('click', function () {
+					slothMusic.player.controls.next();
 				});
 				// Перемотать назад на 10 секунд
-				$(that.els.controls.player.rewind.backward).on('click', function () {
-					that.player.controls.rewind.backward();
+				$(slothMusic.els.controls.player.rewind.backward).on('click', function () {
+					slothMusic.player.controls.rewind.backward();
 				});
 				// Перемотать вперед на 10 секунд
-				$(that.els.controls.player.rewind.forward).on('click', function () {
-					that.player.controls.rewind.forward();
+				$(slothMusic.els.controls.player.rewind.forward).on('click', function () {
+					slothMusic.player.controls.rewind.forward();
 				});
 				// Трансляция (включить, выключить)
-				$(that.els.controls.player.broadcast).clickToggle(function () {
-						that.player.controls.broadcast(true);
+				$(slothMusic.els.controls.player.broadcast).clickToggle(function () {
+						slothMusic.player.controls.broadcast(true);
 						$(this).addClass('active');
 					},
 					function () {
-						that.player.controls.broadcast(false);
+						slothMusic.player.controls.broadcast(false);
 						$(this).removeClass('active');
 					});
 			}
@@ -367,7 +364,7 @@ $(function () {
 
 					// Очистка текущего плейлиста, если не передан offset
 					if ($.isEmptyObject(r.offset) || r.offset <= 0) {
-						that.session.playlist = {};
+						slothMusic.session.playlist = {};
 					}
 
 					// Если в ответе от сервера, обьекты находятся в items, а не в корне
@@ -379,7 +376,7 @@ $(function () {
 
 					// Собирает массив из ответа сервера и добавляет ссылки в DOM
 					$(items).each(function (i, item) {
-						that.session.playlist[item.id] = {
+						slothMusic.session.playlist[item.id] = {
 							url: item.url,
 							duration: item.duration,
 							owner_id: item.owner_id,
@@ -391,19 +388,19 @@ $(function () {
 					}).promise().done(function () {
 						// Если передан offset, для добавления в плейлист
 						if (r.offset > 0) {
-							that.els.playlist.items.append(pl);
+							slothMusic.els.playlist.items.append(pl);
 						} else {
-							that.els.playlist.items.html(pl);
+							slothMusic.els.playlist.items.html(pl);
 						}
 					});
 
 					// Если используется компьютер, добавляет возможности:
 					// просмотр битрейта, добавление или удаление аудиозаписей
-					if (that.app.device.desktop) {
+					if (slothMusic.app.device.desktop) {
 						VK.Api.call('audio.get', {
-							owner_id: that.session.mid,
+							owner_id: slothMusic.session.mid,
 							count: 6000,
-							v: that.app.api
+							v: slothMusic.app.api
 						}, function (r) {
 							var userItems = r.response.items;
 							var ids = [];
@@ -413,7 +410,7 @@ $(function () {
 								ids[i] = item.id;
 							});
 
-							$(that.els.playlist.items).find('a').each(function () {
+							$(slothMusic.els.playlist.items).find('a').each(function () {
 								var item = this;
 
 								// Если при добавлении аудиозаписей не найдены actions
@@ -482,27 +479,27 @@ $(function () {
 			sort: {
 				// Рандомная сортировка
 				shuffle: function () {
-					that.els.playlist.items.find('a').shuffle();
+					slothMusic.els.playlist.items.find('a').shuffle();
 				},
 				// Сортировка по алфавиту
 				alphabetically: function (direction) {
-					that.els.playlist.items.alphabetically(direction);
+					slothMusic.els.playlist.items.alphabetically(direction);
 				}
 			},
 			// Подгрузить еще аудиозаписи, используя текущий запрос, изменяя offset
 			more: function () {
-				switch (that.req.name) {
+				switch (slothMusic.req.name) {
 				case 'audio.get':
-					that.audio.get(that.req.owner_id, (that.req.offset + that.app.audio.offset));
+					slothMusic.audio.get(slothMusic.req.owner_id, (slothMusic.req.offset + slothMusic.app.audio.offset));
 					break;
 				case 'audio.getPopular':
-					that.audio.getPopular(that.req.genre_id, (that.req.offset + that.app.audio.offset));
+					slothMusic.audio.getPopular(slothMusic.req.genre_id, (slothMusic.req.offset + slothMusic.app.audio.offset));
 					break;
 				case 'audio.getRecommendations':
-					that.audio.getRecommendations(that.req.offset + that.app.audio.offset);
+					slothMusic.audio.getRecommendations(slothMusic.req.offset + slothMusic.app.audio.offset);
 					break;
 				case 'audio.search':
-					that.audio.search(that.req.q, (that.req.offset + that.app.audio.offset));
+					slothMusic.audio.search(slothMusic.req.q, (slothMusic.req.offset + slothMusic.app.audio.offset));
 					break;
 				}
 			},
@@ -513,7 +510,7 @@ $(function () {
 					try {
 						var m3u = '#EXTM3U\r\n';
 
-						$.each(that.session.playlist, function (i, item) {
+						$.each(slothMusic.session.playlist, function (i, item) {
 							m3u += '#EXTINF:' + item.duration + ',' + (item.artist).replace(/\r\n|\r|\n/g, ' ') + ' - ' + (item.title).replace(/\r\n|\r|\n/g, ' ') + '\r\n';
 							m3u += (item.url.replace('https', 'http')).replace(/\?extra=(.*)/, '') + '\r\n';
 						});
@@ -561,10 +558,10 @@ $(function () {
 							// Удаление контейнера
 							$(links).remove();
 							// Выключение режима загрузки
-							that.els.playlist.items.find('a.dl-active').removeClass('dl-active');
-							that.els.controls.playlist.download.mode.removeClass('active');
+							slothMusic.els.playlist.items.find('a.dl-active').removeClass('dl-active');
+							slothMusic.els.controls.playlist.download.mode.removeClass('active');
 							// Включение режима прослушивания
-							that.mode('listen');
+							slothMusic.mode('listen');
 						});
 					});
 				} catch (e) {
@@ -575,7 +572,7 @@ $(function () {
 			bitrate: function (item) {
 				try {
 					var id = $(item).data('id');
-					var itemPl = that.session.playlist[id];
+					var itemPl = slothMusic.session.playlist[id];
 
 					if (access_token !== 'undefined') {
 						$.ajax({
@@ -585,7 +582,7 @@ $(function () {
 								duration: itemPl.duration,
 								owner_id: itemPl.owner_id,
 								access_token: access_token,
-								uid: that.session.mid
+								uid: slothMusic.session.mid
 							},
 							method: 'POST',
 							dataType: 'json',
@@ -615,7 +612,7 @@ $(function () {
 			// События при document.ready
 			ready: function () {
 				// Инициализация Drag-n-drop-a в плейлисте
-				if (that.app.device.desktop) {
+				if (slothMusic.app.device.desktop) {
 					try {
 						$(function () {
 							var plItems = document.getElementById('pl-items');
@@ -623,7 +620,7 @@ $(function () {
 								animation: 250,
 								// После перетаскивания аудиозаписи
 								onEnd: function (e) {
-									if (that.app.reorder) {
+									if (slothMusic.app.reorder) {
 										var item = e.item;
 										var prev = $(item).prev();
 										var next = $(item).next();
@@ -635,18 +632,18 @@ $(function () {
 
 										// Начало плейлиста
 										if (prevIndex < 0 && nextIndex >= 0) {
-											that.audio.reorder(that.session.mid, itemId, nextId, '');
+											slothMusic.audio.reorder(slothMusic.session.mid, itemId, nextId, '');
 										}
 										// Середина плейлиста
 										else if (prevIndex >= 0 && nextIndex >= 0) {
-											that.audio.reorder(that.session.mid, itemId, '', prevId);
+											slothMusic.audio.reorder(slothMusic.session.mid, itemId, '', prevId);
 										}
 										// Конец плейлиста
 										else if (prevIndex > 0 && nextIndex < 0) {
-											that.audio.reorder(that.session.mid, itemId, '', prevId);
+											slothMusic.audio.reorder(slothMusic.session.mid, itemId, '', prevId);
 										}
 
-										that.animation.playlist.moved(item);
+										slothMusic.animation.playlist.moved(item);
 									}
 								},
 							});
@@ -656,53 +653,53 @@ $(function () {
 					}
 				}
 				// Получение аудиозаписей пользователя
-				$(that.els.controls.load.user).on('click', function () {
-					that.audio.get(that.session.mid, 0);
+				$(slothMusic.els.controls.load.user).on('click', function () {
+					slothMusic.audio.get(slothMusic.session.mid, 0);
 				});
 				// Получение популярных аудиозаписей
-				$(that.els.controls.load.popular).on('click', function () {
-					that.audio.getPopular(0, 0);
+				$(slothMusic.els.controls.load.popular).on('click', function () {
+					slothMusic.audio.getPopular(0, 0);
 				});
 				// Получение аудиозаписей рекомендуемых пользователю
-				$(that.els.controls.load.recommendations).on('click', function () {
-					that.audio.getRecommendations(0);
+				$(slothMusic.els.controls.load.recommendations).on('click', function () {
+					slothMusic.audio.getRecommendations(0);
 				});
 				// Рандомная сортировка
-				$(that.els.controls.playlist.sort.shuffle).on('click', function () {
-					that.playlist.sort.shuffle();
+				$(slothMusic.els.controls.playlist.sort.shuffle).on('click', function () {
+					slothMusic.playlist.sort.shuffle();
 				});
 				// Сортировка по алфавиту (>, <)
-				$(that.els.controls.playlist.sort.alphabetically).clickToggle(function () {
-					that.playlist.sort.alphabetically('<');
+				$(slothMusic.els.controls.playlist.sort.alphabetically).clickToggle(function () {
+					slothMusic.playlist.sort.alphabetically('<');
 				}, function () {
-					that.playlist.sort.alphabetically('>');
+					slothMusic.playlist.sort.alphabetically('>');
 				});
 				// Поисковая форма
-				$(that.els.controls.search.form).submit(function (e) {
-					var q = $.trim(that.els.controls.search.query.val());
+				$(slothMusic.els.controls.search.form).submit(function (e) {
+					var q = $.trim(slothMusic.els.controls.search.query.val());
 
-					that.audio.search(q, 0);
+					slothMusic.audio.search(q, 0);
 					e.preventDefault();
 				});
 				// Аудиозаписи в плейлисте (воспроизведение, пауза)
-				$(that.els.playlist.items).on('click', 'a', function (e) {
+				$(slothMusic.els.playlist.items).on('click', 'a', function (e) {
 					var item = this;
 
-					if (that.app.mode.listen) {
+					if (slothMusic.app.mode.listen) {
 						var id = $(item).data('id');
 
 						if (e.target === item) {
 							if ($(item).hasClass('active')) {
-								if (that.plr.status === 'play' || that.plr.status === 'playing') {
-									that.player.controls.pause();
+								if (slothMusic.plr.status === 'play' || slothMusic.plr.status === 'playing') {
+									slothMusic.player.controls.pause();
 								} else {
-									that.player.controls.play();
+									slothMusic.player.controls.play();
 								}
 							} else {
-								that.player.play(id);
+								slothMusic.player.play(id);
 							}
 						}
-					} else if (that.app.mode.download) {
+					} else if (slothMusic.app.mode.download) {
 						if (!$(item).hasClass('dl-active')) {
 							$(item).addClass('dl-active');
 						} else {
@@ -713,33 +710,33 @@ $(function () {
 					return false;
 				});
 				// Если используется компьютер
-				if (that.app.device.desktop) {
+				if (slothMusic.app.device.desktop) {
 					// Генерирование .m3u из текущего плейлиста
-					$(that.els.controls.playlist.generate.m3u).on('click', function () {
-						that.playlist.generate.m3u();
+					$(slothMusic.els.controls.playlist.generate.m3u).on('click', function () {
+						slothMusic.playlist.generate.m3u();
 					});
 					// Включение или отключения режима загрузки
-					$(that.els.controls.playlist.download.mode).on('click', function () {
+					$(slothMusic.els.controls.playlist.download.mode).on('click', function () {
 						var item = this;
-						var items = that.els.playlist.items.find('a');
+						var items = slothMusic.els.playlist.items.find('a');
 
 						// Если включен режим прослушивания
-						if (that.app.mode.listen) {
-							that.mode('download');
+						if (slothMusic.app.mode.listen) {
+							slothMusic.mode('download');
 							$(item).addClass('active');
-							that.els.controls.playlist.download.all.addClass('active');
+							slothMusic.els.controls.playlist.download.all.addClass('active');
 						}
 						// Если включен режим загрузки
-						else if (that.app.mode.download) {
+						else if (slothMusic.app.mode.download) {
 							// Если были найдены помеченные для загрузки аудиозаписи
 							if (items.hasClass('dl-active')) {
-								items = that.els.playlist.items.find('a.dl-active');
+								items = slothMusic.els.playlist.items.find('a.dl-active');
 								var download = {};
 
 								// Получение списка загружаемых аудиозаписей
 								$.each(items, function (i, item) {
 									id = $(item).data('id');
-									itemPl = that.session.playlist[id];
+									itemPl = slothMusic.session.playlist[id];
 
 									download[i] = {
 										artist: itemPl.artist,
@@ -748,29 +745,29 @@ $(function () {
 										id: itemPl.id
 									};
 								}).promise().done(function () {
-									that.playlist.download(download);
+									slothMusic.playlist.download(download);
 								});
 							} else {
-								that.mode('listen');
+								slothMusic.mode('listen');
 								$(item).removeClass('active');
-								that.els.controls.playlist.download.all.removeClass('active');
+								slothMusic.els.controls.playlist.download.all.removeClass('active');
 							}
 						}
 					});
 					// Выделение всех аудиозаписей в плейлисте, для загрузки
-					$(that.els.controls.playlist.download.all).clickToggle(function () {
-						$(that.els.playlist.items).find('a').addClass('dl-active');
+					$(slothMusic.els.controls.playlist.download.all).clickToggle(function () {
+						$(slothMusic.els.playlist.items).find('a').addClass('dl-active');
 					}, function () {
-						$(that.els.playlist.items).find('a').removeClass('dl-active');
+						$(slothMusic.els.playlist.items).find('a').removeClass('dl-active');
 					});
 					// Показать битрейт аудиозаписи
-					$(that.els.playlist.items).on({
+					$(slothMusic.els.playlist.items).on({
 						mouseenter: function () {
 							var item = this;
 							var bitrate = $(item).find('div.actions > small.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
-								that.playlist.bitrate(item);
+								slothMusic.playlist.bitrate(item);
 							}
 
 							return false;
@@ -780,33 +777,33 @@ $(function () {
 							var bitrate = $(item).find('div.actions > small.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
-								that.playlist.bitrate(item);
+								slothMusic.playlist.bitrate(item);
 							}
 
 							return false;
 						}
 					}, 'a');
 					// Добавить аудиозапись
-					$(that.els.playlist.items, 'a > div.actions').on('click', 'span.add', function (e) {
+					$(slothMusic.els.playlist.items, 'a > div.actions').on('click', 'span.add', function (e) {
 						var item = e.target;
 
 						if (!$(item).hasClass('done')) {
 							var id = $(item).parent().parent().data('id');
 
-							that.audio.add(that.session.playlist[id].owner_id, id);
+							slothMusic.audio.add(slothMusic.session.playlist[id].owner_id, id);
 							$(item).attr('data-content', 'Добавлено').addClass('done');
 						}
 
 						return false;
 					});
 					// Удалить аудиозапись
-					$(that.els.playlist.items, 'a > div.actions').on('click', 'span.delete', function (e) {
+					$(slothMusic.els.playlist.items, 'a > div.actions').on('click', 'span.delete', function (e) {
 						var item = e.target;
 
 						if (!$(item).hasClass('done')) {
 							var id = $(item).parent().parent().data('id');
 
-							that.audio.delete(that.session.mid, id);
+							slothMusic.audio.delete(slothMusic.session.mid, id);
 							$(item).attr('data-content', 'Удалено').addClass('done');
 						}
 
@@ -890,23 +887,23 @@ $(function () {
 				// Вывод жанров в список
 				$(function () {
 					try {
-						var genres = that.genres.get();
+						var genres = slothMusic.genres.get();
 						var list = '';
 
 						$(genres).each(function (i, item) {
 							list += '<li><a data-id="' + item.id + '">' + item.title + '</a></li>';
 						});
 
-						$(that.els.controls.search.genres.items).html(list);
+						$(slothMusic.els.controls.search.genres.items).html(list);
 					} catch (e) {
 						console.log('genres.ready: ошибка вывода жанров');
 					}
 				});
 				// Получить аудиозаписи выбранного жанра
-				$(that.els.controls.search.genres.items).on('click', 'a', function () {
+				$(slothMusic.els.controls.search.genres.items).on('click', 'a', function () {
 					var id = $(this).data('id');
 
-					that.audio.getPopular(id, 0);
+					slothMusic.audio.getPopular(id, 0);
 
 					return false;
 				});
@@ -923,33 +920,33 @@ $(function () {
 				var request = 'audio.get';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью that.app.offset
+				// поэтому запрос блокируется с помощью slothMusic.app.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && that.app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && slothMusic.app.offset) {
+					slothMusic.load(true);
 					try {
 						VK.Api.call(request, {
 							owner_id: owner_id,
-							count: that.app.audio.count,
+							count: slothMusic.app.audio.count,
 							offset: offset,
-							v: that.app.api
+							v: slothMusic.app.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							slothMusic.load(false);
+							slothMusic.verify(request, r);
 
 							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
-								that.req = {
+								slothMusic.req = {
 									name: request,
 									owner_id: owner_id,
 									offset: offset
 								};
 
 								// Включение запроса 'reorder' при drag-n-drop
-								if (owner_id === that.session.mid) {
-									that.reorder(true);
+								if (owner_id === slothMusic.session.mid) {
+									slothMusic.reorder(true);
 								} else {
-									that.reorder(false);
+									slothMusic.reorder(false);
 								}
 
 								// Если нужна подгрузка аудиозаписей
@@ -959,10 +956,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (!$.isEmptyObject(r.response.items) && r.response.items.length > 0) {
-									that.app.offset = true;
-									that.playlist.add(r.response);
+									slothMusic.app.offset = true;
+									slothMusic.playlist.add(r.response);
 								} else {
-									that.app.offset = false;
+									slothMusic.app.offset = false;
 								}
 
 								console.log(request + '(' + owner_id + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
@@ -982,30 +979,30 @@ $(function () {
 				var request = 'audio.getPopular';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью that.app.offset
+				// поэтому запрос блокируется с помощью slothMusic.app.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && that.app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && slothMusic.app.offset) {
+					slothMusic.load(true);
 					try {
 						VK.Api.call(request, {
 							genre_id: genre_id,
-							count: that.app.audio.count,
+							count: slothMusic.app.audio.count,
 							offset: offset,
-							v: that.app.api
+							v: slothMusic.app.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							slothMusic.load(false);
+							slothMusic.verify(request, r);
 
 							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
-								that.req = {
+								slothMusic.req = {
 									name: request,
 									genre_id: genre_id,
 									offset: offset
 								};
 
 								// Отключение запроса 'reorder' при drag-n-drop
-								that.reorder(false);
+								slothMusic.reorder(false);
 
 								// Если нужна подгрузка аудиозаписей
 								if (offset > 0) {
@@ -1014,10 +1011,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (r.response.length > 0) {
-									that.app.offset = true;
-									that.playlist.add(r.response);
+									slothMusic.app.offset = true;
+									slothMusic.playlist.add(r.response);
 								} else {
-									that.app.offset = false;
+									slothMusic.app.offset = false;
 								}
 
 								console.log(request + '(' + genre_id + ',' + offset + ')' + ': получено аудиозаписей = ' + r.response.length);
@@ -1036,28 +1033,28 @@ $(function () {
 				var request = 'audio.getRecommendations';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью that.app.offset
+				// поэтому запрос блокируется с помощью slothMusic.app.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && that.app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && slothMusic.app.offset) {
+					slothMusic.load(true);
 					try {
 						VK.Api.call(request, {
-							count: that.app.audio.count,
+							count: slothMusic.app.audio.count,
 							offset: offset,
-							v: that.app.api
+							v: slothMusic.app.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							slothMusic.load(false);
+							slothMusic.verify(request, r);
 
 							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
-								that.req = {
+								slothMusic.req = {
 									name: request,
 									offset: offset
 								};
 
 								// Отключение запроса 'reorder' при drag-n-drop
-								that.reorder(false);
+								slothMusic.reorder(false);
 
 								// Если нужна подгрузка аудиозаписей
 								if (offset > 0) {
@@ -1066,10 +1063,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (!$.isEmptyObject(r.response.items) && r.response.items.length > 0) {
-									that.app.offset = true;
-									that.playlist.add(r.response);
+									slothMusic.app.offset = true;
+									slothMusic.playlist.add(r.response);
 								} else {
-									that.app.offset = false;
+									slothMusic.app.offset = false;
 								}
 
 								console.log(request + '(' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
@@ -1090,31 +1087,31 @@ $(function () {
 				var request = 'audio.search';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью that.app.offset
+				// поэтому запрос блокируется с помощью slothMusic.app.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && that.app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && slothMusic.app.offset) {
+					slothMusic.load(true);
 					try {
 						VK.Api.call(request, {
 							q: q,
 							auto_complete: 1,
-							count: that.app.audio.count,
+							count: slothMusic.app.audio.count,
 							offset: offset,
-							v: that.app.api
+							v: slothMusic.app.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							slothMusic.load(false);
+							slothMusic.verify(request, r);
 
 							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
-								that.req = {
+								slothMusic.req = {
 									name: request,
 									q: q,
 									offset: offset
 								};
 
 								// Отключение запроса 'reorder' при drag-n-drop
-								that.reorder(false);
+								slothMusic.reorder(false);
 
 								// Если нужна подгрузка аудиозаписей
 								if (offset > 0) {
@@ -1123,10 +1120,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (!$.isEmptyObject(r.response.items) && r.response.items.length > 0) {
-									that.app.offset = true;
-									that.playlist.add(r.response);
+									slothMusic.app.offset = true;
+									slothMusic.playlist.add(r.response);
 								} else {
-									that.app.offset = false;
+									slothMusic.app.offset = false;
 								}
 
 								console.log(request + '(' + q + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
@@ -1145,17 +1142,17 @@ $(function () {
 			// v: версия api
 			reorder: function (owner_id, audio_id, before, after) {
 				var request = 'audio.reorder';
-				that.load(true);
+				slothMusic.load(true);
 				try {
 					VK.Api.call(request, {
 						owner_id: owner_id,
 						audio_id: audio_id,
 						before: before,
 						after: after,
-						v: that.app.api
+						v: slothMusic.app.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						slothMusic.load(false);
+						slothMusic.verify(request, r);
 
 						if (!$.isEmptyObject(r.response) && r.response === 1) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ',' + before + ',' + after + ')' + ': аудиозапись перемещена');
@@ -1173,17 +1170,17 @@ $(function () {
 			// v: версия api
 			setBroadcast: function (audio, target_ids) {
 				var request = 'audio.setBroadcast';
-				that.load(true);
+				slothMusic.load(true);
 				try {
 					VK.Api.call(request, {
 						audio: audio,
 						target_ids: target_ids,
-						v: that.app.api
+						v: slothMusic.app.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						slothMusic.load(false);
+						slothMusic.verify(request, r);
 
-						if (!$.isEmptyObject(r.response) && that.plr.broadcast) {
+						if (!$.isEmptyObject(r.response) && slothMusic.plr.broadcast) {
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись транслируется');
 						} else {
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись не транслируется');
@@ -1199,15 +1196,15 @@ $(function () {
 			// v: версия api
 			add: function (owner_id, audio_id) {
 				var request = 'audio.add';
-				that.load(true);
+				slothMusic.load(true);
 				try {
 					VK.Api.call(request, {
 						owner_id: owner_id,
 						audio_id: audio_id,
-						v: that.app.api
+						v: slothMusic.app.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						slothMusic.load(false);
+						slothMusic.verify(request, r);
 
 						if (!$.isEmptyObject(r.response)) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись добавлена');
@@ -1225,15 +1222,15 @@ $(function () {
 			// v: версия api
 			delete: function (owner_id, audio_id) {
 				var request = 'audio.delete';
-				that.load(true);
+				slothMusic.load(true);
 				try {
 					VK.Api.call(request, {
 						owner_id: owner_id,
 						audio_id: audio_id,
-						v: that.app.api
+						v: slothMusic.app.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						slothMusic.load(false);
+						slothMusic.verify(request, r);
 
 						if (!$.isEmptyObject(r.response) && r.response === 1) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись удалена');
@@ -1249,39 +1246,39 @@ $(function () {
 		// Загрузка
 		load: function (status) {
 			if (status) {
-				that.app.load = true;
-				that.els.load.show();
+				slothMusic.app.load = true;
+				slothMusic.els.load.show();
 			} else {
-				that.app.load = false;
-				that.els.load.hide();
+				slothMusic.app.load = false;
+				slothMusic.els.load.hide();
 			}
 		},
 		// Режим
 		mode: function (mode) {
 			switch (mode) {
 			case 'listen':
-				that.app.mode.listen = true;
-				that.app.mode.download = false;
+				slothMusic.app.mode.listen = true;
+				slothMusic.app.mode.download = false;
 				break;
 			case 'download':
-				that.app.mode.download = true;
-				that.app.mode.listen = false;
+				slothMusic.app.mode.download = true;
+				slothMusic.app.mode.listen = false;
 				break;
 			}
 		},
 		// Drag-n-drop
 		reorder: function (status) {
 			if (status) {
-				that.app.reorder = true;
+				slothMusic.app.reorder = true;
 			} else {
-				that.app.reorder = false;
+				slothMusic.app.reorder = false;
 			}
 		},
 		// Проверка ответа от сервера на ошибки
 		verify: function (request, r) {
 			if (!$.isEmptyObject(r.error)) {
 				if (r.error.error_code === 14) {
-					that.captcha.show(r.error);
+					slothMusic.captcha.show(r.error);
 				} else {
 					throw new Error(request + ': ' + r.error.error_msg);
 				}
@@ -1290,25 +1287,25 @@ $(function () {
 		// Обработка капчи
 		captcha: {
 			show: function (captcha) {
-				$(that.els.captcha.img).prop('src', captcha.captcha_img);
-				$(that.els.captcha.sid).val(captcha.captcha_sid);
-				$(that.els.captcha.key).val('');
-				$(that.els.captcha.container).modal('show');
+				$(slothMusic.els.captcha.img).prop('src', captcha.captcha_img);
+				$(slothMusic.els.captcha.sid).val(captcha.captcha_sid);
+				$(slothMusic.els.captcha.key).val('');
+				$(slothMusic.els.captcha.container).modal('show');
 			},
 			ready: function () {
-				$(that.els.captcha.form).submit(function (e) {
-					var captcha_sid = $.trim($(that.els.captcha.sid).val());
-					var captcha_key = $.trim($(that.els.captcha.key).val());
+				$(slothMusic.els.captcha.form).submit(function (e) {
+					var captcha_sid = $.trim($(slothMusic.els.captcha.sid).val());
+					var captcha_key = $.trim($(slothMusic.els.captcha.key).val());
 
 					if (captcha_sid.length > 0 && captcha_key.length > 0) {
 						VK.Api.call('audio.get', {
 							count: 1,
 							captcha_sid: captcha_sid,
 							captcha_key: captcha_key,
-							v: that.app.api
+							v: slothMusic.app.api
 						}, function (r) {
 							if (!$.isEmptyObject(r.response)) {
-								$(that.els.captcha.container).modal('hide');
+								$(slothMusic.els.captcha.container).modal('hide');
 							}
 						});
 					}
@@ -1321,25 +1318,25 @@ $(function () {
 			player: {
 				controls: {
 					prev: function () {
-						that.animation.custom($(that.els.player.controls.title), 'an-plr-prev', 250);
+						slothMusic.animation.custom($(slothMusic.els.player.controls.title), 'an-plr-prev', 250);
 					},
 					next: function () {
-						that.animation.custom($(that.els.player.controls.title), 'an-plr-next', 250);
+						slothMusic.animation.custom($(slothMusic.els.player.controls.title), 'an-plr-next', 250);
 					},
 					play: function () {
-						that.animation.custom($(that.els.player.controls.title), 'an-plr-next', 250);
+						slothMusic.animation.custom($(slothMusic.els.player.controls.title), 'an-plr-next', 250);
 					},
 					pause: function () {
-						that.animation.custom($(that.els.player.controls.title), 'an-plr-prev', 250);
+						slothMusic.animation.custom($(slothMusic.els.player.controls.title), 'an-plr-prev', 250);
 					},
 				}
 			},
 			playlist: {
 				moved: function (item) {
 					if ($(item).hasClass('active')) {
-						that.animation.custom($(item), 'an-pl-moved--active', 1000);
+						slothMusic.animation.custom($(item), 'an-pl-moved--active', 1000);
 					} else {
-						that.animation.custom($(item), 'an-pl-moved', 1000);
+						slothMusic.animation.custom($(item), 'an-pl-moved', 1000);
 					}
 				},
 			},
@@ -1357,14 +1354,14 @@ $(function () {
 		},
 		// События при document.ready
 		ready: function () {
-			that.vk.ready();
-			that.player.ready();
-			that.genres.ready();
-			that.playlist.ready();
-			that.captcha.ready();
+			slothMusic.vk.ready();
+			slothMusic.player.ready();
+			slothMusic.genres.ready();
+			slothMusic.playlist.ready();
+			slothMusic.captcha.ready();
 
 			// Для всех popover
-			if (that.app.device.desktop) {
+			if (slothMusic.app.device.desktop) {
 				$('[data-toggle="popover"]').popover({
 					trigger: 'hover'
 				});
@@ -1381,7 +1378,7 @@ $(function () {
 
 	// При скролле окна
 	$(window).scroll(function () {
-		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100 && !that.app.load) {
+		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100 && !slothMusic.app.load) {
 			slothMusic.playlist.more();
 		}
 	});
