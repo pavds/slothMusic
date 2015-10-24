@@ -3,11 +3,14 @@
 session_start();
 
 require 'class/Curl.php';
+require 'class/CaseInsensitiveArray.php';
+
 use \Curl\Curl;
 
 class slothMusic {
 
-	protected $client = array( // данные приложения и пользователя
+	// Данные приложения и пользователя
+	protected $app = array(
 		'id' => '5083406',
 		'secret' => 'ArJmgOsWyGrE5D2F1Lln',
 		'scope' => 'audio,status',
@@ -16,7 +19,10 @@ class slothMusic {
 		'code' => null,
 		'access_token' => null,
 	);
-	protected $connect; // ссылка на соединение с MySQL
+	// Ссылка на соединение с MySQL
+	protected $connect;
+	// Curl соеденение
+	protected $curl;
 
 	/**
 	 *
@@ -27,6 +33,10 @@ class slothMusic {
 			$this->connect = $connect;
 		}
 
+		$this->curl = new Curl();
+		$this->curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+		$this->curl->setOpt(CURLOPT_SSL_VERIFYHOST, false);
+		$this->curl->setOpt(CURLOPT_FOLLOWLOCATION, true);
 	}
 
 	/**
@@ -161,18 +171,14 @@ class slothMusic {
 	 */
 	public function access_token() {
 		$this->client['code'] = (string) $_GET['code'];
-		$curl = new Curl();
-		$curl->setOpt('CURLOPT_SSL_VERIFYPEER', 0);
-		$curl->setOpt('CURLOPT_SSL_VERIFYHOST', 0);
-		$curl->setOpt('CURLOPT_FOLLOWLOCATION', 1);
-		$curl->get('https://oauth.vk.com/access_token', array(
+		$this->curl->get('https://oauth.vk.com/access_token', array(
 			'client_id' => $this->client['id'],
 			'client_secret' => $this->client['secret'],
 			'redirect_uri' => $this->client['redirect_uri'],
 			'code' => $this->client['code'],
 			'v' => $this->client['v'],
 		));
-		$this->client['access_token'] = $curl->response->access_token;
+		$this->client['access_token'] = $this->curl->response->access_token;
 		return (string) $this->client['access_token'];
 	}
 
@@ -185,13 +191,12 @@ class slothMusic {
 		if (empty($this->client['access_token'])) {
 			$this->client['access_token'] = $_SESSION['access_token'];
 		}
-		$curl = new Curl();
-		$curl->get('https://api.vk.com/method/audio.getById', array(
+		$this->curl->get('https://api.vk.com/method/audio.getById', array(
 			'audios' => $owner_id . '_' . $id,
 			'v' => $this->client['v'],
 			'access_token' => $this->client['access_token'],
 		));
-		return (string) $curl->response->response[0]->url;
+		return (string) $this->curl->response->response[0]->url;
 	}
 }
 
