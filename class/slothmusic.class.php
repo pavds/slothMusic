@@ -49,7 +49,7 @@ class slothMusic {
 		if ($this->check($data['id'])) {
 			return $this->send($this->get($data['id']));
 		} else {
-			$this->client['access_token'] = $data['access_token'];
+			$this->app['access_token'] = $data['access_token'];
 			$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
 
 			if ($kbps == 0) {
@@ -162,7 +162,7 @@ class slothMusic {
 	 * авторизация приложения
 	 */
 	public function auth_code() {
-		header('Location: https://oauth.vk.com/authorize?client_id=' . $this->client['id'] . '&display=page&scope=' . $this->client['scope'] . '&redirect_uri=' . $this->client['redirect_uri'] . '&response_type=code&v=' . $this->client['v']);
+		header('Location: https://oauth.vk.com/authorize?client_id=' . $this->app['id'] . '&display=page&scope=' . $this->app['scope'] . '&redirect_uri=' . $this->app['redirect_uri'] . '&response_type=code&v=' . $this->app['v']);
 	}
 
 	/**
@@ -170,16 +170,16 @@ class slothMusic {
 	 * @return string $access_token после авторизации
 	 */
 	public function access_token() {
-		$this->client['code'] = (string) $_GET['code'];
+		$this->app['code'] = (string) $_GET['code'];
 		$this->curl->get('https://oauth.vk.com/access_token', array(
-			'client_id' => $this->client['id'],
-			'client_secret' => $this->client['secret'],
-			'redirect_uri' => $this->client['redirect_uri'],
-			'code' => $this->client['code'],
-			'v' => $this->client['v'],
+			'client_id' => $this->app['id'],
+			'client_secret' => $this->app['secret'],
+			'redirect_uri' => $this->app['redirect_uri'],
+			'code' => $this->app['code'],
+			'v' => $this->app['v'],
 		));
-		$this->client['access_token'] = $this->curl->response->access_token;
-		return (string) $this->client['access_token'];
+		$this->app['access_token'] = $this->curl->response->access_token;
+		return (string) $this->app['access_token'];
 	}
 
 	/**
@@ -188,13 +188,13 @@ class slothMusic {
 	 * @return string $access_token
 	 */
 	public function get_url($owner_id, $id) {
-		if (empty($this->client['access_token'])) {
-			$this->client['access_token'] = $_SESSION['access_token'];
+		if (empty($this->app['access_token'])) {
+			$this->app['access_token'] = $_SESSION['access_token'];
 		}
 		$this->curl->get('https://api.vk.com/method/audio.getById', array(
 			'audios' => $owner_id . '_' . $id,
-			'v' => $this->client['v'],
-			'access_token' => $this->client['access_token'],
+			'v' => $this->app['v'],
+			'access_token' => $this->app['access_token'],
 		));
 		return (string) $this->curl->response->response[0]->url;
 	}
