@@ -268,7 +268,7 @@ $(function () {
 								imgsz: 'large',
 							},
 							success: function (r) {
-								if (r.responseStatus === 200) {
+								if (!$.isEmptyObject(r.responseStatus) && r.responseStatus === 200) {
 									var url = r.responseData.results[0].unescapedUrl;
 
 									$(els.player.cover).prop('src', url);
@@ -285,13 +285,13 @@ $(function () {
 			ready: function () {
 				// Окончание проигрывания
 				$(els.player.audio).on('ended', function () {
-					if (this.src) {
+					if (this.src !== '') {
 						that.player.controls.next();
 					}
 				});
 				// Пауза
 				$(els.player.audio).on('pause', function () {
-					if (this.src) {
+					if (this.src !== '') {
 						player.status = 'pause';
 						that.animation.player.controls.pause();
 						that.title('Пауза: ' + player.title);
@@ -299,7 +299,7 @@ $(function () {
 				});
 				// Воспроизведение
 				$(els.player.audio).on('play', function () {
-					if (this.src) {
+					if (this.src !== '') {
 						player.status = 'play';
 						that.animation.player.controls.play();
 						that.title(player.title);
@@ -307,7 +307,7 @@ $(function () {
 				});
 				// Буферизация
 				$(els.player.audio).on('waiting', function () {
-					if (this.src) {
+					if (this.src !== '') {
 						that.load(true);
 						player.status = 'waiting';
 						that.title('Загрузка: ' + player.title);
@@ -315,7 +315,7 @@ $(function () {
 				});
 				// Проигрывание
 				$(els.player.audio).on('playing', function () {
-					if (this.src) {
+					if (this.src !== '') {
 						that.load(false);
 						player.status = 'playing';
 						that.title(player.title);
@@ -356,12 +356,12 @@ $(function () {
 					var pl = '';
 
 					// Очистка текущего плейлиста, если не передан offset
-					if (!r.offset || r.offset <= 0) {
+					if ($.isEmptyObject(r.offset) || r.offset <= 0) {
 						session.playlist = {};
 					}
 
 					// Если в ответе от сервера, обьекты находятся в items, а не в корне
-					if (r.items) {
+					if (!$.isEmptyObject(r.items)) {
 						items = r.items;
 					} else {
 						items = r;
@@ -910,7 +910,7 @@ $(function () {
 							that.load(false);
 							that.verify(request, r);
 
-							if (r.response) {
+							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
 								req = {
 									name: request,
@@ -931,7 +931,7 @@ $(function () {
 								}
 
 								// Если в ответе присутствуют аудиозаписи
-								if (r.response.items.length > 0) {
+								if (!$.isEmptyObject(r.response.items) && r.response.items.length > 0) {
 									app.offset = true;
 									that.playlist.add(r.response);
 								} else {
@@ -969,7 +969,7 @@ $(function () {
 							that.load(false);
 							that.verify(request, r);
 
-							if (r.response) {
+							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
 								req = {
 									name: request,
@@ -1022,7 +1022,7 @@ $(function () {
 							that.load(false);
 							that.verify(request, r);
 
-							if (r.response) {
+							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
 								req = {
 									name: request,
@@ -1038,7 +1038,7 @@ $(function () {
 								}
 
 								// Если в ответе присутствуют аудиозаписи
-								if (r.response.items.length > 0) {
+								if (!$.isEmptyObject(r.response.items) && r.response.items.length > 0) {
 									app.offset = true;
 									that.playlist.add(r.response);
 								} else {
@@ -1078,7 +1078,7 @@ $(function () {
 							that.load(false);
 							that.verify(request, r);
 
-							if (r.response) {
+							if (!$.isEmptyObject(r.response)) {
 								// Запись запроса, для возможности увелечения offset-a
 								req = {
 									name: request,
@@ -1095,7 +1095,7 @@ $(function () {
 								}
 
 								// Если в ответе присутствуют аудиозаписи
-								if (r.response.items.length > 0) {
+								if (!$.isEmptyObject(r.response.items) && r.response.items.length > 0) {
 									app.offset = true;
 									that.playlist.add(r.response);
 								} else {
@@ -1130,7 +1130,7 @@ $(function () {
 						that.load(false);
 						that.verify(request, r);
 
-						if (r.response === 1) {
+						if (!$.isEmptyObject(r.response) && r.response === 1) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ',' + before + ',' + after + ')' + ': аудиозапись перемещена');
 						} else {
 							console.log(request + '(' + owner_id + ',' + audio_id + ',' + before + ',' + after + ')' + ': аудиозапись не перемещена');
@@ -1156,7 +1156,7 @@ $(function () {
 						that.load(false);
 						that.verify(request, r);
 
-						if (r.response && player.broadcast) {
+						if (!$.isEmptyObject(r.response) && player.broadcast) {
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись транслируется');
 						} else {
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись не транслируется');
@@ -1182,7 +1182,7 @@ $(function () {
 						that.load(false);
 						that.verify(request, r);
 
-						if (r.response) {
+						if (!$.isEmptyObject(r.response)) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись добавлена');
 						} else {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не добавлена');
@@ -1208,7 +1208,7 @@ $(function () {
 						that.load(false);
 						that.verify(request, r);
 
-						if (r.response === 1) {
+						if (!$.isEmptyObject(r.response) && r.response === 1) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись удалена');
 						} else {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не удалена');
@@ -1252,7 +1252,7 @@ $(function () {
 		},
 		// Проверка ответа от сервера на ошибки
 		verify: function (request, r) {
-			if (r.error) {
+			if (!$.isEmptyObject(r.error)) {
 				if (r.error.error_code === 14) {
 					that.captcha.show(r.error);
 				} else {
@@ -1280,7 +1280,7 @@ $(function () {
 							captcha_key: captcha_key,
 							v: app.api
 						}, function (r) {
-							if (r.response) {
+							if (!$.isEmptyObject(r.response)) {
 								$(els.captcha.container).modal('hide');
 							}
 						});
