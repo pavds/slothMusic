@@ -29,7 +29,7 @@ $(function () {
 
 		/* ================================================== Elements */
 		els: {
-			authorized: $('*[data-authorized]'),
+			authorized: $('body').find('*[data-authorized]'),
 			player: {
 				audio: $('#plr-audio').get(0),
 				cover: $('#plr-cover'),
@@ -706,8 +706,6 @@ $(function () {
 							$(item).removeClass('dl-active');
 						}
 					}
-
-					return false;
 				});
 				// Если используется компьютер
 				if (slothMusic.app.device.desktop) {
@@ -769,8 +767,6 @@ $(function () {
 							if (bitrate !== 'checked') {
 								slothMusic.playlist.bitrate(item);
 							}
-
-							return false;
 						},
 						click: function () {
 							var item = this;
@@ -779,8 +775,6 @@ $(function () {
 							if (bitrate !== 'checked') {
 								slothMusic.playlist.bitrate(item);
 							}
-
-							return false;
 						}
 					}, 'a');
 					// Добавить аудиозапись
@@ -793,8 +787,6 @@ $(function () {
 							slothMusic.audio.add(slothMusic.session.playlist[id].owner_id, id);
 							$(item).attr('data-content', 'Добавлено').addClass('done');
 						}
-
-						return false;
 					});
 					// Удалить аудиозапись
 					$(slothMusic.els.playlist.items, 'a > div.actions').on('click', 'span.delete', function (e) {
@@ -806,8 +798,6 @@ $(function () {
 							slothMusic.audio.delete(slothMusic.session.mid, id);
 							$(item).attr('data-content', 'Удалено').addClass('done');
 						}
-
-						return false;
 					});
 				}
 			}
@@ -904,8 +894,6 @@ $(function () {
 					var id = $(this).data('id');
 
 					slothMusic.audio.getPopular(id, 0);
-
-					return false;
 				});
 			}
 		},

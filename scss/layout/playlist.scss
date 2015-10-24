@@ -136,6 +136,7 @@
 				right: 35px;
 
 				animation: load 2s infinite;
+				animation-play-state: paused;
 
 				color: #bbb;
 
@@ -189,6 +190,11 @@
 				.bitrate
 				{
 					display: block;
+
+					&-load
+					{
+						animation-play-state: running;
+					}
 				}
 			}
 		}
