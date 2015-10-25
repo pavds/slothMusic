@@ -9,7 +9,6 @@ use \Curl\Curl;
 
 class slothMusic {
 
-	// Данные приложения и пользователя
 	protected $app = array(
 		'id' => '5083406',
 		'secret' => 'ArJmgOsWyGrE5D2F1Lln',
@@ -19,20 +18,10 @@ class slothMusic {
 		'code' => null,
 		'access_token' => null,
 	);
-	// Ссылка на соединение с MySQL
-	protected $connect;
-	// Curl соеденение
+	public $connect;
 	protected $curl;
 
-	/**
-	 *
-	 * @param resource MySQL $connect
-	 */
-	public function __construct($connect = false) {
-		if ($connect) {
-			$this->connect = $connect;
-		}
-
+	public function __construct() {
 		$this->curl = new Curl();
 		$this->curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
 		$this->curl->setOpt(CURLOPT_SSL_VERIFYHOST, false);
@@ -110,8 +99,7 @@ class slothMusic {
 	 * @return object битрейт аудиозаписи
 	 */
 	public function send($kbps) {
-		$data = array('kbps' => $kbps);
-		return json_encode($data);
+		return json_encode(array('kbps' => $kbps));
 	}
 
 	/**
@@ -120,15 +108,9 @@ class slothMusic {
 	 * @return integer размер файла в байтах
 	 */
 	public function filesize($url) {
-		$fp = fopen($url, 'r');
-		$meta = stream_get_meta_data($fp);
-		fclose($fp);
-		foreach ($meta['wrapper_data'] as $contentLength) {
-			if (stristr($contentLength, 'content-length')) {
-				$contentLength = explode(':', $contentLength);
-				return (int) trim($contentLength[1]);
-			}
-		}
+		$this->curl->head($url);
+
+		return (int) $this->curl->responseHeaders['Content-Length'];
 	}
 
 	/**

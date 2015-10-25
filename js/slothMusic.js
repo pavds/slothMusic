@@ -1,165 +1,160 @@
 $(function () {
-	/* ================================================== App */
-	var app = {
-		id: 5083406,
-		permissions: '8 | 1024',
-		api: 5.37,
-		audio: {
-			count: 50,
-			offset: 50
+	'use strict';
+	/* ================================================== SlothMusic */
+	var slothMusic = {
+		/* ================================================== App */
+		config: {
+			id: 5083406,
+			permissions: '8 | 1024',
+			api: 5.37,
+			load: false,
+			audio: {
+				count: 50,
+				offset: 50
+			},
 		},
-		load: false,
-		offset: true,
 		mode: {
 			listen: true,
 			download: false
 		},
-		reorder: true,
+		options: {
+			reorder: true,
+			offset: true,
+		},
 		device: {
 			desktop: true,
 			portable: false
 		},
-	};
-	var session = {};
-	var player = {};
-	var req = {};
-	/* ================================================== /App */
-
-	/* ================================================== Elements */
-	var els = {
-		authorized: $('*[data-authorized="false"]'),
-		player: {
-			audio: $('#plr-audio').get(0),
-			cover: $('#plr-cover'),
-			controls: {
-				title: $('#plr-cls-title'),
-				prev: $('#plr-cls-prev'),
-				next: $('#plr-cls-next')
-			}
+		tmp: {
+			session: {},
+			player: {},
+			req: {}
 		},
-		controls: {
-			load: {
-				user: $('#cls-ld-user'),
-				popular: $('#cls-ld-popular'),
-				recommendations: $('#cls-ld-recommendations')
-			},
+		/* ================================================== /App */
+
+		/* ================================================== Elements */
+		$els: {
+			authorized: $('*[data-authorized="false"]'),
 			player: {
-				rewind: {
-					backward: $('#cls-plr-rw-backward'),
-					forward: $('#cls-plr-rw-forward')
-				},
-				broadcast: $('#cls-plr-bc')
+				audio: $('#plr-audio').get(0),
+				cover: $('#plr-cover'),
+				controls: {
+					title: $('#plr-cls-title'),
+					prev: $('#plr-cls-prev'),
+					next: $('#plr-cls-next')
+				}
 			},
-			search: {
-				form: $('#cls-sh-form'),
-				query: $('#cls-sh-query'),
-				genres: {
-					items: $('#cls-sh-gr-items'),
-					button: $('#cls-sh-gr-button'),
-					text: $('#cls-sh-gr-text')
+			controls: {
+				load: {
+					user: $('#cls-ld-user'),
+					popular: $('#cls-ld-popular'),
+					recommendations: $('#cls-ld-recommendations')
+				},
+				player: {
+					rewind: {
+						backward: $('#cls-plr-rw-backward'),
+						forward: $('#cls-plr-rw-forward')
+					},
+					broadcast: $('#cls-plr-bc')
+				},
+				search: {
+					form: $('#cls-sh-form'),
+					query: $('#cls-sh-query'),
+					genres: {
+						items: $('#cls-sh-gr-items'),
+						button: $('#cls-sh-gr-button'),
+						text: $('#cls-sh-gr-text')
+					}
+				},
+				playlist: {
+					sort: {
+						shuffle: $('#cls-pl-st-shuffle'),
+						alphabetically: $('#cls-pl-st-alphabetically')
+					},
+					download: {
+						mode: $('#cls-pl-dl-mode'),
+						all: $('#cls-pl-dl-all')
+					},
+					generate: {
+						m3u: $('#cls-pl-gr-m3u')
+					}
 				}
 			},
 			playlist: {
-				sort: {
-					shuffle: $('#cls-pl-st-shuffle'),
-					alphabetically: $('#cls-pl-st-alphabetically')
-				},
-				download: {
-					mode: $('#cls-pl-dl-mode'),
-					all: $('#cls-pl-dl-all')
-				},
-				generate: {
-					m3u: $('#cls-pl-gr-m3u')
-				}
-			}
+				items: $('#pl-items'),
+			},
+			vk: {
+				auth: $('#vk-auth'),
+			},
+			captcha: {
+				container: $('#ml-ca-container'),
+				form: $('#ml-ca-form'),
+				title: $('#ml-ca-title'),
+				img: $('#ml-ca-img'),
+				key: $('#ml-ca-key'),
+				sid: $('#ml-ca-sid')
+			},
+			load: $('#load')
 		},
-		playlist: {
-			items: $('#pl-items'),
-		},
-		vk: {
-			auth: $('#vk-auth'),
-		},
-		captcha: {
-			container: $('#ml-ca-container'),
-			form: $('#ml-ca-form'),
-			title: $('#ml-ca-title'),
-			img: $('#ml-ca-img'),
-			key: $('#ml-ca-key'),
-			sid: $('#ml-ca-sid')
-		},
-		load: $('#load')
-	};
-	/* ================================================== /Elements */
+		/* ================================================== /Elements */
 
-	/* ================================================== SlothMusic */
-	var that = {};
-	var slothMusic = {
+		// Инициализация
 		init: function () {
-			that = this;
+			self = this;
 
-			if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-				app.device.desktop = false;
-				app.device.portable = true;
-			} else {
-				app.device.desktop = true;
-				app.device.portable = false;
-			}
-
-			that.vk.init();
+			self.app.device();
+			self.vk.init();
 		},
+		// VK
 		vk: {
 			// Инициализация Open API
 			init: function () {
 				VK.init({
-					apiId: app.id
+					apiId: self.config.id
 				});
-				VK.Auth.getLoginStatus(that.vk.auth);
-				VK.UI.button(els.vk.auth.get(0).id);
+				VK.Auth.getLoginStatus(self.vk.auth);
+				VK.UI.button(self.$els.vk.auth.get(0).id);
 			},
 			// Авторизация
 			auth: function (r) {
 				if (r.status === 'connected') {
-					session = r.session;
-					els.vk.auth.hide();
-					els.authorized.attr('data-authorized', 'true').fadeIn(250);
+					self.app.auth(true);
+					self.tmp.session = r.session;
+					self.player.controls.broadcast(false);
+					self.audio.get(self.tmp.session.mid, 0);
 
-					console.log('auth: авторизация прошла успешно (id = ' + session.mid + ')');
-
-					that.player.controls.broadcast(false);
-					that.audio.get(session.mid, 0);
+					console.log('auth: авторизация прошла успешно (id = ' + self.tmp.session.mid + ')');
 				} else {
-					session = {};
-					player = {};
+					self.app.auth(false);
 
-					els.authorized.attr('data-authorized', 'false').hide();
-					els.vk.auth.show();
 					console.log('auth: авторизация не удалась');
 				}
 			},
 			// События при document.ready
 			ready: function () {
 				// Авторизация приложения
-				els.vk.auth.on('click', function () {
-					VK.Auth.login(that.vk.auth, app.permissions);
+				self.$els.vk.auth.on('click', function () {
+					VK.Auth.login(self.vk.auth, self.config.permissions);
 				});
 			}
 		},
+		// Плеер
 		player: {
 			// Управление плеером
 			controls: {
 				// Воспроизвести
 				play: function () {
-					els.player.audio.play();
+					self.$els.player.audio.play();
 				},
 				// Пауза
 				pause: function () {
-					els.player.audio.pause();
+					self.$els.player.audio.pause();
 				},
 				// Предыдущая аудиозапись в плейлисте
 				prev: function () {
 					try {
-						var items = els.playlist.items.find('a');
-						var item = els.playlist.items.find('a.active');
+						var items = self.$els.playlist.items.find('a');
+						var item = self.$els.playlist.items.find('a', '.active');
 						var id;
 
 						if (item.is(':first-child')) {
@@ -168,8 +163,8 @@ $(function () {
 							id = items.eq(item.index() - 1).data('id');
 						}
 
-						that.animation.player.controls.prev();
-						that.player.play(id);
+						self.animation.player.controls.prev();
+						self.player.play(id);
 					} catch (e) {
 						console.log('player.controls.prev: ошибка при воспроизведении предыдущей аудиозаписи');
 					}
@@ -177,8 +172,8 @@ $(function () {
 				// Следующая аудиозапись в плейлисте
 				next: function () {
 					try {
-						var items = els.playlist.items.find('a');
-						var item = els.playlist.items.find('a.active');
+						var items = self.$els.playlist.items.find('a');
+						var item = self.$els.playlist.items.find('a.active');
 						var id;
 
 						if (item.is(':last-child')) {
@@ -187,8 +182,8 @@ $(function () {
 							id = items.eq(item.index() + 1).data('id');
 						}
 
-						that.animation.player.controls.next();
-						that.player.play(id);
+						self.animation.player.controls.next();
+						self.player.play(id);
 					} catch (e) {
 						console.log('player.controls.next: ошибка при воспроизведении следующей аудиозаписи');
 					}
@@ -197,22 +192,22 @@ $(function () {
 				rewind: {
 					// Перемотка назад
 					backward: function () {
-						els.player.audio.currentTime -= 10;
+						self.$els.player.audio.currentTime -= 10;
 					},
 					// Перемотка вперед
 					forward: function () {
-						els.player.audio.currentTime += 10;
+						self.$els.player.audio.currentTime += 10;
 					}
 				},
 				// Включение или отлючение трансляции в статус
 				broadcast: function (status) {
 					try {
 						if (status) {
-							player.broadcast = true;
-							that.audio.setBroadcast(player.owner_id + '_' + player.id, session.mid);
+							self.tmp.player.broadcast = true;
+							self.audio.setBroadcast(self.tmp.player.owner_id + '_' + self.tmp.player.id, self.tmp.session.mid);
 						} else {
-							player.broadcast = false;
-							that.audio.setBroadcast(0, session.mid);
+							self.tmp.player.broadcast = false;
+							self.audio.setBroadcast(0, self.tmp.session.mid);
 						}
 					} catch (e) {
 						if (status) {
@@ -226,32 +221,36 @@ $(function () {
 			// Воспроизвести аудиозапись по id, из текущего плейлиста
 			play: function (id) {
 				try {
-					var item = session.playlist[id];
-					var itemPl = els.playlist.items.find('a[data-id="' + id + '"]');
+					var item = self.tmp.session.playlist[id];
+					var $item = self.$els.playlist.items.find('a[data-id="' + id + '"]');
 					var title = item.artist + ' — ' + item.title;
 
 					// Поиск cover-a
-					if (app.device.desktop) {
-						that.player.cover.search(item.artist + ' ' + item.title);
+					if (self.device.desktop) {
+						self.player.cover.search(item.artist + ' ' + item.title);
 					}
 
 					// Воспроизводимая аудиозапись
-					player.id = item.id;
-					player.owner_id = item.owner_id;
-					player.title = title;
-					player.item = itemPl;
+					self.tmp.player.id = item.id;
+					self.tmp.player.owner_id = item.owner_id;
+					self.tmp.player.title = title;
+					self.tmp.player.item = $item;
 
-					els.player.audio.src = item.url;
-					els.player.audio.load();
-					els.player.audio.play();
-					els.player.controls.title.text(title);
+					self.$els.player.audio.src = item.url;
+					self.$els.player.audio.load();
+					self.$els.player.audio.play();
+					self.$els.player.controls.title.text(title);
 
-					if (player.broadcast === true) {
-						that.player.controls.broadcast(true);
+					if (self.tmp.player.broadcast === true) {
+						self.player.controls.broadcast(true);
 					}
 
-					els.playlist.items.find('a').removeClass('active');
-					itemPl.addClass('active');
+					self.$els.playlist.items
+						.find('a')
+						.removeClass('active');
+
+					$item
+						.addClass('active');
 				} catch (e) {
 					console.log('player.play: ошибка воспроизведения');
 				}
@@ -271,15 +270,15 @@ $(function () {
 							},
 							success: function (r) {
 								if (r.responseStatus === 200) {
-									var item = els.player.cover;
+									var $that = self.$els.player.cover;
 									var url = r.responseData.results[0].unescapedUrl;
 
-									if (url !== '' && !$(item).hasClass('an-plr-cover')) {
-										$(item).addClass('an-plr-cover').prop('src', url).show();
-									} else if (url !== '' && $(item).hasClass('an-plr-cover')) {
-										$(item).prop('src', url).show();
+									if (url !== '' && !$that.hasClass('an-plr-cover')) {
+										$that.addClass('an-plr-cover').prop('src', url).show();
+									} else if (url !== '' && $that.hasClass('an-plr-cover')) {
+										$that.prop('src', url).show();
 									} else {
-										$(item).hide().removeClass('an-plr-cover').prop('src', '');
+										$that.hide().removeClass('an-plr-cover').prop('src', '');
 									}
 								}
 							}
@@ -292,66 +291,66 @@ $(function () {
 			// События при document.ready
 			ready: function () {
 				// Окончание проигрывания
-				$(els.player.audio).on('ended', function () {
+				$(self.$els.player.audio).on('ended', function () {
 					if (this.src) {
-						that.player.controls.next();
+						self.player.controls.next();
 					}
 				});
 				// Пауза
-				$(els.player.audio).on('pause', function () {
+				$(self.$els.player.audio).on('pause', function () {
 					if (this.src) {
-						player.status = 'pause';
-						that.animation.player.controls.pause();
-						that.title('Пауза: ' + player.title);
+						self.tmp.player.status = 'pause';
+						self.animation.player.controls.pause();
+						self.app.title('Пауза: ' + self.tmp.player.title);
 					}
 				});
 				// Воспроизведение
-				$(els.player.audio).on('play', function () {
+				$(self.$els.player.audio).on('play', function () {
 					if (this.src) {
-						player.status = 'play';
-						that.animation.player.controls.play();
-						that.title(player.title);
+						self.tmp.player.status = 'play';
+						self.animation.player.controls.play();
+						self.app.title(self.tmp.player.title);
 					}
 				});
 				// Буферизация
-				$(els.player.audio).on('waiting', function () {
+				$(self.$els.player.audio).on('waiting', function () {
 					if (this.src) {
-						that.load(true);
-						player.status = 'waiting';
-						that.title('Загрузка: ' + player.title);
+						self.app.load(true);
+						self.tmp.player.status = 'waiting';
+						self.app.title('Загрузка: ' + self.tmp.player.title);
 					}
 				});
 				// Проигрывание
-				$(els.player.audio).on('playing', function () {
+				$(self.$els.player.audio).on('playing', function () {
 					if (this.src) {
-						that.load(false);
-						player.status = 'playing';
-						that.title(player.title);
+						self.app.load(false);
+						self.tmp.player.status = 'playing';
+						self.app.title(self.tmp.player.title);
 					}
 				});
 				// Предыдущая аудиозапись
-				$(els.player.controls.prev).on('click', function () {
-					that.player.controls.prev();
+				$(self.$els.player.controls.prev).on('click', function () {
+					self.player.controls.prev();
 				});
 				// Следующая аудиозапись
-				$(els.player.controls.next).on('click', function () {
-					that.player.controls.next();
+				$(self.$els.player.controls.next).on('click', function () {
+					self.player.controls.next();
 				});
 				// Перемотать назад на 10 секунд
-				$(els.controls.player.rewind.backward).on('click', function () {
-					that.player.controls.rewind.backward();
+				$(self.$els.controls.player.rewind.backward).on('click', function () {
+					self.player.controls.rewind.backward();
 				});
 				// Перемотать вперед на 10 секунд
-				$(els.controls.player.rewind.forward).on('click', function () {
-					that.player.controls.rewind.forward();
+				$(self.$els.controls.player.rewind.forward).on('click', function () {
+					self.player.controls.rewind.forward();
 				});
 				// Трансляция (включить, выключить)
-				$(els.controls.player.broadcast).clickToggle(function () {
-						that.player.controls.broadcast(true);
+				$(self.$els.controls.player.broadcast).clickToggle(function () {
+						self.player.controls.broadcast(true);
 						$(this).addClass('active');
 					},
 					function () {
-						that.player.controls.broadcast(false);
+						self.player.controls.broadcast(false);
 						$(this).removeClass('active');
 					});
 			}
@@ -361,11 +360,11 @@ $(function () {
 			add: function (r) {
 				try {
 					var items = {};
-					var pl = '';
+					var $pl = '';
 
 					// Очистка текущего плейлиста, если не передан offset
 					if (!r.offset || r.offset <= 0) {
-						session.playlist = {};
+						self.tmp.session.playlist = {};
 					}
 
 					// Если в ответе от сервера, обьекты находятся в items, а не в корне
@@ -377,7 +376,7 @@ $(function () {
 
 					// Собирает массив из ответа сервера и добавляет ссылки в DOM
 					$(items).each(function (i, item) {
-						session.playlist[item.id] = {
+						self.tmp.session.playlist[item.id] = {
 							url: item.url,
 							duration: item.duration,
 							owner_id: item.owner_id,
@@ -385,62 +384,64 @@ $(function () {
 							title: item.title,
 							id: item.id
 						};
-						pl += '<a data-id="' + item.id + '" data-duration="' + item.duration + '" class="pl-item">' + item.artist + ' — ' + item.title + '</a>';
+						$pl += '<a data-id="' + item.id + '" data-duration="' + item.duration + '" class="pl-item">' + item.artist + ' — ' + item.title + '</a>';
 					}).promise().done(function () {
 						// Если передан offset, для добавления в плейлист
 						if (r.offset > 0) {
-							els.playlist.items.append(pl);
+							self.$els.playlist.items.append($pl);
 						} else {
-							els.playlist.items.html(pl);
+							self.$els.playlist.items.html($pl);
 						}
 					});
 
 					// Если используется компьютер, добавляет возможности:
 					// просмотр битрейта, добавление или удаление аудиозаписей
-					if (app.device.desktop) {
+					if (self.device.desktop) {
 						VK.Api.call('audio.get', {
-							owner_id: session.mid,
+							owner_id: self.tmp.session.mid,
 							count: 6000,
-							v: app.api
+							v: self.config.api
 						}, function (r) {
-							var userItems = r.response.items;
+							var uItems = r.response.items;
 							var ids = [];
-							var actions = {};
 
-							$(userItems).each(function (i, item) {
+							$(uItems).each(function (i, item) {
 								ids[i] = item.id;
 							});
 
-							$(els.playlist.items).find('a').each(function () {
-								var item = this;
+							$(self.$els.playlist.items).find('a').each(function () {
+								var $that = $(this);
 
 								// Если при добавлении аудиозаписей не найдены actions
-								if (!$(item).find('div').hasClass('actions')) {
-									var data = $(item).data();
-									var duration = secondsToTime(data.duration);
-									var durationText = (((duration.h > 0) ? duration.h + ':' : '') + '' + duration.m + ':' + '' + duration.s);
+								if (!$that.find('div').hasClass('actions')) {
+									var $actions = {};
+									var data = $that.data();
+									var duration = self.playlist.secToTime(data.duration);
+									duration.text = (((duration.h > 0) ? duration.h + ':' : '') + '' + duration.m + ':' + '' + duration.s);
 
 									$('<div/>', {
 										'class': 'actions'
-									}).appendTo(item).promise().done(function () {
-										actions = $(item).find('div', '.actions');
+									}).appendTo($that).promise().done(function () {
+										$actions = $that.find('div', '.actions');
 
+										// Битрейт
 										$('<small/>', {
 											'class': 'bitrate bitrate-load',
 											'data-container': 'body',
 											'data-toggle': 'popover',
 											'data-placement': 'top',
 											'data-content': 'Битрейт'
-										}).appendTo(actions);
+										}).appendTo($actions);
 
+										// Длительность аудиозаписи
 										$('<small/>', {
 											'class': 'duration',
-											'text': durationText,
+											'text': duration.text,
 											'data-container': 'body',
 											'data-toggle': 'popover',
 											'data-placement': 'top',
 											'data-content': 'Длительность'
-										}).appendTo(actions);
+										}).appendTo($actions);
 
 									}).promise().done(function () {
 										if ($.inArray(data.id, ids) >= 0) {
@@ -451,7 +452,7 @@ $(function () {
 												'data-toggle': 'popover',
 												'data-placement': 'top',
 												'data-content': 'Удалить'
-											}).appendTo(actions);
+											}).appendTo($actions);
 										} else {
 											//  Возможность добавления аудиозаписи
 											$('<span/>', {
@@ -460,12 +461,12 @@ $(function () {
 												'data-toggle': 'popover',
 												'data-placement': 'top',
 												'data-content': 'Добавить'
-											}).appendTo(actions);
+											}).appendTo($actions);
 										}
 									});
 								}
 							}).promise().done(function () {
-								$('[data-toggle="popover"]').popover({
+								$('*[data-toggle="popover"]').popover({
 									trigger: 'hover'
 								});
 							});
@@ -480,27 +481,27 @@ $(function () {
 			sort: {
 				// Рандомная сортировка
 				shuffle: function () {
-					els.playlist.items.find('a').shuffle();
+					self.$els.playlist.items.find('a').shuffle();
 				},
 				// Сортировка по алфавиту
 				alphabetically: function (direction) {
-					els.playlist.items.alphabetically(direction);
+					self.$els.playlist.items.alphabetically(direction);
 				}
 			},
 			// Подгрузить еще аудиозаписи, используя текущий запрос, изменяя offset
 			more: function () {
-				switch (req.name) {
+				switch (self.tmp.req.name) {
 				case 'audio.get':
-					that.audio.get(req.owner_id, (req.offset + app.audio.offset));
+					self.audio.get(self.tmp.req.owner_id, (self.tmp.req.offset + self.config.audio.offset));
 					break;
 				case 'audio.getPopular':
-					that.audio.getPopular(req.genre_id, (req.offset + app.audio.offset));
+					self.audio.getPopular(self.tmp.req.genre_id, (self.tmp.req.offset + self.config.audio.offset));
 					break;
 				case 'audio.getRecommendations':
-					that.audio.getRecommendations(req.offset + app.audio.offset);
+					self.audio.getRecommendations(self.tmp.req.offset + self.config.audio.offset);
 					break;
 				case 'audio.search':
-					that.audio.search(req.q, (req.offset + app.audio.offset));
+					self.audio.search(self.tmp.req.q, (self.tmp.req.offset + self.config.audio.offset));
 					break;
 				}
 			},
@@ -511,7 +512,7 @@ $(function () {
 					try {
 						var m3u = '#EXTM3U\r\n';
 
-						$.each(session.playlist, function (i, item) {
+						$.each(self.tmp.session.playlist, function (i, item) {
 							m3u += '#EXTINF:' + item.duration + ',' + (item.artist).replace(/\r\n|\r|\n/g, ' ') + ' - ' + (item.title).replace(/\r\n|\r|\n/g, ' ') + '\r\n';
 							m3u += (item.url.replace('https', 'http')).replace(/\?extra=(.*)/, '') + '\r\n';
 						});
@@ -549,20 +550,20 @@ $(function () {
 
 					// Встраивание списка в DOM
 					$(dList).appendTo('body').promise().done(function () {
-						var links = $('#download');
-						var linksItems = $('#download').find('a');
+						var $download = $('#download');
+						var $links = $('#download').find('a');
 
-						$.each(linksItems, function (i, item) {
+						$.each($links, function (i, item) {
 							// Нажатие ссылки и загрузка
 							$(item)[0].click();
 						}).promise().done(function () {
 							// Удаление контейнера
-							$(links).remove();
+							$download.remove();
 							// Выключение режима загрузки
-							els.playlist.items.find('a.dl-active').removeClass('dl-active');
-							els.controls.playlist.download.mode.removeClass('active');
+							self.$els.playlist.items.find('a.dl-active').removeClass('dl-active');
+							self.$els.controls.playlist.download.mode.removeClass('active');
 							// Включение режима прослушивания
-							that.mode('listen');
+							self.app.mode('listen');
 						});
 					});
 				} catch (e) {
@@ -570,38 +571,42 @@ $(function () {
 				}
 			},
 			// Получение битрейта аудиозаписи
-			bitrate: function (item) {
+			bitrate: function ($that) {
 				try {
-					var id = $(item).data('id');
-					var itemPl = session.playlist[id];
+					var id = $that.data('id');
+					var item = self.tmp.session.playlist[id];
 
 					if (access_token !== 'undefined') {
 						$.ajax({
 							url: 'fileinfo',
 							data: {
 								id: id,
-								duration: itemPl.duration,
-								owner_id: itemPl.owner_id,
-								access_token: access_token,
-								uid: session.mid
+								duration: item.duration,
+								owner_id: item.owner_id,
+								uid: self.tmp.session.mid,
+								access_token: access_token
 							},
 							method: 'POST',
 							dataType: 'json',
 							success: function (data) {
-								var kbpsClass = '';
+								if (parseInt(data.kbps) > 0) {
+									var kbps = '';
 
-								if (parseInt(data.kbps) > 0) { // если битрейт известен
 									if (data.kbps >= 320) {
-										kbpsClass = 'bitrate-higher';
+										kbps = 'bitrate-higher';
 									} else if (data.kbps >= 256 && data.kbps < 320) {
-										kbpsClass = 'bitrate-high';
+										kbps = 'bitrate-high';
 									} else if (data.kbps >= 192 && data.kbps < 256) {
-										kbpsClass = 'bitrate-medium';
+										kbps = 'bitrate-medium';
 									} else if (data.kbps < 192) {
-										kbpsClass = 'bitrate-low';
+										kbps = 'bitrate-low';
 									}
 
-									$(item).find('div.actions > small.bitrate').data('bitrate', 'checked').removeClass('bitrate-load').addClass(kbpsClass).text(data.kbps);
+									$that
+										.find('div.actions > small.bitrate')
+										.data('bitrate', 'checked')
+										.removeClass('bitrate-load')
+										.addClass(kbps).text(data.kbps);
 								}
 							}
 						});
@@ -610,10 +615,24 @@ $(function () {
 					console.log('playlist.bitrate: ошибка получения битрейта');
 				}
 			},
+			// seToTime: конвертирует секунды в формат времени
+			secToTime: function (sec) {
+				var hours = Math.floor(sec / (60 * 60));
+				var divisor_for_minutes = sec % (60 * 60);
+				var minutes = Math.floor(divisor_for_minutes / 60);
+				var divisor_for_seconds = divisor_for_minutes % 60;
+				var seconds = Math.ceil(divisor_for_seconds);
+				var obj = {
+					"h": hours,
+					"m": (hours > 0 && minutes <= 9) ? '0' + minutes : minutes,
+					"s": (seconds <= 9) ? '0' + seconds : seconds
+				};
+				return obj;
+			},
 			// События при document.ready
 			ready: function () {
 				// Инициализация Drag-n-drop-a в плейлисте
-				if (app.device.desktop) {
+				if (self.device.desktop) {
 					try {
 						$(function () {
 							var plItems = document.getElementById('pl-items');
@@ -621,7 +640,7 @@ $(function () {
 								animation: 250,
 								// После перетаскивания аудиозаписи
 								onEnd: function (e) {
-									if (app.reorder) {
+									if (self.options.reorder) {
 										var item = e.item;
 										var prev = $(item).prev();
 										var next = $(item).next();
@@ -633,167 +652,183 @@ $(function () {
 
 										// Начало плейлиста
 										if (prevIndex < 0 && nextIndex >= 0) {
-											that.audio.reorder(session.mid, itemId, nextId, '');
+											self.audio.reorder(self.tmp.session.mid, itemId, nextId, '');
 										}
 										// Середина плейлиста
 										else if (prevIndex >= 0 && nextIndex >= 0) {
-											that.audio.reorder(session.mid, itemId, '', prevId);
+											self.audio.reorder(self.tmp.session.mid, itemId, '', prevId);
 										}
 										// Конец плейлиста
 										else if (prevIndex > 0 && nextIndex < 0) {
-											that.audio.reorder(session.mid, itemId, '', prevId);
+											self.audio.reorder(self.tmp.session.mid, itemId, '', prevId);
 										}
 
-										that.animation.playlist.moved(item);
+										self.animation.playlist.moved(item);
 									}
 								},
 							});
+
+							console.log('sortable: ' + sortable);
 						});
 					} catch (e) {
 						console.log('sortable: ошибка при drag-n-drop-е аудиозаписи');
 					}
 				}
 				// Получение аудиозаписей пользователя
-				$(els.controls.load.user).on('click', function () {
-					that.audio.get(session.mid, 0);
+				$(self.$els.controls.load.user).on('click', function () {
+					self.audio.get(self.tmp.session.mid, 0);
 				});
 				// Получение популярных аудиозаписей
-				$(els.controls.load.popular).on('click', function () {
-					that.audio.getPopular(0, 0);
+				$(self.$els.controls.load.popular).on('click', function () {
+					self.audio.getPopular(0, 0);
 				});
 				// Получение аудиозаписей рекомендуемых пользователю
-				$(els.controls.load.recommendations).on('click', function () {
-					that.audio.getRecommendations(0);
+				$(self.$els.controls.load.recommendations).on('click', function () {
+					self.audio.getRecommendations(0);
 				});
 				// Рандомная сортировка
-				$(els.controls.playlist.sort.shuffle).on('click', function () {
-					that.playlist.sort.shuffle();
+				$(self.$els.controls.playlist.sort.shuffle).on('click', function () {
+					self.playlist.sort.shuffle();
 				});
 				// Сортировка по алфавиту (>, <)
-				$(els.controls.playlist.sort.alphabetically).clickToggle(function () {
-					that.playlist.sort.alphabetically('<');
+				$(self.$els.controls.playlist.sort.alphabetically).clickToggle(function () {
+					self.playlist.sort.alphabetically('<');
 				}, function () {
-					that.playlist.sort.alphabetically('>');
+					self.playlist.sort.alphabetically('>');
 				});
 				// Поисковая форма
-				$(els.controls.search.form).submit(function (e) {
-					var q = $.trim(els.controls.search.query.val());
+				$(self.$els.controls.search.form).submit(function (e) {
+					var q = $.trim(self.$els.controls.search.query.val());
 
-					that.audio.search(q, 0);
+					self.audio.search(q, 0);
 					e.preventDefault();
 				});
 				// Аудиозаписи в плейлисте (воспроизведение, пауза)
-				$(els.playlist.items).on('click', 'a', function (e) {
-					if (app.mode.listen) {
-						var item = this;
-						var id = $(item).data('id');
+				$(self.$els.playlist.items).on('click', 'a', function (e) {
+					if (e.target === this) {
+						var $that = $(this);
 
-						if (e.target === item) {
-							if ($(item).hasClass('active')) {
-								if (player.status === 'play' || player.status === 'playing') {
-									that.player.controls.pause();
+						// Воспроизведение
+						if (self.mode.listen) {
+							var id = $that.data('id');
+
+							if ($that.hasClass('active')) {
+								if (self.tmp.player.status === 'play' || self.tmp.player.status === 'playing') {
+									self.player.controls.pause();
 								} else {
-									that.player.controls.play();
+									self.player.controls.play();
 								}
 							} else {
-								that.player.play(id);
+								self.player.play(id);
 							}
-						}
-					} else if (app.mode.download) {
-						if (!$(this).hasClass('dl-active')) {
-							$(this).addClass('dl-active');
-						} else {
-							$(this).removeClass('dl-active');
+							// Загрузка
+						} else if (self.mode.download) {
+							if (!$that.hasClass('dl-active')) {
+								$that.addClass('dl-active');
+							} else {
+								$that.removeClass('dl-active');
+							}
 						}
 					}
 				});
 				// Если используется компьютер
-				if (app.device.desktop) {
+				if (self.device.desktop) {
 					// Генерирование .m3u из текущего плейлиста
-					$(els.controls.playlist.generate.m3u).on('click', function () {
-						that.playlist.generate.m3u();
+					$(self.$els.controls.playlist.generate.m3u).on('click', function () {
+						self.playlist.generate.m3u();
 					});
 					// Включение или отключения режима загрузки
-					$(els.controls.playlist.download.mode).on('click', function () {
-						var items = els.playlist.items.find('a');
+					$(self.$els.controls.playlist.download.mode).on('click', function () {
+						var $that = $(this);
+						var $items = self.$els.playlist.items.find('a');
 
 						// Если включен режим прослушивания
-						if (app.mode.listen) {
-							that.mode('download');
-							$(this).addClass('active');
-							els.controls.playlist.download.all.addClass('active');
+						if (self.mode.listen) {
+							self.app.mode('download');
+							$that.addClass('active');
+							self.$els.controls.playlist.download.all.addClass('active');
 						}
 						// Если включен режим загрузки
-						else if (app.mode.download) {
+						else if (self.mode.download) {
 							// Если были найдены помеченные для загрузки аудиозаписи
-							if (items.hasClass('dl-active')) {
-								items = els.playlist.items.find('a.dl-active');
+							if ($items.hasClass('dl-active')) {
+								$items = self.$els.playlist.items.find('a.dl-active');
 								var download = {};
 
 								// Получение списка загружаемых аудиозаписей
-								$.each(items, function (i, item) {
-									id = $(item).data('id');
-									itemPl = session.playlist[id];
+								$.each($items, function (i, that) {
+									var id = $(that).data('id');
+									var item = self.tmp.session.playlist[id];
 
 									download[i] = {
-										artist: itemPl.artist,
-										title: itemPl.title,
-										owner_id: itemPl.owner_id,
-										id: itemPl.id
+										artist: item.artist,
+										title: item.title,
+										owner_id: item.owner_id,
+										id: item.id
 									};
 								}).promise().done(function () {
-									that.playlist.download(download);
+									self.playlist.download(download);
 								});
 							} else {
-								that.mode('listen');
-								$(this).removeClass('active');
-								els.controls.playlist.download.all.removeClass('active');
+								self.app.mode('listen');
+								$that.removeClass('active');
+								self.$els.controls.playlist.download.all.removeClass('active');
 							}
 						}
 					});
 					// Выделение всех аудиозаписей в плейлисте, для загрузки
-					$(els.controls.playlist.download.all).clickToggle(function () {
-						$(els.playlist.items).find('a').addClass('dl-active');
+					$(self.$els.controls.playlist.download.all).clickToggle(function () {
+						$(self.$els.playlist.items)
+							.find('a')
+							.addClass('dl-active');
 					}, function () {
-						$(els.playlist.items).find('a').removeClass('dl-active');
+						$(self.$els.playlist.items)
+							.find('a')
+							.removeClass('dl-active');
 					});
 					// Показать битрейт аудиозаписи
-					$(els.playlist.items).on({
+					$(self.$els.playlist.items).on({
 						mouseenter: function () {
-							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+							var $that = $(this);
+							var bitrate = $that.find('div.actions > small.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
-								that.playlist.bitrate(this);
+								self.playlist.bitrate($that);
 							}
 						},
 						click: function () {
-							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+							var $that = $(this);
+							var bitrate = $that.find('div.actions > small.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
-								that.playlist.bitrate(this);
+								self.playlist.bitrate($that);
 							}
 						}
 					}, 'a');
 					// Добавить аудиозапись
-					$(els.playlist.items, 'a > div.actions').on('click', 'span.add', function (e) {
-						var item = e.target;
+					$(self.$els.playlist.items, 'a > div.actions').on('click', 'span.add', function (e) {
+						if (e.target === this) {
+							var $that = $(this);
 
-						if (!$(item).hasClass('done')) {
-							var id = $(item).parent().parent().data('id');
+							if (!$that.hasClass('done')) {
+								var id = $that.parent().parent().data('id');
 
-							that.audio.add(session.playlist[id].owner_id, id);
-							$(item).attr('data-content', 'Добавлено').addClass('done');
+								self.audio.add(self.tmp.session.playlist[id].owner_id, id);
+								$that.attr('data-content', 'Добавлено').addClass('done');
+							}
 						}
 					});
 					// Удалить аудиозапись
-					$(els.playlist.items, 'a > div.actions').on('click', 'span.delete', function (e) {
-						var item = e.target;
+					$(self.$els.playlist.items, 'a > div.actions').on('click', 'span.delete', function (e) {
+						if (e.target === this) {
+							var $that = $(this);
 
-						if (!$(item).hasClass('done')) {
-							var id = $(item).parent().parent().data('id');
+							if (!$that.hasClass('done')) {
+								var id = $that.parent().parent().data('id');
 
-							that.audio.delete(session.mid, id);
-							$(item).attr('data-content', 'Удалено').addClass('done');
+								self.audio.delete(self.tmp.session.mid, id);
+								$that.attr('data-content', 'Удалено').addClass('done');
+							}
 						}
 					});
 				}
@@ -874,23 +909,23 @@ $(function () {
 				// Вывод жанров в список
 				$(function () {
 					try {
-						var genres = that.genres.get();
+						var genres = self.genres.get();
 						var list = '';
 
-						$(genres).each(function (i, item) {
-							list += '<li><a data-id="' + item.id + '">' + item.title + '</a></li>';
+						$(genres).each(function (i, that) {
+							list += '<li><a data-id="' + that.id + '">' + that.title + '</a></li>';
 						});
 
-						$(els.controls.search.genres.items).html(list);
+						$(self.$els.controls.search.genres.items).html(list);
 					} catch (e) {
 						console.log('genres.ready: ошибка вывода жанров');
 					}
 				});
 				// Получить аудиозаписи выбранного жанра
-				$(els.controls.search.genres.items).on('click', 'a', function () {
+				$(self.$els.controls.search.genres.items).on('click', 'a', function () {
 					var id = $(this).data('id');
 
-					that.audio.getPopular(id, 0);
+					self.audio.getPopular(id, 0);
 				});
 			}
 		},
@@ -905,33 +940,33 @@ $(function () {
 				var request = 'audio.get';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью app.offset
+				// поэтому запрос блокируется с помощью self.options.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && self.options.offset) {
+					self.app.load(true);
 					try {
 						VK.Api.call(request, {
 							owner_id: owner_id,
-							count: app.audio.count,
+							count: self.config.audio.count,
 							offset: offset,
-							v: app.api
+							v: self.config.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							self.app.load(false);
+							self.verify(request, r);
 
 							if (r.response) {
 								// Запись запроса, для возможности увелечения offset-a
-								req = {
+								self.tmp.req = {
 									name: request,
 									owner_id: owner_id,
 									offset: offset
 								};
 
 								// Включение запроса 'reorder' при drag-n-drop
-								if (owner_id == session.mid) {
-									that.reorder(true);
+								if (owner_id === self.tmp.session.mid) {
+									self.app.reorder(true);
 								} else {
-									that.reorder(false);
+									self.app.reorder(false);
 								}
 
 								// Если нужна подгрузка аудиозаписей
@@ -941,10 +976,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (r.response.items.length > 0) {
-									app.offset = true;
-									that.playlist.add(r.response);
+									self.options.offset = true;
+									self.playlist.add(r.response);
 								} else {
-									app.offset = false;
+									self.options.offset = false;
 								}
 
 								console.log(request + '(' + owner_id + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
@@ -964,30 +999,30 @@ $(function () {
 				var request = 'audio.getPopular';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью app.offset
+				// поэтому запрос блокируется с помощью self.options.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && self.options.offset) {
+					self.app.load(true);
 					try {
 						VK.Api.call(request, {
 							genre_id: genre_id,
-							count: app.audio.count,
+							count: self.config.audio.count,
 							offset: offset,
-							v: app.api
+							v: self.config.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							self.app.load(false);
+							self.verify(request, r);
 
 							if (r.response) {
 								// Запись запроса, для возможности увелечения offset-a
-								req = {
+								self.tmp.req = {
 									name: request,
 									genre_id: genre_id,
 									offset: offset
 								};
 
 								// Отключение запроса 'reorder' при drag-n-drop
-								that.reorder(false);
+								self.app.reorder(false);
 
 								// Если нужна подгрузка аудиозаписей
 								if (offset > 0) {
@@ -996,10 +1031,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (r.response.length > 0) {
-									app.offset = true;
-									that.playlist.add(r.response);
+									self.options.offset = true;
+									self.playlist.add(r.response);
 								} else {
-									app.offset = false;
+									self.options.offset = false;
 								}
 
 								console.log(request + '(' + genre_id + ',' + offset + ')' + ': получено аудиозаписей = ' + r.response.length);
@@ -1018,28 +1053,28 @@ $(function () {
 				var request = 'audio.getRecommendations';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью app.offset
+				// поэтому запрос блокируется с помощью self.options.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && self.options.offset) {
+					self.app.load(true);
 					try {
 						VK.Api.call(request, {
-							count: app.audio.count,
+							count: self.config.audio.count,
 							offset: offset,
-							v: app.api
+							v: self.config.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							self.app.load(false);
+							self.verify(request, r);
 
 							if (r.response) {
 								// Запись запроса, для возможности увелечения offset-a
-								req = {
+								self.tmp.req = {
 									name: request,
 									offset: offset
 								};
 
 								// Отключение запроса 'reorder' при drag-n-drop
-								that.reorder(false);
+								self.app.reorder(false);
 
 								// Если нужна подгрузка аудиозаписей
 								if (offset > 0) {
@@ -1048,10 +1083,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (r.response.items.length > 0) {
-									app.offset = true;
-									that.playlist.add(r.response);
+									self.options.offset = true;
+									self.playlist.add(r.response);
 								} else {
-									app.offset = false;
+									self.options.offset = false;
 								}
 
 								console.log(request + '(' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
@@ -1072,31 +1107,31 @@ $(function () {
 				var request = 'audio.search';
 
 				// Если при подгрузке не были получены аудиозаписи, то считается, что все подгрузились
-				// поэтому запрос блокируется с помощью app.offset
+				// поэтому запрос блокируется с помощью self.options.offset
 				// если это не подгрузка, а начальная загрузка плейлиста с offset = 0, то запрос уходит
-				if (offset === 0 || offset > 0 && app.offset) {
-					that.load(true);
+				if (offset === 0 || offset > 0 && self.options.offset) {
+					self.app.load(true);
 					try {
 						VK.Api.call(request, {
 							q: q,
 							auto_complete: 1,
-							count: app.audio.count,
+							count: self.config.audio.count,
 							offset: offset,
-							v: app.api
+							v: self.config.api
 						}, function (r) {
-							that.load(false);
-							that.verify(request, r);
+							self.app.load(false);
+							self.verify(request, r);
 
 							if (r.response) {
 								// Запись запроса, для возможности увелечения offset-a
-								req = {
+								self.tmp.req = {
 									name: request,
 									q: q,
 									offset: offset
 								};
 
 								// Отключение запроса 'reorder' при drag-n-drop
-								that.reorder(false);
+								self.app.reorder(false);
 
 								// Если нужна подгрузка аудиозаписей
 								if (offset > 0) {
@@ -1105,10 +1140,10 @@ $(function () {
 
 								// Если в ответе присутствуют аудиозаписи
 								if (r.response.items.length > 0) {
-									app.offset = true;
-									that.playlist.add(r.response);
+									self.options.offset = true;
+									self.playlist.add(r.response);
 								} else {
-									app.offset = false;
+									self.options.offset = false;
 								}
 
 								console.log(request + '(' + q + ',' + offset + ')' + ': всего аудиозаписей = ' + r.response.count + ', (получено = ' + r.response.items.length + ')');
@@ -1127,17 +1162,17 @@ $(function () {
 			// v: версия api
 			reorder: function (owner_id, audio_id, before, after) {
 				var request = 'audio.reorder';
-				that.load(true);
+				self.app.load(true);
 				try {
 					VK.Api.call(request, {
 						owner_id: owner_id,
 						audio_id: audio_id,
 						before: before,
 						after: after,
-						v: app.api
+						v: self.config.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						self.app.load(false);
+						self.verify(request, r);
 
 						if (r.response === 1) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ',' + before + ',' + after + ')' + ': аудиозапись перемещена');
@@ -1155,17 +1190,17 @@ $(function () {
 			// v: версия api
 			setBroadcast: function (audio, target_ids) {
 				var request = 'audio.setBroadcast';
-				that.load(true);
+				self.app.load(true);
 				try {
 					VK.Api.call(request, {
 						audio: audio,
 						target_ids: target_ids,
-						v: app.api
+						v: self.config.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						self.app.load(false);
+						self.verify(request, r);
 
-						if (r.response && player.broadcast) {
+						if (r.response && self.tmp.player.broadcast) {
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись транслируется');
 						} else {
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись не транслируется');
@@ -1181,15 +1216,15 @@ $(function () {
 			// v: версия api
 			add: function (owner_id, audio_id) {
 				var request = 'audio.add';
-				that.load(true);
+				self.app.load(true);
 				try {
 					VK.Api.call(request, {
 						owner_id: owner_id,
 						audio_id: audio_id,
-						v: app.api
+						v: self.config.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						self.app.load(false);
+						self.verify(request, r);
 
 						if (r.response) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись добавлена');
@@ -1207,15 +1242,15 @@ $(function () {
 			// v: версия api
 			delete: function (owner_id, audio_id) {
 				var request = 'audio.delete';
-				that.load(true);
+				self.app.load(true);
 				try {
 					VK.Api.call(request, {
 						owner_id: owner_id,
 						audio_id: audio_id,
-						v: app.api
+						v: self.config.api
 					}, function (r) {
-						that.load(false);
-						that.verify(request, r);
+						self.app.load(false);
+						self.verify(request, r);
 
 						if (r.response === 1) {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись удалена');
@@ -1228,42 +1263,77 @@ $(function () {
 				}
 			},
 		},
-		// Загрузка
-		load: function (status) {
-			if (status) {
-				app.load = true;
-				els.load.show();
-			} else {
-				app.load = false;
-				els.load.hide();
+		// Настройки и управление
+		app: {
+			// Авторизация
+			auth: function (status) {
+				if (status) {
+					self.app.refresh();
+					self.$els.vk.auth.hide();
+					self.$els.authorized.attr('data-authorized', 'true').fadeIn(250);
+				} else {
+					self.app.refresh();
+					self.$els.authorized.attr('data-authorized', 'false').hide();
+					self.$els.vk.auth.hide();
+				}
+			},
+			// Загрузка
+			load: function (status) {
+				if (status) {
+					self.config.load = true;
+					self.$els.load.show();
+				} else {
+					self.config.load = false;
+					self.$els.load.hide();
+				}
+			},
+			// Режим
+			mode: function (mode) {
+				switch (mode) {
+				case 'listen':
+					self.mode.listen = true;
+					self.mode.download = false;
+					break;
+				case 'download':
+					self.mode.download = true;
+					self.mode.listen = false;
+					break;
+				}
+			},
+			// Drag-n-drop
+			reorder: function (status) {
+				if (status) {
+					self.options.reorder = true;
+				} else {
+					self.options.reorder = false;
+				}
+			},
+			// Заголовок страницы
+			title: function (title) {
+				$(document).prop('title', title);
+			},
+			// Очистка временных данных
+			refresh: function () {
+				self.tmp.session = {};
+				self.tmp.player = {};
+				self.tmp.req = {};
+			},
+			// Определение устройства
+			device: function () {
+				if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+					self.device.portable = true;
+					self.device.desktop = false;
+				} else {
+					self.device.desktop = true;
+					self.device.portable = false;
+				}
 			}
 		},
-		// Режим
-		mode: function (mode) {
-			switch (mode) {
-			case 'listen':
-				app.mode.listen = true;
-				app.mode.download = false;
-				break;
-			case 'download':
-				app.mode.download = true;
-				app.mode.listen = false;
-				break;
-			}
-		},
-		// Drag-n-drop
-		reorder: function (status) {
-			if (status) {
-				app.reorder = true;
-			} else {
-				app.reorder = false;
-			}
-		},
-		// Проверка ответа от сервера на ошибки
+		// Обработка ошибок сервера
 		verify: function (request, r) {
 			if (r.error) {
 				if (r.error.error_code === 14) {
-					that.captcha.show(r.error);
+					self.captcha.show(r.error);
 				} else {
 					throw new Error(request + ': ' + r.error.error_msg);
 				}
@@ -1272,25 +1342,25 @@ $(function () {
 		// Обработка капчи
 		captcha: {
 			show: function (captcha) {
-				$(els.captcha.img).prop('src', captcha.captcha_img);
-				$(els.captcha.sid).val(captcha.captcha_sid);
-				$(els.captcha.key).val('');
-				$(els.captcha.container).modal('show');
+				$(self.$els.captcha.img).prop('src', captcha.captcha_img);
+				$(self.$els.captcha.sid).val(captcha.captcha_sid);
+				$(self.$els.captcha.key).val('');
+				$(self.$els.captcha.container).modal('show');
 			},
 			ready: function () {
-				$(els.captcha.form).submit(function (e) {
-					var captcha_sid = $.trim($(els.captcha.sid).val());
-					var captcha_key = $.trim($(els.captcha.key).val());
+				$(self.$els.captcha.form).submit(function (e) {
+					var captcha_sid = $.trim($(self.$els.captcha.sid).val());
+					var captcha_key = $.trim($(self.$els.captcha.key).val());
 
 					if (captcha_sid.length > 0 && captcha_key.length > 0) {
 						VK.Api.call('audio.get', {
 							count: 1,
 							captcha_sid: captcha_sid,
 							captcha_key: captcha_key,
-							v: app.api
+							v: self.config.api
 						}, function (r) {
 							if (r.response) {
-								$(els.captcha.container).modal('hide');
+								$(self.$els.captcha.container).modal('hide');
 							}
 						});
 					}
@@ -1303,25 +1373,25 @@ $(function () {
 			player: {
 				controls: {
 					prev: function () {
-						that.animation.custom($(els.player.controls.title), 'an-plr-prev', 250);
+						self.animation.custom($(self.$els.player.controls.title), 'an-plr-prev', 250);
 					},
 					next: function () {
-						that.animation.custom($(els.player.controls.title), 'an-plr-next', 250);
+						self.animation.custom($(self.$els.player.controls.title), 'an-plr-next', 250);
 					},
 					play: function () {
-						that.animation.custom($(els.player.controls.title), 'an-plr-next', 250);
+						self.animation.custom($(self.$els.player.controls.title), 'an-plr-next', 250);
 					},
 					pause: function () {
-						that.animation.custom($(els.player.controls.title), 'an-plr-prev', 250);
+						self.animation.custom($(self.$els.player.controls.title), 'an-plr-prev', 250);
 					},
 				}
 			},
 			playlist: {
 				moved: function (item) {
 					if ($(item).hasClass('active')) {
-						that.animation.custom($(item), 'an-pl-moved--active', 1000);
+						self.animation.custom($(item), 'an-pl-moved--active', 1000);
 					} else {
-						that.animation.custom($(item), 'an-pl-moved', 1000);
+						self.animation.custom($(item), 'an-pl-moved', 1000);
 					}
 				},
 			},
@@ -1333,20 +1403,16 @@ $(function () {
 				});
 			},
 		},
-		// Заголовок страницы
-		title: function (title) {
-			$(document).prop('title', title);
-		},
 		// События при document.ready
 		ready: function () {
-			that.vk.ready();
-			that.player.ready();
-			that.genres.ready();
-			that.playlist.ready();
-			that.captcha.ready();
+			self.vk.ready();
+			self.player.ready();
+			self.genres.ready();
+			self.playlist.ready();
+			self.captcha.ready();
 
 			// Для всех popover
-			if (app.device.desktop) {
+			if (self.device.desktop) {
 				$('[data-toggle="popover"]').popover({
 					trigger: 'hover'
 				});
@@ -1363,28 +1429,10 @@ $(function () {
 
 	// При скролле окна
 	$(window).scroll(function () {
-		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200 && !app.load) {
+		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200 && !self.config.load) {
 			slothMusic.playlist.more();
 		}
 	});
-
-	// secondsToTime: конвертирует секунды в формат времени
-	function secondsToTime(secs) {
-		var hours = Math.floor(secs / (60 * 60));
-
-		var divisor_for_minutes = secs % (60 * 60);
-		var minutes = Math.floor(divisor_for_minutes / 60);
-
-		var divisor_for_seconds = divisor_for_minutes % 60;
-		var seconds = Math.ceil(divisor_for_seconds);
-
-		var obj = {
-			"h": hours,
-			"m": (hours > 0 && minutes <= 9) ? '0' + minutes : minutes,
-			"s": (seconds <= 9) ? '0' + seconds : seconds
-		};
-		return obj;
-	}
 });
 
 // Shuffle: перемешать элементы
