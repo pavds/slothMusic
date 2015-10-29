@@ -204,10 +204,10 @@ $(function () {
 				// Включение или отлючение трансляции в статус
 				broadcast: function (status) {
 					try {
-						if (status) {
+						if (status && self.tmp.player.id) {
 							self.tmp.player.broadcast = true;
 							self.audio.setBroadcast(self.tmp.player.owner_id + '_' + self.tmp.player.id, self.tmp.session.mid);
-						} else {
+						} else if (self.tmp.player.id) {
 							self.tmp.player.broadcast = false;
 							self.audio.setBroadcast(0, self.tmp.session.mid);
 						}
@@ -530,11 +530,16 @@ $(function () {
 							'href': url,
 							'download': 'playlist.m3u'
 						}).appendTo('body').promise().done(function () {
-							$(this)[0].click().end().remove();
+							$(this)[0].click();
+							$(this).remove();
+
+							notify().success('Плейлист .M3U успешно сгенерирован', 2000);
 						});
 
 						window.URL.revokeObjectURL(url);
 					} catch (e) {
+						notify().error('Ошибка генерирования .M3U плейлиста', 2000);
+
 						throw new Error('playlist.generate.m3u: ошибка генерирования m3u плейлиста');
 					}
 				}
@@ -568,6 +573,8 @@ $(function () {
 						});
 					});
 				} catch (e) {
+					notify().error('Ошибка при загрузке', 2000);
+
 					throw new Error('playlist.download: ошибка загрузки аудиозаписей');
 				}
 			},
@@ -1211,8 +1218,12 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response === 1) {
+							notify().success('Аудиозапись перемещена', 2000);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ',' + before + ',' + after + ')' + ': аудиозапись перемещена');
 						} else {
+							notify().error('Аудиозапись не перемещена', 2000);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ',' + before + ',' + after + ')' + ': аудиозапись не перемещена');
 						}
 					});
@@ -1238,8 +1249,12 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response && self.tmp.player.broadcast) {
+							notify().success('Включена трансляция в статус', 2000);
+
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись транслируется');
 						} else {
+							notify().success('Трансляция в статус отключена', 2000);
+
 							console.log(request + '(' + audio + ',' + target_ids + ')' + ': аудиозапись не транслируется');
 						}
 					});
@@ -1267,6 +1282,8 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response) {
+							notify().success('Аудиозапись добавлена', 1000);
+
 							// Изменения всплывающего текста и назначение атрибута с новым id аудиозаписи
 							$that
 								.attr('data-content', 'Добавлено')
@@ -1280,6 +1297,8 @@ $(function () {
 
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись добавлена');
 						} else {
+							notify().error('Аудиозапись не добавлена', 1000);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не добавлена');
 						}
 					});
@@ -1314,6 +1333,7 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response === 1) {
+							notify().success('Аудиозапись удалена', 1000);
 
 							// Если аудиозапись была добавлена и существует атрибут нового id
 							if (created_id) {
@@ -1331,6 +1351,8 @@ $(function () {
 
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись удалена');
 						} else {
+							notify().error('Аудиозапись не удалена', 1000);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не удалена');
 						}
 					});
@@ -1358,6 +1380,8 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response) {
+							notify().success('Аудиозапись восстановлена', 1000);
+
 							$that
 								.attr('data-content', 'Удалить')
 								.removeClass('done');
@@ -1367,6 +1391,8 @@ $(function () {
 
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись восстановлена');
 						} else {
+							notify().error('Аудиозапись не восстановлена', 1000);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не восстановлена');
 						}
 					});
@@ -1384,10 +1410,14 @@ $(function () {
 						self.app.refresh();
 						self.$els.vk.auth.hide();
 						self.$els.authorized.attr('data-authorized', 'true').fadeIn(250);
+
+						notify().success('Вы успешно вошли', 2000);
 					} else {
 						self.app.refresh();
 						self.$els.authorized.attr('data-authorized', 'false').hide();
 						self.$els.vk.auth.hide();
+
+						notify().error('Вы не авторизованы', 2000);
 					}
 				} catch (e) {
 					throw new Error('app.auth: ошибка при авторизации или деавторизации');
@@ -1409,10 +1439,14 @@ $(function () {
 				case 'listen':
 					self.mode.listen = true;
 					self.mode.download = false;
+
+					notify().success('Включен режим прослушивания', 1000);
 					break;
 				case 'download':
 					self.mode.download = true;
 					self.mode.listen = false;
+
+					notify().success('Включен режим загрузки', 1000);
 					break;
 				}
 			},
@@ -1478,6 +1512,10 @@ $(function () {
 							}, function (r) {
 								if (r.response) {
 									$(self.$els.captcha.container).modal('hide');
+
+									notify().success('Капча успешно отправлена', 2000);
+								} else {
+									notify().error('Капча неверно введена', 2000);
 								}
 							});
 						}

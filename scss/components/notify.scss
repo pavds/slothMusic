@@ -1,0 +1,88 @@
+/* ================================================== Notify */
+
+.notify
+{
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+
+	width: auto;
+	min-height: 20px;
+	padding: 20px 40px 20px 18px;
+
+	transition: none !important;
+	text-align: left;
+
+	color: rgba(255, 255, 255, .85);
+	border-radius: 5px;
+	*
+	{
+		transition: none !important;
+	}
+	&-title
+	{
+		font-weight: 600;
+
+		cursor: default;
+
+		color: #4d4d4f;
+	}
+	&-close
+	{
+		line-height: 18px;
+
+		position: absolute;
+		top: 20px;
+		right: 15px;
+
+		width: 20px;
+		height: 20px;
+
+		cursor: pointer;
+		text-align: center;
+		vertical-align: middle;
+
+		color: #4d4d4f;
+		border-radius: 20px;
+		background: rgba(255, 255, 255, .25);
+		&:hover
+		{
+			background: rgba(77, 77, 79, .2);
+		}
+	}
+	&-success
+	{
+		background: #2ecc71;
+	}
+	&-error
+	{
+		background: #e74c3c;
+	}
+	&-alert
+	{
+		background: #f1c40f;
+	}
+	&-show
+	{
+		animation-name: slideElastic;
+		animation-duration: 1s;
+		animation-timing-function: linear;
+	}
+	&-hide
+	{
+		animation-name: slideElastic;
+		animation-duration: .5s;
+		animation-direction: reverse;
+	}
+	&:hover
+	{
+		opacity: .9;
+		.notify-close
+		{
+			background: rgba(77, 77, 79, .1);
+		}
+	}
+}
+
+
+/* ================================================== /Notify */
