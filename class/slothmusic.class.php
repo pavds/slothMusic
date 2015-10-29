@@ -127,8 +127,8 @@ class slothMusic {
 
 	/**
 	 *
-	 * @param string $url url аудиозаписи
-	 * @param string $filename название аудиозаписи
+	 * @param string $owner_id id владельца аудиозаписи
+	 * @param string $id id аудиозаписи
 	 * @return file аудиозапись
 	 */
 	public function download($owner_id, $id) {
