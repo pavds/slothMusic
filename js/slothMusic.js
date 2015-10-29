@@ -1339,7 +1339,10 @@ $(function () {
 							if (created_id) {
 								$that
 									.attr('data-content', 'Добавить')
-									.removeClass('done');
+									.removeClass('done')
+									.parent()
+									.parent()
+									.removeAttr('data-created');
 							} else {
 								$that
 									.attr('data-content', 'Удалено')
