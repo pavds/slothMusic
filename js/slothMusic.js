@@ -121,7 +121,9 @@ $(function () {
 					self.app.auth(true);
 					self.tmp.session = r.session;
 					self.player.controls.broadcast(false);
-					self.audio.get(self.tmp.session.mid, 0);
+
+					// Загрузка аудиозаписей пользователя и загрузка его плейлиста
+					self.audio.getUser(true);
 
 					console.log('auth: авторизация прошла успешно (id = ' + self.tmp.session.mid + ')');
 				} else {
@@ -249,8 +251,9 @@ $(function () {
 						.find('a')
 						.removeClass('active');
 
-					$item
-						.addClass('active');
+					$item.addClass('active');
+
+					console.log('self.player.play: воспроизведение (id = ' + id + ')');
 				} catch (e) {
 					throw new Error('player.play: ошибка воспроизведения');
 				}
@@ -397,80 +400,74 @@ $(function () {
 					// Если используется компьютер, добавляет возможности:
 					// просмотр битрейта, добавление или удаление аудиозаписей
 					if (self.device.desktop) {
-						VK.Api.call('audio.get', {
-							owner_id: self.tmp.session.mid,
-							count: 6000,
-							v: self.config.api
-						}, function (r) {
-							var uItems = r.response.items;
-							var ids = [];
+						var ids = [];
 
-							ids = uItems.map(function (item) {
-								return item.id;
-							});
+						ids = self.tmp.player.playlist.map(function (item) {
+							return item.id;
+						});
 
-							$(self.$els.playlist.items).find('a').each(function () {
-								var $that = $(this);
+						$(self.$els.playlist.items).find('a').each(function () {
+							var $that = $(this);
 
-								// Если при добавлении аудиозаписей не найдены actions
-								if (!$that.find('div').hasClass('actions')) {
-									var $actions = {};
-									var data = $that.data();
-									var duration = self.playlist.secToTime(data.duration);
-									duration.text = (((duration.h > 0) ? duration.h + ':' : '') + '' + duration.m + ':' + '' + duration.s);
+							// Если при добавлении аудиозаписей не найдены actions
+							if (!$that.find('div').hasClass('actions')) {
+								var $actions = {};
+								var data = $that.data();
+								var duration = self.playlist.secToTime(data.duration);
+								duration.text = (((duration.h > 0) ? duration.h + ':' : '') + '' + duration.m + ':' + '' + duration.s);
 
-									$('<div/>', {
-										'class': 'actions'
-									}).appendTo($that).promise().done(function () {
-										$actions = $that.find('div', '.actions');
+								$('<div/>', {
+									'class': 'actions'
+								}).appendTo($that).promise().done(function () {
+									$actions = $that.find('div', '.actions');
 
-										// Битрейт
-										$('<small/>', {
-											'class': 'bitrate bitrate-load',
+									// Битрейт
+									$('<small/>', {
+										'class': 'bitrate bitrate-load',
+										'data-container': 'body',
+										'data-toggle': 'popover',
+										'data-placement': 'top',
+										'data-content': 'Битрейт'
+									}).appendTo($actions);
+
+									// Длительность аудиозаписи
+									$('<small/>', {
+										'class': 'duration',
+										'text': duration.text,
+										'data-container': 'body',
+										'data-toggle': 'popover',
+										'data-placement': 'top',
+										'data-content': 'Длительность'
+									}).appendTo($actions);
+
+								}).promise().done(function () {
+									if ($.inArray(data.id, ids) >= 0) {
+										//  Возможность удаления аудиозаписи
+										$('<span/>', {
+											'class': 'delete',
 											'data-container': 'body',
 											'data-toggle': 'popover',
 											'data-placement': 'top',
-											'data-content': 'Битрейт'
+											'data-content': 'Удалить'
 										}).appendTo($actions);
-
-										// Длительность аудиозаписи
-										$('<small/>', {
-											'class': 'duration',
-											'text': duration.text,
+									} else {
+										//  Возможность добавления аудиозаписи
+										$('<span/>', {
+											'class': 'add',
 											'data-container': 'body',
 											'data-toggle': 'popover',
 											'data-placement': 'top',
-											'data-content': 'Длительность'
+											'data-content': 'Добавить'
 										}).appendTo($actions);
-
-									}).promise().done(function () {
-										if ($.inArray(data.id, ids) >= 0) {
-											//  Возможность удаления аудиозаписи
-											$('<span/>', {
-												'class': 'delete',
-												'data-container': 'body',
-												'data-toggle': 'popover',
-												'data-placement': 'top',
-												'data-content': 'Удалить'
-											}).appendTo($actions);
-										} else {
-											//  Возможность добавления аудиозаписи
-											$('<span/>', {
-												'class': 'add',
-												'data-container': 'body',
-												'data-toggle': 'popover',
-												'data-placement': 'top',
-												'data-content': 'Добавить'
-											}).appendTo($actions);
-										}
-									});
-								}
-							}).promise().done(function () {
-								$('*[data-toggle="popover"]').popover({
-									trigger: 'hover'
+									}
 								});
+							}
+						}).promise().done(function () {
+							$('*[data-toggle="popover"]').popover({
+								trigger: 'hover'
 							});
 						});
+						// });
 					}
 
 				} catch (e) {
@@ -823,10 +820,9 @@ $(function () {
 							var $that = $(this);
 
 							if (!$that.hasClass('done')) {
-								var id = $that.parent().parent().data('id');
-
-								self.audio.add(self.tmp.session.playlist[id].owner_id, id);
-								$that.attr('data-content', 'Добавлено').addClass('done');
+								self.audio.add($that);
+							} else {
+								self.audio.delete($that);
 							}
 						}
 					});
@@ -836,10 +832,9 @@ $(function () {
 							var $that = $(this);
 
 							if (!$that.hasClass('done')) {
-								var id = $that.parent().parent().data('id');
-
-								self.audio.delete(self.tmp.session.mid, id);
-								$that.attr('data-content', 'Удалено').addClass('done');
+								self.audio.delete($that);
+							} else {
+								self.audio.restore($that);
 							}
 						}
 					});
@@ -943,6 +938,34 @@ $(function () {
 		},
 		// Работа с API: audio
 		audio: {
+			// Загружает аудиозаписи пользователя, для проверки и вывода элементов добавления
+			// или удаления аудиозаписей
+			// owner_id: идентификатор владельца аудиозаписей
+			// count: количество возвращаемых аудиозаписей
+			// v: версия api
+			getUser: function (get) {
+				var request = 'audio.get';
+
+				self.app.load(true);
+				try {
+					VK.Api.call(request, {
+						owner_id: self.tmp.session.mid,
+						count: 6000,
+						v: self.config.api
+					}, function (r) {
+						self.app.load(false);
+						self.verify(request, r);
+						self.tmp.player.playlist = r.response.items;
+
+						// Если нужна загрузка плейлиста пользователя
+						if (get) {
+							self.audio.get(self.tmp.session.mid, 0)
+						}
+					});
+				} catch (e) {
+					throw new Error('Ошибка запроса: ' + request);
+				}
+			},
 			// Возвращает список аудиозаписей пользователя или сообщества
 			// owner_id: идентификатор владельца аудиозаписей
 			// count: количество возвращаемых аудиозаписей
@@ -1228,8 +1251,10 @@ $(function () {
 			// owner_id: идентификатор владельца аудиозаписи
 			// audio_id: идентификатор аудиозаписи
 			// v: версия api
-			add: function (owner_id, audio_id) {
+			add: function ($that) {
 				var request = 'audio.add';
+				var audio_id = $that.parent().parent().data('id');
+				var owner_id = self.tmp.session.playlist[audio_id].owner_id;
 
 				self.app.load(true);
 				try {
@@ -1242,6 +1267,17 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response) {
+							// Изменения всплывающего текста и назначение атрибута с новым id аудиозаписи
+							$that
+								.attr('data-content', 'Добавлено')
+								.addClass('done')
+								.parent()
+								.parent()
+								.attr('data-created', r.response);
+
+							// Обновление плейлиста пользователя
+							self.audio.getUser(false);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись добавлена');
 						} else {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не добавлена');
@@ -1254,9 +1290,18 @@ $(function () {
 			// Удаляет аудиозапись со страницы пользователя
 			// owner_id: идентификатор владельца аудиозаписи
 			// audio_id: идентификатор аудиозаписи
+			// created_id: новый идентификатор при добавлении аудиозаписи
 			// v: версия api
-			delete: function (owner_id, audio_id) {
+			delete: function ($that) {
 				var request = 'audio.delete';
+				var owner_id = self.tmp.session.mid;
+				var audio_id = $that.parent().parent().data('id');
+				var created_id = $that.parent().parent().attr('data-created');
+
+				// Если аудиозапись была добавлена и существует атрибут нового id
+				if (created_id) {
+					audio_id = created_id;
+				}
 
 				self.app.load(true);
 				try {
@@ -1269,9 +1314,60 @@ $(function () {
 						self.verify(request, r);
 
 						if (r.response === 1) {
+
+							// Если аудиозапись была добавлена и существует атрибут нового id
+							if (created_id) {
+								$that
+									.attr('data-content', 'Добавить')
+									.removeClass('done');
+							} else {
+								$that
+									.attr('data-content', 'Удалено')
+									.addClass('done');
+							}
+
+							// Обновление плейлиста пользователя
+							self.audio.getUser(false);
+
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись удалена');
 						} else {
 							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не удалена');
+						}
+					});
+				} catch (e) {
+					throw new Error('Ошибка запроса: ' + request);
+				}
+			},
+			// Восстанавливает удаленную аудиозапись, в пределах 20 минут
+			// owner_id: идентификатор владельца аудиозаписи
+			// audio_id: идентификатор аудиозаписи
+			// v: версия api
+			restore: function ($that) {
+				var request = 'audio.restore';
+				var owner_id = self.tmp.session.mid;
+				var audio_id = $that.parent().parent().data('id');
+
+				self.app.load(true);
+				try {
+					VK.Api.call(request, {
+						owner_id: owner_id,
+						audio_id: audio_id,
+						v: self.config.api
+					}, function (r) {
+						self.app.load(false);
+						self.verify(request, r);
+
+						if (r.response) {
+							$that
+								.attr('data-content', 'Удалить')
+								.removeClass('done');
+
+							// Обновление плейлиста пользователя
+							self.audio.getUser(false);
+
+							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись восстановлена');
+						} else {
+							console.log(request + '(' + owner_id + ',' + audio_id + ')' + ': аудиозапись не восстановлена');
 						}
 					});
 				} catch (e) {
