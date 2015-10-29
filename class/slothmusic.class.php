@@ -131,11 +131,22 @@ class slothMusic {
 	 * @param string $filename название аудиозаписи
 	 * @return file аудиозапись
 	 */
-	public function download($url, $filename) {
+	public function download($owner_id, $id) {
+		if (empty($this->app['access_token'])) {
+			$this->app['access_token'] = $_SESSION['access_token'];
+		}
+		$this->curl->get('https://api.vk.com/method/audio.getById', array(
+			'audios' => $owner_id . '_' . $id,
+			'v' => $this->app['v'],
+			'access_token' => $this->app['access_token'],
+		));
+		$data = $this->curl->response->response[0];
+		$filename = $data->artist . ' — ' . $data->title;
+
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="' . basename($filename) . '.mp3";');
 		ob_end_flush();
-		@readfile($url);
+		@readfile($data->url);
 		exit;
 	}
 

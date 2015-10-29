@@ -550,7 +550,7 @@ $(function () {
 					// Создание списка ссылок для загрузки аудиозаписей
 					var dList = '<div id="download" class="hide">';
 					$.each(items, function (i, item) {
-						dList += '<a target="_blank" href="download?o=' + item.owner_id + '&i=' + item.id + '&a=' + item.artist + '&t=' + item.title + '">';
+						dList += '<a target="_blank" href="download?o=' + item.owner_id + '&i=' + item.id + '">';
 					});
 					dList += '</div>';
 
