@@ -21,6 +21,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<title>slothMusic</title>
@@ -48,26 +49,23 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<link rel="apple-touch-icon" href="favicon/favicon_256.png" sizes="256x256" type="image/png">
 	<link rel="apple-touch-icon" href="favicon/favicon_512.png" sizes="512x512" type="image/png">
 	<link rel="apple-touch-icon-precomposed" href="favicon/favicon_128.png">
-
 	<link rel="stylesheet" href="css/slothMusic.css">
-
 	<?php if (verify($_SESSION['access_token'])): ?>
 		<script>var access_token = '<?php echo $_SESSION['access_token'];?>';</script>
 	<?php endif;?>
 </head>
+
 <body>
 	<!-- fork me -->
 	<div class="fork-me">
 		<a target="_blank" href="https://github.com/ifamed/slothMusic" title="Fork Me"></a>
 	</div>
 	<!-- /fork me -->
-
 	<!-- load -->
 	<div id="load" class="load">
 		<i class="load-spinner"></i>
 	</div>
 	<!-- /load -->
-
 	<!-- vk auth -->
 	<div class="vk">
 		<div class="container">
@@ -75,7 +73,6 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 		</div>
 	</div>
 	<!-- /vk auth -->
-
 	<!-- captcha -->
 	<div class="ml ca" id="ml-ca-container" tabindex="-1" role="dialog" aria-labelledby="ml-ca-title">
 		<div class="ml-dialog" role="document">
@@ -102,7 +99,6 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 		</div>
 	</div>
 	<!-- /captcha -->
-
 	<!-- player -->
 	<div class="plr" data-authorized="false">
 		<div class="container">
@@ -128,31 +124,30 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 		</div>
 	</div>
 	<!-- /player -->
-
 	<!--controls -->
 	<div class="cls" data-authorized="false">
 		<div class="container">
 			<div class="cls-container">
-				<i id="cls-ld-user" class="cls-user" data-placement="bottom" data-toggle="popover" title="Плейлист пользователя" data-content="Аудиозаписи авторизированного пользователя."></i>
-				<i id="cls-ld-popular" class="cls-popular" data-placement="bottom" data-toggle="popover" title="Популярные аудиозаписи" data-content="Популярные аудиозаписи Вконтакте."></i>
-				<i id="cls-ld-recommendations" class="cls-recommendations" data-placement="bottom" data-toggle="popover" title="Рекомендуемые аудиозаписи" data-content="Рекомендуемые аудиозаписи пользователя. Исходя из его аудиозаписей."></i>
-				<i id="cls-pl-st-shuffle" class="cls-shuffle" data-placement="bottom" data-toggle="popover" title="Перемешать плейлист" data-content="Перемешать аудиозаписи в плейлисте (рандомно)."></i>
-				<i id="cls-pl-st-alphabetically" class="cls-alphabetically" data-placement="bottom" data-toggle="popover" title="Сортировка по алфавиту" data-content="Сортировка аудиозаписей в плейлисте по алфавиту и наоборот."></i>
-				<i id="cls-plr-rw-backward" class="cls-backward" data-placement="bottom" data-toggle="popover" title="Перемотать назад" data-content="Перемотать на 10 секунд назад."></i>
-				<i id="cls-plr-rw-forward" class="cls-forward" data-placement="bottom" data-toggle="popover" title="Перемотать вперед" data-content="Перемотать на 10 секунд вперед."></i>
-				<i id="cls-pl-dl-mode" class="cls-download" data-placement="bottom" data-toggle="popover" title="Режим загрузки" data-content="При нажатии на активный режим загрузки (при учете выделенных аудиозаписей), они будут загружены. Возможно, потребуется разрешить открытие всплывающих окон (возле адресной строки)."></i>
-				<i id="cls-pl-dl-all" class="cls-download-all" data-placement="bottom" data-toggle="popover" title="Выделить все аудиозаписи" data-content="Выделить все аудиозаписи в плейлисте для загрузки."></i>
-				<i id="cls-pl-gr-m3u" class="cls-m3u" data-placement="bottom" data-toggle="popover" title="Сгенерировать M3U" data-content="Сгенерировать .m3u файл, из текущего плейлиста."></i>
-				<i id="cls-plr-bc" class="cls-broadcast" data-placement="bottom" data-toggle="popover" title="Трансляция" data-content="Включением или отключение трансляции в статус."></i>
+				<i id="cls-ld-user" class="cls-user" data-toggle="popover" title="Мои аудиозаписи" data-content="Аудиозаписи добавленные вами Вконтакте."></i>
+				<i id="cls-ld-popular" class="cls-popular" data-toggle="popover" title="Популярные" data-content="Популярные аудиозаписи Вконтакте."></i>
+				<i id="cls-ld-recommendations" class="cls-recommendations" data-toggle="popover" title="Рекомендуемые" data-content="Рекомендуемые аудиозаписи пользователю."></i>
+				<i id="cls-pl-st-shuffle" class="cls-shuffle" data-toggle="popover" title="Перемешать аудиозаписи" data-content="Перемешать аудиозаписи в плейлисте."></i>
+				<i id="cls-pl-st-alphabetically" class="cls-alphabetically" data-toggle="popover" title="Сортировать по алфавиту" data-content="Сортировать аудиозаписи в плейлисте в алфавитном порядке или наоборот."></i>
+				<i id="cls-plr-rw-backward" class="cls-backward" data-toggle="popover" title="Перемотать назад" data-content="Перемотать на 10 секунд назад."></i>
+				<i id="cls-plr-rw-forward" class="cls-forward" data-toggle="popover" title="Перемотать вперед" data-content="Перемотать на 10 секунд вперед."></i>
+				<i id="cls-pl-dl-mode" class="cls-download" data-toggle="popover" title="Режим загрузки" data-content="Включение или отключения режима загрузки. При клике на активный режим загрузки (если были выделены нужные аудиозаписи), они будут загружены. При загрузке большого кол-ва аудиозаписей потребуется разрешить открытие всплывающих окон."></i>
+				<i id="cls-pl-dl-all" class="cls-download-all" data-toggle="popover" title="Выделить все аудиозаписи" data-content="Выделить все аудиозаписи в плейлисте для загрузки."></i>
+				<i id="cls-pl-gr-m3u" class="cls-m3u" data-toggle="popover" title="Генерирование плейлиста" data-content="Генерирование M3U плейлиста, из текущего списка аудиозаписей."></i>
+				<i id="cls-plr-bc" class="cls-broadcast" data-toggle="popover" title="Трансляция" data-content="Включение или отключение трансляции в статус."></i>
 			</div>
 			<div class="cls-sh">
 				<div class="cls-sh-container">
-					<div class="cls-sh-query" data-toggle="popover" title="Поиск" data-content="Поиск аудиозаписей по запросу." data-placement="bottom">
+					<div class="cls-sh-query" data-toggle="popover" title="Поиск" data-content="Поиск аудиозаписей по запросу.">
 						<form id="cls-sh-form">
 							<input id="cls-sh-query" type="text" placeholder="Поиск">
 						</form>
 					</div>
-					<div class="cls-sh-btn" data-toggle="popover" title="Жанр" data-content="Поиск аудиозаписей по жанру." data-placement="left">
+					<div class="cls-sh-btn">
 						<div class="cls-sh-gr">
 							<button id="cls-sh-gr-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<span id="cls-sh-gr-text">Жанр</span> <i class="caret"></i>
@@ -165,7 +160,6 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 		</div>
 	</div>
 	<!-- /controls -->
-
 	<!-- playlist -->
 	<div class="pl" data-authorized="false">
 		<div class="container">
@@ -177,7 +171,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 		</div>
 	</div>
 	<!-- /playlist -->
-
 	<script src="js/combined.min.js"></script>
 </body>
+
 </html>
