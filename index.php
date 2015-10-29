@@ -13,6 +13,9 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	$_SESSION = array(
 		'access_token' => $slothMusic->access_token(),
 	);
+
+	// Редирект, чтобы убрать временный код из адреса
+	$slothMusic->redirect();
 }
 
 ?>

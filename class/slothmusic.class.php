@@ -161,6 +161,14 @@ class slothMusic {
 
 	/**
 	 *
+	 * редирект
+	 */
+	public function redirect($path = '/') {
+		header('Location: ' . $path);
+	}
+
+	/**
+	 *
 	 * @return string $access_token после авторизации
 	 */
 	public function access_token() {
