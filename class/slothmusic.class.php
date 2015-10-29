@@ -38,11 +38,12 @@ class slothMusic {
 		if ($this->check($data['id'])) {
 			return $this->send($this->get($data['id']));
 		} else {
-			$this->app['access_token'] = $data['access_token'];
-			$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
+			$this->app['access_token'] = $_SESSION['access_token'];
+			$get_data = $this->get_data($data['owner_id'], $data['id']);
+			$kbps = $this->kbps($get_data->url, $get_data->duration);
 
 			if ($kbps == 0) {
-				$kbps = $this->kbps($this->get_url($data['owner_id'], $data['id']), $data['duration']);
+				$kbps = $this->kbps($get_data->url, $get_data->duration);
 			}
 
 			if ($kbps > 0) {
@@ -180,7 +181,7 @@ class slothMusic {
 	 * @param integer $id id аудиозаписи
 	 * @return string $access_token
 	 */
-	public function get_url($owner_id, $id) {
+	public function get_data($owner_id, $id) {
 		if (empty($this->app['access_token'])) {
 			$this->app['access_token'] = $_SESSION['access_token'];
 		}
@@ -189,7 +190,7 @@ class slothMusic {
 			'v' => $this->app['v'],
 			'access_token' => $this->app['access_token'],
 		));
-		return (string) $this->curl->response->response[0]->url;
+		return (object) $this->curl->response->response[0];
 	}
 }
 

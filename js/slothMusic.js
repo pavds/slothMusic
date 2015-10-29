@@ -589,10 +589,8 @@ $(function () {
 							url: 'fileinfo',
 							data: {
 								id: id,
-								duration: item.duration,
 								owner_id: item.owner_id,
 								uid: self.tmp.session.mid,
-								access_token: access_token
 							},
 							method: 'POST',
 							dataType: 'json',
