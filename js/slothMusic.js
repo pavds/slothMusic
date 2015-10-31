@@ -34,67 +34,69 @@ $(function () {
 
 		/* ================================================== Elements */
 		$els: {
-			authorized: $('*[data-authorized="false"]'),
+			authorized: $('[data-authorized="false"]'),
 			player: {
-				audio: $('#plr-audio').get(0),
-				cover: $('#plr-cover'),
+				audio: $(document.getElementById('plr-audio')).get(0),
+				cover: $(document.getElementById('plr-cover')),
 				controls: {
-					title: $('#plr-cls-title'),
-					prev: $('#plr-cls-prev'),
-					next: $('#plr-cls-next')
+					title: $(document.getElementById('plr-cls-title')),
+					prev: $(document.getElementById('plr-cls-prev')),
+					next: $(document.getElementById('plr-cls-next'))
 				}
 			},
 			controls: {
 				load: {
-					user: $('#cls-ld-user'),
-					popular: $('#cls-ld-popular'),
-					recommendations: $('#cls-ld-recommendations')
+					user: $(document.getElementById('cls-ld-user')),
+					popular: $(document.getElementById('cls-ld-popular')),
+					recommendations: $(document.getElementById('cls-ld-recommendations'))
 				},
 				player: {
 					rewind: {
-						backward: $('#cls-plr-rw-backward'),
-						forward: $('#cls-plr-rw-forward')
+						backward: $(document.getElementById('cls-plr-rw-backward')),
+						forward: $(document.getElementById('cls-plr-rw-forward'))
 					},
-					broadcast: $('#cls-plr-bc')
+					broadcast: $(document.getElementById('cls-plr-bc'))
 				},
 				search: {
-					form: $('#cls-sh-form'),
-					query: $('#cls-sh-query'),
+					form: $(document.getElementById('cls-sh-form')),
+					query: $(document.getElementById('cls-sh-query')),
 					genres: {
-						items: $('#cls-sh-gr-items'),
-						button: $('#cls-sh-gr-button'),
-						text: $('#cls-sh-gr-text')
+						body: document.getElementById('cls-sh-gr-items'),
+						items: $(document.getElementById('cls-sh-gr-items')),
+						button: $(document.getElementById('cls-sh-gr-button')),
+						text: $(document.getElementById('cls-sh-gr-text'))
 					}
 				},
 				playlist: {
 					sort: {
-						shuffle: $('#cls-pl-st-shuffle'),
-						alphabetically: $('#cls-pl-st-alphabetically')
+						shuffle: $(document.getElementById('cls-pl-st-shuffle')),
+						alphabetically: $(document.getElementById('cls-pl-st-alphabetically'))
 					},
 					download: {
-						mode: $('#cls-pl-dl-mode'),
-						all: $('#cls-pl-dl-all')
+						mode: $(document.getElementById('cls-pl-dl-mode')),
+						all: $(document.getElementById('cls-pl-dl-all'))
 					},
 					generate: {
-						m3u: $('#cls-pl-gr-m3u')
+						m3u: $(document.getElementById('cls-pl-gr-m3u'))
 					}
 				}
 			},
 			playlist: {
-				items: $('#pl-items'),
+				body: document.getElementById('pl-items'),
+				items: $(document.getElementById('pl-items')),
 			},
 			vk: {
-				auth: $('#vk-auth'),
+				auth: $(document.getElementById('vk-auth')),
 			},
 			captcha: {
-				container: $('#ml-ca-container'),
-				form: $('#ml-ca-form'),
-				title: $('#ml-ca-title'),
-				img: $('#ml-ca-img'),
-				key: $('#ml-ca-key'),
-				sid: $('#ml-ca-sid')
+				container: $(document.getElementById('ml-ca-container')),
+				form: $(document.getElementById('ml-ca-form')),
+				title: $(document.getElementById('ml-ca-title')),
+				img: $(document.getElementById('ml-ca-img')),
+				key: $(document.getElementById('ml-ca-key')),
+				sid: $(document.getElementById('ml-ca-sid'))
 			},
-			load: $('#load')
+			load: $(document.getElementById('load'))
 		},
 		/* ================================================== /Elements */
 
@@ -155,12 +157,12 @@ $(function () {
 				// Предыдущая аудиозапись в плейлисте
 				prev: function () {
 					try {
-						var items = self.$els.playlist.items.find('a');
-						var item = self.$els.playlist.items.find('a.active');
-						var id = (item.is(':first-child')) ? items.last().data('id') : items.eq(item.index() - 1).data('id');
+						var $items = self.$els.playlist.items.find('.pl-item');
+						var $item = self.tmp.player.item;
+						var $prev = ($item.is(':first-child')) ? $items.last() : $items.eq($item.index() - 1);
 
 						self.animation.player.controls.prev();
-						self.player.play(id);
+						self.player.play($prev);
 					} catch (e) {
 						throw new Error('player.controls.prev: ошибка при воспроизведении предыдущей аудиозаписи');
 					}
@@ -168,12 +170,12 @@ $(function () {
 				// Следующая аудиозапись в плейлисте
 				next: function () {
 					try {
-						var items = self.$els.playlist.items.find('a');
-						var item = self.$els.playlist.items.find('a.active');
-						var id = (item.is(':last-child')) ? items.first().data('id') : items.eq(item.index() + 1).data('id');
+						var $items = self.$els.playlist.items.find('.pl-item');
+						var $item = self.tmp.player.item;
+						var $next = ($item.is(':last-child')) ? $items.first() : $items.eq($item.index() + 1);
 
 						self.animation.player.controls.next();
-						self.player.play(id);
+						self.player.play($next);
 					} catch (e) {
 						throw new Error('player.controls.next: ошибка при воспроизведении следующей аудиозаписи');
 					}
@@ -209,37 +211,35 @@ $(function () {
 				}
 			},
 			// Воспроизвести аудиозапись по id, из текущего плейлиста
-			play: function (id) {
+			play: function ($item) {
 				try {
+					var id = $item.data('id');
 					var item = self.tmp.session.playlist[id];
-					var $item = self.$els.playlist.items.find('a[data-id="' + id + '"]');
 					var title = item.artist + ' — ' + item.title;
 
 					// Поиск cover-a
-					if (self.device.desktop) {
-						self.player.cover.search(item.artist + ' ' + item.title);
-					}
+					(self.device.desktop) ? self.player.cover.search(item.artist + ' ' + item.title): void 0;
+
+					// Убрать подсветку предыдущей аудиозаписи
+					$(self.tmp.player.item).removeClass('active');
 
 					// Воспроизводимая аудиозапись
 					self.tmp.player.id = item.id;
 					self.tmp.player.owner_id = item.owner_id;
 					self.tmp.player.title = title;
-					self.tmp.player.item = $item;
+					self.tmp.player.item = $($item);
 
+					// Загрузка аудиозаписи
 					self.$els.player.audio.src = item.url;
 					self.$els.player.audio.load();
 					self.$els.player.audio.play();
 					self.$els.player.controls.title.text(title);
 
-					if (self.tmp.player.broadcast === true) {
-						self.player.controls.broadcast(true);
-					}
+					// Трансляция аудиозаписи, если трансляция включена
+					(self.tmp.player.broadcast === true) ? self.player.controls.broadcast(true): void 0;
 
-					self.$els.playlist.items
-						.find('a')
-						.removeClass('active');
-
-					$item.addClass('active');
+					// Подсветка активной аудиозаписи
+					$($item).addClass('active');
 
 					console.log('self.player.play: воспроизведение (id = ' + id + ')');
 				} catch (e) {
@@ -358,92 +358,104 @@ $(function () {
 			// Добавление аудиозаписей в плейлист
 			add: function (r) {
 				try {
-					var $pl = '';
+					var items = (r.items) ? r.items : r;
+					var $pl = document.createElement('div');
 
 					// Очистка текущего плейлиста, если не передан offset
-					(!r.offset || r.offset <= 0) ? self.tmp.session.playlist = {}: void 0;
-
-					// Если в ответе от сервера, обьекты находятся в items, а не в корне
-					var items = (r.items) ? r.items : r;
+					(!r.offset || r.offset <= 0) ? self.tmp.session.playlist = []: void 0;
 
 					// Собирает массив из ответа сервера и добавляет ссылки в DOM
-					$(items).each(function (i, item) {
-						self.tmp.session.playlist[item.id] = {
-							url: item.url,
-							duration: item.duration,
-							owner_id: item.owner_id,
-							artist: item.artist,
-							title: item.title,
-							id: item.id
-						};
-						$pl += '<a data-id="' + item.id + '" data-duration="' + item.duration + '" class="pl-item">' + item.artist + ' — ' + item.title + '</a>';
-					}).promise().done(function () {
-						// Если передан offset, для добавления в плейлист
-						(r.offset > 0) ? self.$els.playlist.items.append($pl): self.$els.playlist.items.html($pl);
-					});
+					$(function () {
+						for (var i = 0; i < items.length; i++) {
+							var item = items[i];
+							var $el = document.createElement('a');
 
-					// Если используется компьютер, добавляет возможности:
-					// просмотр битрейта, добавление или удаление аудиозаписей
-					if (self.device.desktop) {
-						var ids = self.tmp.player.playlist.map(function (item) {
-							return item.id;
-						});
+							// Удаление пробелов в названии аудиозаписи
+							item.artist = item.artist.replace(/(^\s+|\s+$)/g, '');
+							item.title = item.title.replace(/(^\s+|\s+$)/g, '');
 
-						$(self.$els.playlist.items).find('a').each(function () {
-							var $that = $(this);
+							// Плейлист текущей сессии
+							self.tmp.session.playlist[item.id] = {
+								url: item.url,
+								duration: item.duration,
+								owner_id: item.owner_id,
+								artist: item.artist,
+								title: item.title,
+								id: item.id
+							};
 
-							// Если при добавлении аудиозаписей не найдены actions
-							if (!$that.find('div').hasClass('actions')) {
-								var $actions = {};
-								var data = $that.data();
-								var duration = self.playlist.secToTime(data.duration);
+							// Аудиозапись в плейлисте
+							$el.className = 'pl-item';
+							$el.setAttribute('data-id', item.id);
+							$el.setAttribute('data-duration', item.duration);
+							$el.innerHTML = item.artist + ' — ' + item.title;
+							$pl.appendChild($el);
+						}
 
-								$('<div/>', {
-									'class': 'actions'
-								}).appendTo($that).promise().done(function () {
-									$actions = $that.find('div.actions');
+						// Если зашли с помощью ПК
+						if (self.device.desktop) {
+							var ids = [];
+							var $items = $pl.childNodes;
 
-									// Битрейт
-									$('<small/>', {
-										'class': 'bitrate bitrate-load',
-										'data-toggle': 'popover',
-										'data-content': 'Битрейт',
-									}).appendTo($actions);
-
-									// Длительность аудиозаписи
-									$('<small/>', {
-										'class': 'duration',
-										'text': (((duration.h > 0) ? duration.h + ':' : '') + '' + duration.m + ':' + '' + duration.s),
-										'data-toggle': 'popover',
-										'data-content': 'Длительность',
-									}).appendTo($actions);
-
-								}).promise().done(function () {
-									if ($.inArray(data.id, ids) >= 0) {
-										//  Возможность удаления аудиозаписи
-										$('<span/>', {
-											'class': 'delete',
-											'data-toggle': 'popover',
-											'data-content': 'Удалить',
-										}).appendTo($actions);
-									} else {
-										//  Возможность добавления аудиозаписи
-										$('<span/>', {
-											'class': 'add',
-											'data-toggle': 'popover',
-											'data-content': 'Добавить',
-										}).appendTo($actions);
-									}
-								});
+							// Id аудиозаписей, которые есть у пользователя
+							for (var i = 0; i < self.tmp.player.playlist.length; i++) {
+								ids[i] = Number(self.tmp.player.playlist[i].id);
 							}
-						}).promise().done(function () {
-							$('[data-toggle="popover"]').popover({
-								'trigger': 'hover',
-								'container': 'body',
-								'placement': 'top',
+
+							// Битрейт, длительность, добавление, удаление аудиозаписей
+							for (var i = 0; i < $items.length; i++) {
+								var $item = $items[i];
+								var $actions = document.createElement('div');
+								var $bitrate = document.createElement('small');
+								var $duration = document.createElement('small');
+								var $span = document.createElement('span');
+								var data = $item.dataset;
+
+								// Битрейт
+								$bitrate.className = 'bitrate bitrate-load';
+								$bitrate.setAttribute('data-toggle', 'popover');
+								$bitrate.setAttribute('data-content', 'Битрейт');
+								$actions.appendChild($bitrate);
+
+								// Длительность
+								$duration.className = 'duration';
+								$duration.setAttribute('data-toggle', 'popover');
+								$duration.setAttribute('data-content', 'Длительность');
+								$duration.innerHTML = self.playlist.secToTime(data.duration);
+								$actions.appendChild($duration);
+
+								// Если аудиозаписи есть у пользователя
+								if (ids.indexOf(Number(data.id)) >= 0) {
+									// Удаление
+									$span.className = 'delete';
+									$span.setAttribute('data-content', 'Удалить');
+								}
+								// Если аудиозаписи нет у пользователя
+								else {
+									// Добавление
+									$span.className = 'add';
+									$span.setAttribute('data-content', 'Добавить');
+								}
+								$span.setAttribute('data-toggle', 'popover');
+								$actions.appendChild($span);
+
+								// Контейнер
+								$actions.className = 'actions';
+								$item.appendChild($actions);
+							}
+
+							// Bootstrap popover
+							$(self.$els.playlist.body.childNodes).find('[data-toggle="popover"]').popover({
+								trigger: 'hover',
+								container: 'body',
+								placement: 'top',
 							});
-						});
-					}
+						}
+
+						// Если передан offset, элементы будут добавляться
+						// если нет, то произойдет перезапись всего плейлиста
+						(r.offset > 0) ? self.$els.playlist.body.innerHTML += $pl.innerHTML: self.$els.playlist.body.innerHTML = $pl.innerHTML;
+					});
 				} catch (e) {
 					throw new Error('playlist.add: ошибка добавления в плейлист');
 				}
@@ -452,11 +464,11 @@ $(function () {
 			sort: {
 				// Рандомная сортировка
 				shuffle: function () {
-					self.$els.playlist.items.find('a').shuffle();
+					$(self.$els.playlist.body.childNodes).shuffle();
 				},
 				// Сортировка по алфавиту
 				alphabetically: function (direction) {
-					self.$els.playlist.items.alphabetically(direction);
+					$(self.$els.playlist.body.childNodes).alphabetically(direction);
 				}
 			},
 			// Подгрузить еще аудиозаписи, используя текущий запрос, изменяя offset
@@ -485,32 +497,33 @@ $(function () {
 				// Генерирование .m3u из текущего плейлиста
 				m3u: function () {
 					try {
+						var items = self.tmp.session.playlist;
+						var a = document.createElement('a');
+						var file, url;
 						var m3u = '#EXTM3U\r\n';
 
-						$.each(self.tmp.session.playlist, function (i, item) {
+						for (var id in items) {
+							var item = items[id];
+
 							m3u += '#EXTINF:' + item.duration + ',' + (item.artist).replace(/\r\n|\r|\n/g, ' ') + ' - ' + (item.title).replace(/\r\n|\r|\n/g, ' ') + '\r\n';
 							m3u += (item.url.replace('https', 'http')).replace(/\?extra=(.*)/, '') + '\r\n';
-						});
+						}
 
-						var file = new Blob([m3u], {
+						file = new Blob([m3u], {
 							type: 'audio/x-mpegurl'
 						});
 
-						var url = window.URL.createObjectURL(file);
+						url = window.URL.createObjectURL(file);
 
-						$('<a/>', {
-							'id': 'm3u-playlist',
-							'class': 'hide',
-							'href': url,
-							'download': 'playlist.m3u'
-						}).appendTo('body').promise().done(function () {
-							$(this)[0].click();
-							$(this).remove();
+						a.setAttribute('href', url);
+						a.setAttribute('target', '_blank');
+						a.setAttribute('download', 'playlist.m3u');
 
-							notify().success('Плейлист .M3U успешно сгенерирован', 2000);
-						});
+						$(a)[0].click();
 
 						window.URL.revokeObjectURL(url);
+
+						notify().success('Плейлист .M3U успешно сгенерирован', 2000);
 					} catch (e) {
 						notify().error('Ошибка генерирования .M3U плейлиста', 2000);
 
@@ -521,38 +534,25 @@ $(function () {
 			// Загрузка переданных аудиозаписей
 			download: function (items) {
 				try {
-					// Создание списка ссылок для загрузки аудиозаписей
-					var dList = '<div id="download" class="hide">';
+					var $items = $(self.$els.playlist.body.childNodes);
 
-					$.each(items, function (i, item) {
-						dList += '<a target="_blank" href="download?o=' + item.owner_id + '&i=' + item.id + '">';
-					});
+					// Создание ссылок и эмуляция клика
+					for (var i = 0; i < items.length; i++) {
+						var a = document.createElement('a');
+						var item = items[i];
 
-					dList += '</div>';
+						a.setAttribute('href', '/download?o=' + item.owner_id + '&i=' + item.id);
+						a.setAttribute('target', '_blank');
 
-					// Встраивание списка в DOM
-					$(dList).appendTo('body').promise().done(function () {
-						var $download = $('#download');
-						var $links = $download.find('a');
+						$(a)[0].click();
+					}
 
-						$.each($links, function (i, item) {
-							// Нажатие ссылки и загрузка
-							$(item)[0].click();
-						}).promise().done(function () {
-							// Удаление контейнера
-							$download.remove();
-							// Выключение режима загрузки
-							self.$els.playlist.items
-								.find('a.dl-active')
-								.removeAttr('data-dl')
-								.removeClass('dl-active');
+					$items.removeClass('dl-active');
 
-							self.$els.controls.playlist.download.mode.removeClass('active');
+					self.$els.controls.playlist.download.mode.removeClass('active');
 
-							// Включение режима прослушивания
-							self.app.mode('listen');
-						});
-					});
+					// Включение режима прослушивания
+					self.app.mode('listen');
 				} catch (e) {
 					notify().error('Ошибка при загрузке', 2000);
 
@@ -576,7 +576,7 @@ $(function () {
 							method: 'POST',
 							dataType: 'json',
 							success: function (data) {
-								if (parseInt(data.kbps) > 0) {
+								if (data.kbps > 0) {
 									var kbps =
 										(data.kbps >= 320) ? 'bitrate-higher' :
 										(data.kbps >= 256 && data.kbps < 320) ? 'bitrate-high' :
@@ -584,10 +584,11 @@ $(function () {
 										(data.kbps < 192) ? 'bitrate-low' : '';
 
 									$that
-										.find('div.actions > small.bitrate')
+										.find('.bitrate')
 										.data('bitrate', 'checked')
 										.removeClass('bitrate-load')
-										.addClass(kbps).text(data.kbps);
+										.addClass(kbps)
+										.text(data.kbps);
 								}
 							}
 						});
@@ -608,7 +609,7 @@ $(function () {
 					'm': (hours > 0 && minutes <= 9) ? '0' + minutes : minutes,
 					's': (seconds <= 9) ? '0' + seconds : seconds
 				};
-				return obj;
+				return (((obj.h > 0) ? obj.h + ':' : '') + '' + obj.m + ':' + '' + obj.s);
 			},
 			// События при document.ready
 			ready: function () {
@@ -616,40 +617,44 @@ $(function () {
 				if (self.device.desktop) {
 					try {
 						$(function () {
-							var plItems = document.getElementById('pl-items');
-							var sortable = new Sortable(plItems, {
+							var pl = document.getElementById('pl-items');
+							var sortable = new Sortable(pl, {
 								animation: 250,
 								// После перетаскивания аудиозаписи
 								onEnd: function (e) {
 									if (self.options.reorder) {
-										var item = e.item;
-										var prev = $(item).prev();
-										var next = $(item).next();
-										var prevIndex = $(prev).index();
-										var nextIndex = $(next).index();
-										var itemId = $(item).data('id');
-										var prevId = $(prev).data('id');
-										var nextId = $(next).data('id');
+										var $item = e.item;
+										var $prev = $($item).prev();
+										var $next = $($item).next();
+										var that = {
+											id: $($item).data('id'),
+											prev: {
+												index: $($prev).index(),
+												id: $($prev).data('id'),
+											},
+											next: {
+												index: $($next).index(),
+												id: $($next).data('id'),
+											}
+										};
 
 										// Начало плейлиста
-										if (prevIndex < 0 && nextIndex >= 0) {
-											self.audio.reorder(self.tmp.session.mid, itemId, nextId, '');
+										if (that.prev.index < 0 && that.next.index >= 0) {
+											self.audio.reorder(self.tmp.session.mid, that.id, that.next.id, '');
 										}
 										// Середина плейлиста
-										else if (prevIndex >= 0 && nextIndex >= 0) {
-											self.audio.reorder(self.tmp.session.mid, itemId, '', prevId);
+										else if (that.prev.index >= 0 && that.next.index >= 0) {
+											self.audio.reorder(self.tmp.session.mid, that.id, '', that.prev.id);
 										}
 										// Конец плейлиста
-										else if (prevIndex > 0 && nextIndex < 0) {
-											self.audio.reorder(self.tmp.session.mid, itemId, '', prevId);
+										else if (that.prev.index > 0 && that.next.index < 0) {
+											self.audio.reorder(self.tmp.session.mid, that.id, '', that.prev.id);
 										}
 
-										self.animation.playlist.moved(item);
+										self.animation.playlist.moved($item);
 									}
 								},
 							});
-
-							console.log('sortable: ' + sortable);
 						});
 					} catch (e) {
 						throw new Error('sortable: ошибка при drag-n-drop-е аудиозаписи');
@@ -691,21 +696,13 @@ $(function () {
 						if (e.target === this) {
 							// Воспроизведение
 							if (self.mode.listen) {
-								var id = $(this).data('id');
+								var id = Number(this.dataset.id);
 
-								(self.tmp.player.id === id) ? (self.tmp.player.status === 'play' || self.tmp.player.status === 'playing') ? self.player.controls.pause(): self.player.controls.play(): self.player.play(id);
+								(self.tmp.player.id === id) ? (self.tmp.player.status === 'play' || self.tmp.player.status === 'playing') ? self.player.controls.pause(): self.player.controls.play(): self.player.play($(this));
 
 								// Загрузка
 							} else if (self.mode.download) {
-								if (!$(this).attr('data-dl')) {
-									$(this)
-										.attr('data-dl', 'true')
-										.addClass('dl-active');
-								} else {
-									$(this)
-										.removeAttr('data-dl')
-										.removeClass('dl-active');
-								}
+								(!$(this).hasClass('dl-active')) ? $(this).addClass('dl-active'): $(this).removeClass('dl-active');
 							}
 						}
 					} catch (e) {
@@ -721,7 +718,7 @@ $(function () {
 					// Включение или отключения режима загрузки
 					$(self.$els.controls.playlist.download.mode).on('click', function () {
 						try {
-							var $items = self.$els.playlist.items.find('a');
+							var $items = $(self.$els.playlist.body.childNodes);
 
 							// Если включен режим прослушивания
 							if (self.mode.listen) {
@@ -732,24 +729,24 @@ $(function () {
 							// Если включен режим загрузки
 							else if (self.mode.download) {
 								// Если были найдены помеченные для загрузки аудиозаписи
-								if ($items.attr('data-dl')) {
-									$items = self.$els.playlist.items.find('[data-dl="true"]');
-									var download = {};
+								if ($items.hasClass('dl-active')) {
+									var $items = $(self.$els.playlist.body).find('.dl-active');
+									var download = [];
 
 									// Получение списка загружаемых аудиозаписей
-									$.each($items, function (i, that) {
-										var id = $(that).data('id');
+									for (var i = 0; i < $items.length; i++) {
+										var $that = $items[i];
+										var id = Number($that.dataset.id);
 										var item = self.tmp.session.playlist[id];
 
 										download[i] = {
-											artist: item.artist,
-											title: item.title,
 											owner_id: item.owner_id,
 											id: item.id
 										};
-									}).promise().done(function () {
-										self.playlist.download(download);
-									});
+									}
+
+									// Перейти к загрузке
+									self.playlist.download(download);
 								} else {
 									self.app.mode('listen');
 									$(this).removeClass('active');
@@ -762,27 +759,21 @@ $(function () {
 					});
 					// Выделение всех аудиозаписей в плейлисте, для загрузки
 					$(self.$els.controls.playlist.download.all).clickToggle(function () {
-						$(self.$els.playlist.items)
-							.find('a')
-							.attr('data-dl', true)
-							.addClass('dl-active');
+						$(self.$els.playlist.body.childNodes).addClass('dl-active');
 					}, function () {
-						$(self.$els.playlist.items)
-							.find('a')
-							.removeAttr('data-dl', true)
-							.removeClass('dl-active');
+						$(self.$els.playlist.body.childNodes).removeClass('dl-active');
 					});
 					// Показать битрейт аудиозаписи
 					$(self.$els.playlist.items).on({
 						mouseenter: function () {
-							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+							var bitrate = $(this).find('.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
 								self.playlist.bitrate($(this));
 							}
 						},
 						click: function () {
-							var bitrate = $(this).find('div.actions > small.bitrate').data('bitrate');
+							var bitrate = $(this).find('.bitrate').data('bitrate');
 
 							if (bitrate !== 'checked') {
 								self.playlist.bitrate($(this));
@@ -872,6 +863,7 @@ $(function () {
 					id: 22,
 					'title': 'Electropop & Disco'
 				}];
+
 				return genres;
 			},
 			// События при document.ready
@@ -880,13 +872,20 @@ $(function () {
 				$(function () {
 					try {
 						var genres = self.genres.get();
-						var list = '';
+						var ul = document.createElement('ul');
 
-						$(genres).each(function (i, that) {
-							list += '<li><a data-id="' + that.id + '">' + that.title + '</a></li>';
-						}).promise().done(function () {
-							$(self.$els.controls.search.genres.items).html(list);
-						});
+						for (var i = 0; i < genres.length; i++) {
+							var item = genres[i];
+							var li = document.createElement('li');
+							var a = document.createElement('a');
+
+							a.setAttribute('data-id', item.id);
+							a.innerHTML = item.title;
+							li.appendChild(a);
+							ul.appendChild(li);
+						}
+
+						$(self.$els.controls.search.genres.items).html(ul.childNodes);
 					} catch (e) {
 						throw new Error('genres.ready: ошибка вывода жанров');
 					}
@@ -953,7 +952,7 @@ $(function () {
 							self.verify(request, r);
 
 							if (r.response) {
-								// Запись запроса, для возможности увелечения offset-a
+								// Запись запроса, для возможности увеличения offset-a
 								self.tmp.req = {
 									name: request,
 									owner_id: owner_id,
@@ -1006,7 +1005,7 @@ $(function () {
 							self.verify(request, r);
 
 							if (r.response) {
-								// Запись запроса, для возможности увелечения offset-a
+								// Запись запроса, для возможности увеличения offset-a
 								self.tmp.req = {
 									name: request,
 									genre_id: genre_id,
@@ -1057,7 +1056,7 @@ $(function () {
 							self.verify(request, r);
 
 							if (r.response) {
-								// Запись запроса, для возможности увелечения offset-a
+								// Запись запроса, для возможности увеличения offset-a
 								self.tmp.req = {
 									name: request,
 									offset: offset
@@ -1111,7 +1110,7 @@ $(function () {
 							self.verify(request, r);
 
 							if (r.response) {
-								// Запись запроса, для возможности увелечения offset-a
+								// Запись запроса, для возможности увеличения offset-a
 								self.tmp.req = {
 									name: request,
 									q: q,
@@ -1405,7 +1404,9 @@ $(function () {
 			},
 			// Очистка временных данных
 			refresh: function () {
-				self.tmp.session = {};
+				self.tmp.session = {
+					playlist: [],
+				};
 				self.tmp.player = {};
 				self.tmp.req = {};
 			},
@@ -1425,6 +1426,7 @@ $(function () {
 					self.captcha.show(r.error);
 					break;
 				default:
+					notify().error(r.error.error_msg, 2000);
 					throw new Error(request + ': ' + r.error.error_msg);
 					break;
 				}
@@ -1512,9 +1514,9 @@ $(function () {
 
 			// Для всех popover
 			if (self.device.desktop) {
-				$('.cls').find('[data-toggle="popover"]').popover({
-					'trigger': 'hover',
-					'placement': 'bottom'
+				$(document.getElementsByClassName('cls')).find('[data-toggle="popover"]').popover({
+					trigger: 'hover',
+					placement: 'bottom'
 				});
 			}
 		}
@@ -1541,56 +1543,4 @@ $(function () {
 			throw new Error('window.scroll: ошибка при скролле');
 		}
 	});
-});
-
-// Shuffle: перемешать элементы
-$(function () {
-	$.fn.shuffle = function () {
-		var allElems = this.get(),
-			getRandom = function (max) {
-				return Math.floor(Math.random() * max);
-			},
-			shuffled = $.map(allElems, function () {
-				var random = getRandom(allElems.length),
-					randEl = $(allElems[random]).clone(true)[0];
-				allElems.splice(random, 1);
-				return randEl;
-			});
-		this.each(function (i) {
-			$(this).replaceWith($(shuffled[i]));
-		});
-		return $(shuffled);
-	};
-});
-
-// Alphabetically: отсортировать элементы по алфавиту (direction: направление сортировки)
-$(function () {
-	$.fn.alphabetically = function (direction) {
-		var mylist = $(this);
-		var listitems = $('a', mylist).get();
-		listitems.sort(function (a, b) {
-			var compA = $(a).text().toUpperCase();
-			var compB = $(b).text().toUpperCase();
-			if (direction === '<') {
-				return (compA < compB) ? -1 : 1;
-			} else if (direction === '>') {
-				return (compA > compB) ? -1 : 1;
-			}
-		});
-		$.each(listitems, function (i, itm) {
-			mylist.append(itm);
-		});
-	};
-});
-
-// clickToggle: выполняет функции по клику (поочередно)
-$(function () {
-	$.fn.clickToggle = function (a, b) {
-		var ab = [b, a];
-
-		function cb() {
-			ab[this._tog ^= 1].call(this);
-		}
-		return this.on('click', cb);
-	};
 });

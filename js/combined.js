@@ -1,4 +1,3 @@
-// @codekit-prepend "openapi.js"
 // @codekit-prepend "../bower_components/jquery/dist/jquery.min.js"
 // @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/transition.js"
 // @codekit-prepend "../bower_components/boostrap-sass/assets/javascripts/bootstrap/dropdown.js"
@@ -8,4 +7,5 @@
 // @codekit-prepend "../bower_components/sortable.js/Sortable.min.js"
 // @codekit-prepend "../bower_components/classie/classie.js"
 // @codekit-prepend "../bower_components/notify/notify.js"
+// @codekit-prepend "functions.js"
 // @codekit-prepend "slothMusic.js"

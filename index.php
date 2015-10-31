@@ -50,9 +50,12 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	<link rel="apple-touch-icon" href="favicon/favicon_512.png" sizes="512x512" type="image/png">
 	<link rel="apple-touch-icon-precomposed" href="favicon/favicon_128.png">
 	<link rel="stylesheet" href="css/slothMusic.css">
+
+	<!-- access token -->
 	<?php if (verify($_SESSION['access_token'])): ?>
-		<script>var access_token = '<?php echo $_SESSION['access_token'];?>';</script>
+	<script>var access_token = '<?php echo $_SESSION['access_token'];?>';</script>
 	<?php endif;?>
+	<!-- /access token -->
 </head>
 
 <body>
@@ -171,7 +174,9 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 		</div>
 	</div>
 	<!-- /playlist -->
-	<script src="js/combined.min.js"></script>
+
+	<script src="//vk.com/js/api/openapi.js" type="text/javascript"></script>
+	<script src="js/combined.min.js" type="text/javascript"></script>
 </body>
 
 </html>
