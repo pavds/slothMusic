@@ -1,5 +1,10 @@
 <?php
 
+if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+}
+
 session_start();
 require 'class/slothmusic.class.php';
 
@@ -103,7 +108,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	</div>
 	<!-- /captcha -->
 	<!-- player -->
-	<div class="plr" data-authorized="false">
+	<div class="plr no-authorized">
 		<div class="container">
 			<div class="plr-cls">
 				<div class="plr-cls-prev">
@@ -128,7 +133,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	</div>
 	<!-- /player -->
 	<!--controls -->
-	<div class="cls" data-authorized="false">
+	<div class="cls no-authorized">
 		<div class="container">
 			<div class="cls-container">
 				<i id="cls-ld-user" class="cls-user" data-toggle="popover" title="Мои аудиозаписи" data-content="Аудиозаписи добавленные вами Вконтакте."></i>
@@ -164,7 +169,7 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	</div>
 	<!-- /controls -->
 	<!-- playlist -->
-	<div class="pl" data-authorized="false">
+	<div class="pl no-authorized">
 		<div class="container">
 			<div class="pl-container">
 				<div class="pl-items-container">
@@ -175,7 +180,6 @@ if (!verify($_GET['code']) && !verify($_SESSION['access_token'])) {
 	</div>
 	<!-- /playlist -->
 
-	<script src="//vk.com/js/api/openapi.js" type="text/javascript"></script>
 	<script src="js/combined.min.js" type="text/javascript"></script>
 </body>
 
