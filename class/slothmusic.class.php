@@ -14,7 +14,7 @@ class slothMusic {
 		'secret' => 'ArJmgOsWyGrE5D2F1Lln',
 		'scope' => 'audio,status',
 		'redirect_uri' => 'http://music.pavlovdmitry.com',
-		'v' => '5.37',
+		'v' => '5.40',
 		'code' => null,
 		'access_token' => null,
 	);
