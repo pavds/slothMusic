@@ -47,3 +47,8 @@ $(function () {
 		return this.on('click', cb);
 	};
 });
+
+// element.checkClass: проверяет вхождение класса элемента
+Element.prototype.checkClass = function(className) {
+	return this.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(this.className);
+};
