@@ -8,4 +8,5 @@
 // @codekit-prepend "../bower_components/classie/classie.js"
 // @codekit-prepend "../bower_components/notify/notify.js"
 // @codekit-prepend "functions.js"
+// @codekit-prepend "openapi.js"
 // @codekit-prepend "slothMusic.js"
