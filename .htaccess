@@ -1,9 +1,14 @@
+# Rewrite
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule ^(\w+)$ $1.php [NC]
+</IfModule>
+
+# Download MP3
 SetEnvIfNoCase Request_URI ^/download\.php no-gzip dont-vary
 
+# Index
 DirectoryIndex index.html index.htm index.php
-
-RewriteEngine On
-RewriteRule ^(\w+)$ $1.php [NC]
 
 # AddType TYPE/SUBTYPE EXTENSION
 AddType audio/mpeg mp3
