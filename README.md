@@ -1,21 +1,25 @@
 # slothMusic [web](http://music.pavlovdmitry.com/)
 
 ## Русский
-Музыкальный плеер VK.com. 
+Музыкальный плеер VK.com.
+
+### В планах
+* Возможность (создания/редактирования/прослушивания) плейлистов;
+* Возможность выгрузки треков из аккаунта Spotify.
 
 ### Возможности
-* Прослушивание аудиозаписей на любом устройстве.
-* Плейлисты: `Мои аудиозаписи`, `Популярные`, `Рекомендуемые`.
-* Поиск аудиозаписей (по названию, по жанрам).
-* Добавление и удаление аудиозаписей.
-* Генерирование M3U (из текущего плейлиста).
-* Загрузка аудиозаписей (выборочная).
-* Сортировка плейлиста (по алфавиту, рандомная).
-* Битрейт аудиозаписей (при наведении).
-* Транслирование аудиозаписи в статус.
-* AJAX подгрузка аудиозаписей.
-* Поддержка капчи.
-* Поиск и показ cover-a текущей аудиозаписи.
+* Прослушивание аудиозаписей на любом устройстве;
+* Плейлисты: `Мои аудиозаписи`, `Популярные`, `Рекомендуемые`;
+* Поиск аудиозаписей (по названию, по жанрам);
+* Добавление и удаление аудиозаписей;
+* Генерирование M3U (из текущего плейлиста);
+* Загрузка аудиозаписей (выборочная);
+* Сортировка плейлиста (по алфавиту, рандомная);
+* Битрейт аудиозаписей (при наведении);
+* Транслирование аудиозаписи в статус;
+* AJAX подгрузка аудиозаписей;
+* Поддержка капчи;
+* Поиск и показ cover-a текущей аудиозаписи;
 * Drag-and-drop для перемещения аудиозаписей (синхронизировано с VK).
 
 ### БД
@@ -48,18 +52,18 @@
 The music player VK.com.
 
 ### Opportunities
-* Listen to audio on any device.
-* Playlists: `My music`, `Popular`, `Recommended`.
-* Search of recordings (by title, by genre).
-* Adding and deleting tracks.
-* Generate M3U (playlist).
-* Download audio (selective).
-* Playlist sorting (by alphabet, random).
-* The bitrate of the audio (when you hover).
-* Broadcasting audio in status.
-* AJAX loading of audio.
-* Support captcha.
-* Show cover-a current audio.
+* Listen to audio on any device;
+* Playlists: `My music`, `Popular`, `Recommended`;
+* Search of recordings (by title, by genre);
+* Adding and deleting tracks;
+* Generate M3U (playlist);
+* Download audio (selective);
+* Playlist sorting (by alphabet, random);
+* The bitrate of the audio (when you hover);
+* Broadcasting audio in status;
+* AJAX loading of audio;
+* Support captcha;
+* Show cover-a current audio;
 * Drag-and-drop to move the audio (synchronized with VK).
 
 ### DB
