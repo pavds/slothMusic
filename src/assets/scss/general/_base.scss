@@ -1,0 +1,70 @@
+html {
+	box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+	border-radius: 0;
+	outline: none;
+	box-sizing: inherit;
+	appearance: none !important;
+}
+
+html,
+body {
+	height: 100%;
+	user-select: none;
+	appearance: none !important;
+	backface-visibility: hidden;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-overflow-scrolling: touch;
+	text-rendering: optimizelegibility;
+	-webkit-font-feature-settings: "liga" 1;
+	-moz-font-feature-settings: "liga" 1;
+	-ms-font-feature-settings: "liga" 1;
+	font-feature-settings: "liga" 1;
+}
+
+body {
+	background-color: #eee;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	text-decoration: none;
+
+	&[x-apple-data-detectors] {
+		font: {
+			family: inherit;
+			size: inherit;
+			weight: inherit;
+		}
+	;
+		line-height: inherit;
+		text-decoration: none;
+		color: inherit;
+	}
+}
+
+textarea {
+	max-width: 100%;
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+}
