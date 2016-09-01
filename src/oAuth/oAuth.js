@@ -4,6 +4,8 @@ import SpotifyAPI from 'spotify-web-api-js';
 const spotifyAPI = new SpotifyAPI();
 const utils = new Utils();
 
+const VK = {} || VK;
+
 const
 	auth = {
 		spotify: {
@@ -12,7 +14,7 @@ const
 			scope: 'playlist-read-private user-read-email user-library-read user-read-private user-read-email user-read-email user-read-birthdate user-follow-read user-top-read'
 		},
 		vk: {
-			client_id: '5083406',
+			client_id: '5613624',
 			redirect_uri: 'http://127.0.0.1:8888',
 			scope: 'audio,status',
 			display: 'page',
@@ -25,7 +27,7 @@ const
 	};
 
 export default class oAuth {
-	getAccessToken(service) {
+	static getAccessToken(service) {
 		let
 			params = auth[service],
 			uri = auth_uri[service],
@@ -39,7 +41,7 @@ export default class oAuth {
 		}
 	}
 
-	clearToken(service) {
+	static clearToken(service) {
 		if (localStorage.getItem(`${service}_token`) !== null) {
 			localStorage.removeItem(`${service}_token`);
 			return window.location.href = '/';
@@ -53,14 +55,14 @@ export default class oAuth {
 				case 'spotify':
 					spotifyAPI.setAccessToken(localStorage.getItem(`spotify_token`));
 					spotifyAPI.getMe()
-						.then((response) => resolve(true), (error) => reject(false));
+						.then(() => resolve(true), () => reject(false));
 					break;
 				case 'vk':
 					VK.init({apiId: auth.vk.client_id});
-					VK.Auth.getLoginStatus((response) => resolve((response.session) ? true : false), (error) => reject(false));
+					VK.Auth.getLoginStatus((response) => resolve((response.session) ? true : false), () => reject(false));
 					break;
 				default:
-					callback(false);
+					reject(false);
 					break;
 			}
 		});
