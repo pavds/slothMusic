@@ -4,8 +4,6 @@ import SpotifyAPI from 'spotify-web-api-js';
 const spotifyAPI = new SpotifyAPI();
 const utils = new Utils();
 
-const VK = {} || VK;
-
 const
 	auth = {
 		spotify: {
