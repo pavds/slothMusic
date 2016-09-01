@@ -25,7 +25,7 @@ const
 	};
 
 export default class oAuth {
-	static getAccessToken(service) {
+	getAccessToken(service) {
 		let
 			params = auth[service],
 			uri = auth_uri[service],
@@ -39,7 +39,7 @@ export default class oAuth {
 		}
 	}
 
-	static clearToken(service) {
+	clearToken(service) {
 		if (localStorage.getItem(`${service}_token`) !== null) {
 			localStorage.removeItem(`${service}_token`);
 			return window.location.href = '/';
