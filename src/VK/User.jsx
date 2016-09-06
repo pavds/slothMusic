@@ -24,6 +24,7 @@ export default class User extends React.Component {
 			user: {},
 			total: 0,
 			import: [],
+			albumId: null,
 			busy: false,
 			captcha: {
 				sid: null,
@@ -115,6 +116,16 @@ export default class User extends React.Component {
 		return new Promise((resolve, reject) =>
 			VK.Api.call('audio.addAlbum', {
 				title: title,
+				v: Config.vk.v
+			}, (response) => (response.error) ? reject(response.error) : resolve(response.response))
+		);
+	}
+
+	addTrack(audio_id, owner_id) {
+		return new Promise((resolve, reject) =>
+			VK.Api.call('audio.add', {
+				audio_id: audio_id,
+				owner_id: owner_id,
 				v: Config.vk.v
 			}, (response) => (response.error) ? reject(response.error) : resolve(response.response))
 		);
@@ -214,17 +225,32 @@ export default class User extends React.Component {
 
 							this.getAlbums()
 								.then((response) => {
-									let albumNames = response.items.map((album) => album.title);
+									let albums = response.items;
+									// let albumId;
+                  //
+									// response.items.forEach(album => {
+									// 	console.log(album.title === Config.vk.album);
+									// 	return (album.title === Config.vk.album) ? album.id : false;
+									// });
 
-									if (albumNames.indexOf(Config.vk.album) < 0) {
-										this.addAlbum()
-											.then((response) => {
-												console.info(`VK: added "${Config.vk.album}" album.`);
-												console.log(response);
-											});
-									} else {
-										console.info(`VK: "${Config.vk.album}" album alredy exist.`);
-									}
+									//console.log( Object.keys(albums).some(album => (albums[album].title === Config.vk.album) ? albums[album].id : false) );
+
+									// console.log(response);
+									// console.log( response.items.some(album => album.title == Config.vk.album) );
+									// console.log(  );
+									// let albumId = response.items.map((album) => (album.title === Config.vk.album) ? album.id : void 0);
+
+									// if (albumId === null) {
+									// 	this.addAlbum()
+									// 		.then((response) => {
+									// 			console.info(`VK: added "${Config.vk.album}" album.`);
+									// 			this.setState({albumId: response.album_id});
+									// 			console.log(this.state.albumId);
+									// 		});
+									// } else {
+									// 	console.info(`VK: "${Config.vk.album}" album alredy exist.`);
+									// 	this.setState({albumId: albumId});
+									// }
 
 									button.disabled = false;
 									this.setState({busy: false});
