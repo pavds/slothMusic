@@ -11,6 +11,7 @@
 .service {
 	flex: 0 0 50%;
 	padding: 10px;
+	animation: service-fadeIn 1s ease;
 
 	&__inner {
 		display: flex;
@@ -23,11 +24,12 @@
 		transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
 		will-change: box-shadow;
 
-		&:hover,
-		&:focus,
-		&:active {
-			box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-		}
+		//&:hover,
+		//&:focus,
+		//&:active {
+		//	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+		//	transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+		//}
 	}
 
 	&__logo {
@@ -38,20 +40,17 @@
 			size: auto 48px;
 			position: center;
 		}
-	;
 
 		&--spotify {
 			background: {
 				image: url("../img/spotify.svg");
 			}
-		;
 		}
 
 		&--vk {
 			background: {
 				image: url("../img/vk.svg");
 			}
-		;
 		}
 	}
 
@@ -60,7 +59,6 @@
 			size: 16px;
 			weight: 600;
 		}
-	;
 		line-height: 26px;
 		color: #444;
 	}
@@ -70,13 +68,25 @@
 			size: 12px;
 			weight: 400;
 		}
-	;
 		color: #777;
+	}
+
+	&__actions {
+		margin-top: 20px;
 	}
 }
 
 @media screen and (max-width: 480px) {
 	.service {
 		flex: 0 0 100%;
+	}
+}
+
+@keyframes service-fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
 	}
 }

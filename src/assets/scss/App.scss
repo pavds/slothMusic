@@ -2,7 +2,10 @@
 @import "general/_base";
 
 // Components
-@import "components/_buttons";
-@import "components/_header";
-@import "components/_services";
-@import "components/_title";
+@import
+	"components/_ripple",
+	"components/_buttons",
+	"components/_header",
+	"components/_services",
+	"components/_title",
+	"components/_captcha";

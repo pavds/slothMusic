@@ -1,5 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
+import Config from './Config/Config';
 import Utils from './Utils/Utils';
 import oAuth from './oAuth/oAuth';
 import App from './App';
@@ -17,11 +18,11 @@ function renderApp() {
 		queryToken = utils.getQueryString('access_token');
 
 	if (!tokens.spotify) {
-		console.warn('Get Spotify token...');
+		console.warn('Spotify: get token...');
 		oauth.getAccessToken('spotify');
 	}
 	else if (!tokens.vk && tokens.spotify && queryToken !== tokens.spotify) {
-		console.warn('Get VK token...');
+		console.warn('VK: get token...');
 		oauth.getAccessToken('vk');
 	}
 	else if (tokens.spotify && tokens.vk) {
@@ -36,24 +37,24 @@ function renderApp() {
 
 			oauth.checkExpireToken('spotify')
 				.then((authorized) => {
-						console.info('The Spotify token is not expired.');
+						console.info('Spotify: token is not expired.');
 						access.spotify = true;
 						access.check();
 					},
 					(error) => {
-						console.warn('The Spotify token is expired! Remove token and refreshing...');
+						console.warn('Spotify: token is expired! Remove token and refreshing...');
 						oauth.clearToken('spotify');
 						// reject();
 					})
 
 			oauth.checkExpireToken('vk')
 				.then((authorized) => {
-						console.info('The VK token is not expired.');
+						console.info('VK: token is not expired.');
 						access.vk = true;
 						access.check();
 					},
 					(error) => {
-						console.warn('The VK token is expired! Remove token and refreshing...');
+						console.warn('VK: token is expired! Remove token and refreshing...');
 						oauth.clearToken('vk');
 						// reject();
 					})
@@ -61,11 +62,11 @@ function renderApp() {
 
 		authorized
 			.then(() => {
-					console.info('Auth successful.');
+					console.info('Authorization successful.');
 					render(<App tokens={tokens}/>, document.getElementById('app'));
 				},
 				() => {
-					console.error(`Auth failure!`);
+					console.error(`Authorization failure!`);
 				})
 	}
 }

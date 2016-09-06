@@ -1,3 +1,28 @@
 .header {
-	padding: 20px;
+	padding: 10px 20px;
+	display: flex;
+	align-items: center;
+	background-color: #5C6983;
+
+	&__logo {
+		width: auto;
+		height: 60px;
+	}
+
+	&__title {
+		padding-left: 15px;
+		color: #fff;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.header {
+		padding: 20px;
+		flex-direction: column;
+		justify-content: center;
+
+		&__title {
+			padding-left: 0;
+		}
+	}
 }

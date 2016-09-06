@@ -28,17 +28,16 @@ export default class App extends React.Component {
 
 				{/*TODO: add more services*/}
 
-				<header className="header">
-					<button className="btn btn--sync">Sync VK</button>
-					<button className="btn btn--sync">Sync Spotify</button>
-				</header>
+				{/*<header className="header">*/}
+					{/*<img className="header__logo" src="http://image.flaticon.com/icons/svg/185/185732.svg"/>*/}
+					{/*<h1 className="header__title">Slothefy</h1>*/}
+				{/*</header>*/}
 
 				<h1 className="title">Services</h1>
 				<div className="services">
 					<Spotify access_token={this.state.tokens.spotify}/>
 					<VK access_token={this.state.tokens.vk}/>
 				</div>
-
 			</div>
 		)
 	}

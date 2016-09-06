@@ -1,27 +1,45 @@
 .btn {
-	margin-right: 20px;
+	position: relative;
+	margin-right: 10px;
 	padding: 10px 15px;
 	border-radius: 2px;
 	background-color: #fff;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-	transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+	overflow: hidden;
+	box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+	transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1), background-color 0.3s cubic-bezier(.25, .8, .25, 1);
 	will-change: box-shadow;
 
 	&:last-child {
 		margin-right: 0;
 	}
 
+	&:hover {
+		background-color: rgba(0, 0, 0, .1);
+		transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1), background-color 0.3s cubic-bezier(.25, .8, .25, 1);
+	}
+
 	&:active {
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+		box-shadow: rgba(0, 0, 0, 0.155863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
+		transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1), background-color 0.3s cubic-bezier(.25, .8, .25, 1);
 	}
 
 	&--sync {
+		padding-left: 40px;
+		background: {
+			image: url("http://image.flaticon.com/icons/svg/59/59895.svg");
+			repeat: no-repeat;
+			size: 25px;
+			position: left 10px center;
+		}
+	}
+
+	&--refresh {
 		padding-left: 40px;
 		background: {
 			image: url("http://image.flaticon.com/icons/svg/61/61076.svg");
 			repeat: no-repeat;
 			size: 25px;
 			position: left 10px center;
-		};
+		}
 	}
 }

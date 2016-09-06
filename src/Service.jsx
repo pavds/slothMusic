@@ -14,7 +14,7 @@ export default class Service extends React.Component {
 	}
 
 	componentDidMount() {
-		console.info(`${this.props.service.name} is loaded.`);
+		console.info(`${this.props.service.name}: is loaded.`);
 	}
 
 	render() {
@@ -23,9 +23,12 @@ export default class Service extends React.Component {
 		return (
 			<div className={`service service--${service.name}`}>
 				<div className="service__inner">
-					<div className={`service__logo service__logo--${service.name}`}></div>
+					{/*<div className={`service__logo service__logo--${service.name}`}></div>*/}
 					<div className="service__user">{service.user}</div>
 					<div className="service__info">Total tracks: {service.totalTracks}</div>
+					<div className="service__actions">
+						{this.props.children}
+					</div>
 				</div>
 			</div>
 		)
